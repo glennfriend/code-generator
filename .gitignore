@@ -1,5 +1,10 @@
-config/
-templates/
-templates_c/
-tmp/
-tmp_create/
+config/*
+!config/.gitkeep
+templates/*
+!templates/.gitkeep
+templates_c/*
+!templates_c/.gitkeep
+tmp/*
+!tmp/.gitkeep
+tmp_create/*
+!tmp_create/.gitkeep
