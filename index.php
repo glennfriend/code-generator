@@ -5,25 +5,25 @@
 include_once('config/config.inc.php');
 include_once('library/helper.php');
 
-$projectKey = $config['project']['key'];
-$objectName = $config['project'][$projectKey]['object'];
-$daoName    = $config['project'][$projectKey]['dao'];
-$table      = $config['project'][$projectKey]['table'];
+session_start();
+if ( !sessionCheck() ) {
+    header('location: session_control.php');
+    exit;
+}
 
-$db = getDbConnect( $config['database'] , $config['project'][$projectKey]['db'] );
+$projectKey = $_SESSION['projectKey'];
+$objectName = $_SESSION['useObject'];
+$daoName    = $_SESSION['useDao'];
+$table      = $_SESSION['useTable'];
+
+$db = getDbConnect( $config['database'] , $_SESSION['projectDb'] );
 $status = getTableColumnsStatus( $db, $table );  // get meta columns
 //echo '<pre>';  print_r($status);  exit;
-
 
 //--------------------------------------------------------------------------------
 // request
 //--------------------------------------------------------------------------------
-if (isset($_GET['t'])) {
-    $code_generator_template = $_GET['t'];
-}
-else {
-    $code_generator_template = 'dbobject';
-}
+$code_generator_template = get('t', 'dbobject');
 
 //--------------------------------------------------------------------------------
 // template
@@ -51,6 +51,8 @@ $template->assign('cf', $cf );
 //--------------------------------------------------------------------------------
 // output
 //--------------------------------------------------------------------------------
+headerOutput();
+
 if (isset($cf['lang_type'])) {
     $lang = $cf['lang_type'];
 }
@@ -63,8 +65,9 @@ ob_start();
     $showCode = ob_get_contents();
 ob_end_clean();
 
-
-echo $template->fetch( $projectKey.'/_header.tpl' ) ."<br />\n";
+echo '<div style="float:right;"><a href="session_control.php">[change]</a></div>';
+echo $template->fetch( $projectKey.'/_header.tpl' );
+echo "<br />\n";
 $showCode = str_replace( Array('<','>'), Array('&lt;','&gt;'), $showCode );
 
 echo <<<EOD

@@ -18,6 +18,14 @@ function getDbConnect( $databaseConfig, $databaseName ) {
     return $db;
 }
 
+//
+function headerOutput()
+{
+    echo <<<EOD
+<meta http-equiv="Content-Language" content="zh-tw" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+EOD;
+}
 
 /*
     取得所需資料表的格式
@@ -46,6 +54,46 @@ function getTableColumnsStatus( $db, $table )
 
 }
 
+/*
+
+*/
+function sessionCheck()
+{
+    if ( !isset($_SESSION['projectKey']) ) {
+        return false;
+    }
+    //if ( !isset($_SESSION['projectType']) ) {
+    //    return false;
+    //}
+    if ( !isset($_SESSION['useDb']) ) {
+        return false;
+    }
+    if ( !isset($_SESSION['useObject']) ) {
+        return false;
+    }
+    if ( !isset($_SESSION['useDao']) ) {
+        return false;
+    }
+    if ( !isset($_SESSION['useTable']) ) {
+        return false;
+    }
+    return true;
+}
+
+/*
+    取得 _POST or _GET 參數
+*/
+function get($key, $defaultValue=null)
+{
+    $key = trim($key);
+    if ( isset($_POST[$key]) ) {
+        return $_POST[$key];
+    }
+    elseif ( isset($_GET[$key]) ) {
+        return $_GET[$key];
+    }
+    return $defaultValue;
+}
 
 /*
     取得使用的樣版

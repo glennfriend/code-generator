@@ -10,12 +10,18 @@
 include_once('config/config.inc.php');
 include_once('library/helper.php');
 
-$projectKey = $config['project']['key'];
-$objectName = $config['project'][$projectKey]['object'];
-$daoName    = $config['project'][$projectKey]['dao'];
-$table      = $config['project'][$projectKey]['table'];
+session_start();
+if ( !sessionCheck() ) {
+    header('location: session_control.php');
+    exit;
+}
 
-$db = getDbConnect( $config['database'] , $config['project'][$projectKey]['db'] );
+$projectKey = $_SESSION['projectKey'];
+$objectName = $_SESSION['useObject'];
+$daoName    = $_SESSION['useDao'];
+$table      = $_SESSION['useTable'];
+
+$db = getDbConnect( $config['database'] , $_SESSION['projectDb'] );
 $tables = $db->MetaTables();
 
 //--------------------------------------------------------------------------------
@@ -140,6 +146,7 @@ function shortIndexColumns( $ix ) {
 //--------------------------------------------------------------------------------
 // output
 //--------------------------------------------------------------------------------
+headerOutput();
 
 echo '<pre style="background-color:#def;color:#000;text-align:left;font-size:8px;font-family:dina,GulimChe;">';
 

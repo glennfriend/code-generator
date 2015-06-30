@@ -1,32 +1,29 @@
 <?php
 //--------------------------------------------------------------------------------
-// request
-//--------------------------------------------------------------------------------
-$code_generator_template = null;
-if ( isset($_GET['t']) ) {
-    $code_generator_template = $_GET['t'];    
-}
-
-if(!$code_generator_template) {
-    $code_generator_template = 'dbobject';
-}
-
-
-//--------------------------------------------------------------------------------
 // kernel
 //--------------------------------------------------------------------------------
 include_once('config/config.inc.php');
 include_once('library/helper.php');
 
-$projectKey = $config['project']['key'];
-$objectName = $config['project'][$projectKey]['object'];
-$daoName    = $config['project'][$projectKey]['dao'];
-$table      = $config['project'][$projectKey]['table'];
+session_start();
+if ( !sessionCheck() ) {
+    header('location: session_control.php');
+    exit;
+}
 
-$db = getDbConnect( $config['database'] , $config['project'][$projectKey]['db'] );
+$projectKey = $_SESSION['projectKey'];
+$objectName = $_SESSION['useObject'];
+$daoName    = $_SESSION['useDao'];
+$table      = $_SESSION['useTable'];
+
+$db = getDbConnect( $config['database'] , $_SESSION['projectDb'] );
 $status = getTableColumnsStatus( $db, $table );  // get meta columns
 //echo '<pre>';  print_r($status);  exit;
 
+//--------------------------------------------------------------------------------
+// request
+//--------------------------------------------------------------------------------
+$code_generator_template = get('t', 'dbobject');
 
 //--------------------------------------------------------------------------------
 // template
@@ -45,6 +42,8 @@ $template->assign('cf', $cf );
 //--------------------------------------------------------------------------------
 // output
 //--------------------------------------------------------------------------------
+headerOutput();
+
 ob_start();
     $template->display( $projectKey.'/'.$code_generator_template.'.tpl' );
     $showCode = ob_get_contents();
