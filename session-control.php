@@ -20,6 +20,7 @@ foreach ( $config['list']['key'] as $key ) {
 echo '
     <div style="float:right;">
         [<a href="./">index.php</a>]
+        [<a href="search-table.php">Search Table</a>]
     </div>
 ';
 echo "<br/><br/>";
@@ -27,7 +28,7 @@ echo "<br/><br/>";
 if ( isset($_SESSION['projectKey']) ) {
     $projectKey = $_SESSION['projectKey'];
     if ( isset($config['list'][$projectKey]) ) {
-        
+
         foreach ( $config['list'][$projectKey] as $item ) {
             $focus = false;
             if ( isset($_SESSION['useObject']) ) {
@@ -36,7 +37,7 @@ if ( isset($_SESSION['projectKey']) ) {
             echo url2($item, $focus);
         }
         echo "<br/>\n";
-        
+
     }
 }
 
@@ -60,19 +61,11 @@ function changeProcess( $change, $value )
     {
         case "key":
             $_SESSION['projectKey'] = $value;
-            //unset($_SESSION['projectType']);
             unset($_SESSION['useDb']);
             unset($_SESSION['useObject']);
             unset($_SESSION['useDao']);
             unset($_SESSION['useTable']);
             break;
-        //case "type":
-        //    $_SESSION['projectType'] = $value;
-        //    unset($_SESSION['useDb']);
-        //    unset($_SESSION['useObject']);
-        //    unset($_SESSION['useDao']);
-        //    unset($_SESSION['useTable']);
-        //    break;
         case "group":
             list($db,$object,$dao,$table) = explode(',',$value);
             $_SESSION['useDb']      = $db;

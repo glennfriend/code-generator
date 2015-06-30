@@ -12,7 +12,7 @@ include_once('library/helper.php');
 
 session_start();
 if ( !sessionCheck() ) {
-    header('location: session_control.php');
+    header('location: session-control.php');
     exit;
 }
 

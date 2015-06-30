@@ -5,13 +5,16 @@
 include_once('config/config.inc.php');
 include_once('library/helper.php');
 
+//--------------------------------------------------------------------------------
+// session
+//--------------------------------------------------------------------------------
 session_start();
 if ( !sessionCheck() ) {
-    header('location: session-control.php');
+    header('location: session_control.php');
     exit;
 }
 
-$projectKey = $_SESSION['projectKey'];
+$projectKey = 'search-table';
 $objectName = $_SESSION['useObject'];
 $daoName    = $_SESSION['useDao'];
 $table      = $_SESSION['useTable'];
@@ -21,9 +24,37 @@ $status = getTableColumnsStatus( $db, $table );  // get meta columns
 //echo '<pre>';  print_r($status);  exit;
 
 //--------------------------------------------------------------------------------
-// request
+// table process
 //--------------------------------------------------------------------------------
-$code_generator_template = get('t', 'dbobject');
+$searchTables = array();
+foreach ( $db->MetaTables() as $table ) {
+    if ( 'search_' == substr($table,0,7) ) {
+        $searchTables[] = $table;
+    }
+}
+if ( !$searchTables ) {
+    die('no any search table');
+}
+
+//--------------------------------------------------------------------------------
+// request search table
+//--------------------------------------------------------------------------------
+$st = get('st');
+if ( !$st ) {
+    foreach( $searchTables as $st ) {
+        $url = basename(__FILE__) . "?st={$st}&t=search";
+        echo '<a href="'. $url .'">'. $st .'</a>';
+        echo " | ";
+    }
+    $url = basename(__FILE__);
+    echo '<a href="'. $url .'">reset</a>';
+    exit;
+}
+
+//--------------------------------------------------------------------------------
+// request template
+//--------------------------------------------------------------------------------
+$code_generator_template = get('t', 'search');
 
 //--------------------------------------------------------------------------------
 // template
@@ -44,8 +75,9 @@ if( !$cf ) {
     }
     unset($key,$theConfig);
 }
-
 $template->assign('cf', $cf );
+$template->assign('st', $st );
+
 
 
 //--------------------------------------------------------------------------------
