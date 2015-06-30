@@ -12,8 +12,11 @@ changeProcess( get('change'), get('val') );
 //--------------------------------------------------------------------------------
 headerOutput();
 
+$focus = false;
 foreach ( $config['list']['key'] as $key ) {
-    $focus = ($key == $_SESSION['projectKey']);
+    if ( isset($_SESSION['projectKey']) ) {
+        $focus = ($key == $_SESSION['projectKey']);
+    }
     echo url($key, $focus);
     echo " | ";
 }
@@ -43,6 +46,7 @@ if ( isset($_SESSION['projectKey']) ) {
 
 echo '<pre>SESSION - ';
 print_r($_SESSION);
+//print_r($config);
 exit;
 
 
