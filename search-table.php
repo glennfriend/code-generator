@@ -19,7 +19,7 @@ $objectName = $_SESSION['useObject'];
 $daoName    = $_SESSION['useDao'];
 $table      = $_SESSION['useTable'];
 
-$db = getDbConnect( $config['database'] , $_SESSION['projectDb'] );
+$db = getDbConnect( $config['database'] , $_SESSION['useDb'] );
 $status = getTableColumnsStatus( $db, $table );  // get meta columns
 //echo '<pre>';  print_r($status);  exit;
 

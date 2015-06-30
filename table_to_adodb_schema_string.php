@@ -21,7 +21,7 @@ $objectName = $_SESSION['useObject'];
 $daoName    = $_SESSION['useDao'];
 $table      = $_SESSION['useTable'];
 
-$db = getDbConnect( $config['database'] , $_SESSION['projectDb'] );
+$db = getDbConnect( $config['database'] , $_SESSION['useDb'] );
 $tables = $db->MetaTables();
 
 //--------------------------------------------------------------------------------
