@@ -28,21 +28,20 @@ echo '
 ';
 echo "<br/><br/>";
 
-if ( isset($_SESSION['projectKey']) ) {
-    $projectKey = $_SESSION['projectKey'];
-    if ( isset($config['list'][$projectKey]) ) {
 
-        foreach ( $config['list'][$projectKey] as $item ) {
-            $focus = false;
-            if ( isset($_SESSION['useObject']) ) {
-                $focus = ($item['object'] == $_SESSION['useObject']);
-            }
-            echo url2($item, $focus);
-        }
-        echo "<br/>\n";
 
+
+foreach ( $config['list']['items'] as $item ) {
+    $focus = false;
+    if ( isset($_SESSION['useObject']) ) {
+        $focus = ($item['object'] == $_SESSION['useObject']);
     }
+    echo url2($item, $focus);
 }
+echo "<br/>\n";
+
+
+
 
 echo '<pre>SESSION - ';
 print_r($_SESSION);
