@@ -76,7 +76,7 @@ echo <<<EOD
 <script type="text/javascript" src="js/shjs/sh_main.min.js"></script>
 <script type="text/javascript" src="js/shjs/lang/sh_{$lang}.js"></script>
 <body onload="sh_highlightDocument();">
-<pre id="codePre" class="sh_{$lang}" style="Font-family:dina,細明體;font-size:13px;margin:0px;padding:0px;">{$showCode}</pre>
+<pre id="codePre" class="sh_{$lang}" style="Font-family:Hack,dina,細明體;font-size:13px;margin:0px;padding:0px;">{$showCode}</pre>
 </body>
 EOD;
 

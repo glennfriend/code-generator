@@ -55,7 +55,9 @@ exit;
 function changeProcess( $change, $value )
 {
     $change = strtolower($change);
-    $value  = preg_replace("/[^a-z0-9,_]+/", '', strtolower($value) );
+
+    // NOTE: 有些 db name, table name 有可能是大寫, 所以這裡不強迫轉成小寫
+    $value  = preg_replace("/[^a-zA-Z-9,_]+/", '', $value );
     if ( !$change || !$value ) {
         return;
     }
@@ -85,7 +87,7 @@ function url($key, $focus=false )
 
     $style = "color: black;";
     if ( $focus ) {
-        $style = "color: green;";
+        $style = "color: red;";
     }
 
     return <<<EOD
@@ -106,7 +108,7 @@ EOD;
 
     $style = "color: black;";
     if ( $focus ) {
-        $style = "color: green;";
+        $style = "color: red;";
     }
 
     return <<<EOD
