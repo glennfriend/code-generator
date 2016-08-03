@@ -1,6 +1,6 @@
 <?php
 
-    class File  
+    class File
     {
         const FILE_DEFAULT_DIRECTORY_CREATION_CHMOD_MODE = 0700;
         const FILE_DEFAULT_DIRECTORY_CREATION_CHOWN_MODE = 'www-data';
@@ -9,7 +9,7 @@
         var $_handler;
         var $_mode;
 
-        public function File( $fileName )
+        public function __construct($fileName)
         {
             $this->_fileName = $fileName;
         }
@@ -29,7 +29,7 @@
 			 $this->_mode = $mode;
 			 return $this->_handler;
 		 }
-		 
+
 		 /**
 		  * Closes the stream currently being held by this object
 		  *
@@ -39,7 +39,7 @@
 		 {
 			 fclose( $this->_handler );
 		 }
-		 
+
 		 /**
 		  * Reads the whole file and put it into an array, where every position
 		  * of the array is a line of the file (new-line characters not
@@ -50,19 +50,19 @@
 		 function readToArray()
 		 {
 			 $contents = Array();
-			 
+
 			 $contents = file( $this->_fileName );
-			 
+
 			 for( $i = 0, $elements = count( $contents ); $i < $elements; $i++ )
 				 $contents[$i] = trim( $contents[$i] );
-			 
+
 			 return $contents;
 		 }
-		
+
 		 /**
 		  * Reads the entire content of the file into memory
 		  *
-		  * @return The file contents as a string 
+		  * @return The file contents as a string
 		  */
 		 function readContents()
 		 {
@@ -72,17 +72,17 @@
 		 /**
 		  * Writes the entire content into file
 		  *
-		  * @return The btyes as a string 
+		  * @return The btyes as a string
 		  */
          function writeContents( $contents )
          {
              return file_put_contents( $this->_fileName, $contents );
          }
-		 
+
 		 /**
 		  * Reads bytes from the currently opened file
 		  *
-		  * @param size Amount of bytes we'd like to read from the file. It is 
+		  * @param size Amount of bytes we'd like to read from the file. It is
 		  * set to 4096 by default.
 		  * @return Returns the read contents
 		  */
@@ -90,7 +90,7 @@
 		 {
 			 return( fread( $this->_handler, $size ));
 		 }
-		 
+
 		 /**
 		  * checks whether we've reached the end of file
 		  *
@@ -100,7 +100,7 @@
 		 {
 			 return feof( $this->_handler );
 		 }
-		 
+
 		 /**
 		  * Writes data to disk
 		  *
@@ -111,7 +111,7 @@
 		 {
 			 return( @fwrite( $this->_handler, $data ));
 		 }
-		 
+
 		 /**
 		  * truncates the currently opened file to a given length
 		  *
@@ -122,7 +122,7 @@
 		 {
 			 return ftruncate( $this->_handler, $length );
 		 }
-		 
+
 		 /**
 		  * Writes an array of text lines to the file.
 		  *
@@ -133,7 +133,7 @@
 		 {
 			 // truncate the file to remove the old contents
 			 $this->truncate();
-			 
+
 			 foreach( $lines as $line ) {
 				 //print("read: \"".htmlentities($line)."\"<br/>");
 				 if( !$this->write( $line, strlen($line))) {
@@ -142,10 +142,10 @@
 				 /*else
                 	print("written: \"".htmlentities($line)."\"<br/>");*/
 			 }
-			 
+
 			 return true;
 		 }
-		 
+
 		 /**
 		  * Returns true wether the file is a directory. See
 		  * http://fi.php.net/manual/en/function.is-dir.php for more details.
@@ -159,7 +159,7 @@
 		 {
 			 if( $file == null )
 				 $file = $this->_fileName;
-			 
+
 			 return is_dir( $file );
 		 }
 
@@ -168,13 +168,13 @@
 		 {
 			 if( $file == null )
 				 $file = $this->_fileName;
-			 
+
 			 return is_link( $file );
 		 }
-		 		 
+
 		 /**
 		  * Returns true if the file is writable by the current user.
-		  * See http://fi.php.net/manual/en/function.is-writable.php for more 
+		  * See http://fi.php.net/manual/en/function.is-writable.php for more
 		  * details.
 		  *
 		  * @param file The filename we're trying to check. If omitted, the
@@ -186,10 +186,10 @@
 		 {
 			 if( $file == null )
 				 $file = $this->_fileName;
-			 
+
 			 return is_writable( $file );
 		 }
-		 
+
 		 /**
 		  * returns true if the file is readable. Can be used as static if a
 		  * filename is provided
@@ -202,14 +202,14 @@
 		 {
 			 if( $file == null )
 				 $file = $this->_fileName;
-				 
+
 			clearstatcache();
-			 
+
 			 return is_readable( $file );
 		 }
-		 
+
 		 /**
-		  * removes a file. Can be used as static if a filename is provided. 
+		  * removes a file. Can be used as static if a filename is provided.
 		  * Otherwise it will remove the file that was given in the constructor
 		  *
 		  * @param optionally, name of the file to delete
@@ -222,7 +222,7 @@
 
             if( !File::isReadable( $file ))
                 return false;
-			 
+
 			 // 20080806 jase
 			 if( File::isLink( $file ))
 				 $result = @unlink( $file );
@@ -231,10 +231,10 @@
 				 $result = @rmdir( $file );
 			 else
 				 $result = @unlink( $file );
-			 
+
 			 return $result;
 		 }
-		 
+
 		 /**
 		  * removes a directory, optinally in a recursive fashion
 		  *
@@ -255,19 +255,19 @@
 			if( !File::isReadable( $dirName ) || !File::exists( $dirName )) {
 				return false;
 			}
-		 
+
 			// if it's not a directory, let's get out of here and transfer flow
 			// to the right place...
 			if( !File::isDir( $dirName )) {
 				return File::delete( $dirName );
 			}
-				
-			// Glob::myGlob is easier to use than Glob::glob, specially when 
-			// we're relying on the native version... This improved version 
-			// will automatically ignore things like "." and ".." for us, 
+
+			// Glob::myGlob is easier to use than Glob::glob, specially when
+			// we're relying on the native version... This improved version
+			// will automatically ignore things like "." and ".." for us,
 			// making it much easier!
 			$files = Glob::myGlob( $dirName, "*" );
-			foreach( $files as $file ) 
+			foreach( $files as $file )
 			{
 				// check if the filename is in the list of files we must not delete
 				if( File::isDir( $file ) && array_search(basename( $file ), $excludedFiles) === false) {
@@ -285,19 +285,19 @@
 					}
 				}
 			}
-			
+
 			// finally, remove the top-level folder but only in case we
 			// are supposed to!
 			if( !$onlyFiles ) {
     			File::delete( $dirName );
     		}
-			
+
 			return true;
 		 }
-         
+
         /**
-        * Creates a new folder. If the folder name is /a/b/c and neither 
-        * /a or /a/b exist, this method will take care of creating the 
+        * Creates a new folder. If the folder name is /a/b/c and neither
+        * /a or /a/b exist, this method will take care of creating the
         * whole folder structure automatically.
         *
         * @static
@@ -319,7 +319,7 @@
             if( $recursive && $dirName ) {
                 // for example, we will create dir "/a/b/c"
                 // $firstPart = "/a/b"
-                $firstPart = substr($dirName,0,strrpos($dirName, "/" ));           
+                $firstPart = substr($dirName,0,strrpos($dirName, "/" ));
 
                 if(file_exists($firstPart)){
                     if(!@mkdir($dirName,$mode1)) return false;
@@ -339,10 +339,10 @@
                     return( false );
                 }
             }
-             
+
             return true;
         }
-        
+
 		 /**
 		  * Change the current directory
 		  *
@@ -352,7 +352,7 @@
 		 {
 			 return( chdir( $dir ));
 		 }
-				 
+
 		 /**
 		  * returns a temporary filename in a pseudo-random manner
 		  *
@@ -362,12 +362,12 @@
 		 {
 			 return md5(microtime());
 		 }
-		 
+
 		 /**
 		  * Returns the size of the file.
 		  *
-		  * @param string fileName An optional parameter specifying the name 
-		  * of the file. If omitted, we will use the file that we have 
+		  * @param string fileName An optional parameter specifying the name
+		  * of the file. If omitted, we will use the file that we have
 		  * currently opened. Please note that this function can
 		  * be used as static if a file name is specified.
 		  * @return An integer specifying the size of the file.
@@ -376,22 +376,22 @@
 		 {
 			 if( $fileName == null )
 				 $fileName = $this->_fileName;
-			 
+
 			 $size = filesize( $fileName );
 			 if( !$size )
 				 return -1;
 			 else
 				 return $size;
 		 }
-		 
+
          /**
           * renames a file
           *
           * http://www.php.net/manual/en/function.rename.php
           *
-          * This function can be used as static if inFile and outFile are both 
+          * This function can be used as static if inFile and outFile are both
           * not empty. if outFile is empty, then the internal file of the
-          * current object will be used as the input file and the first 
+          * current object will be used as the input file and the first
           * parameter of this method will become the destination file name.
           *
           * @param inFile Original file
@@ -410,29 +410,29 @@
               if ( realpath( dirname( $inFile ) ) == realpath( dirname( $outFile ) ) &&
                    basename( $inFile ) == basename( $outFile ) )
                   return true;
-                              
+
               // In order to work around the bug in php versions older
               // than 4.3.3, where rename will not work across different
               // partitions, this will be a copy and delete of the original file
-            
+
               // copy the file to the new location
               if (!@copy($inFile, $outFile)) {
                   // The copy failed, return false
                   return false;
               }
-            
+
               // Now delete the old file
-              // NOTICE, we are not checking the error here.  It is possible 
+              // NOTICE, we are not checking the error here.  It is possible
               // the the original file will remain and the copy will exist.
               //
               // One way to potentially fix this is to look at the result of
-              // unlink, and then delete the copy if unlink returned FALSE, 
+              // unlink, and then delete the copy if unlink returned FALSE,
               // but this call to unlink could just as easily fail
               @unlink( $inFile );
-            
+
               return true;;
           }
-		 
+
 		 /**
 		  * copies a file from one place to another.
 		  * This method is always static
@@ -446,21 +446,21 @@
 		 {
 			 return @copy( $inFile, $outFile );
 		 }
-		 
+
 		 /**
 		  * changes the permissions of a file, via PHP's chmod() function
 		  *
 		  * @param inFile The name of the file whose mode we'd like to change
-		  * @param mode The new mode, or if none provided, it will default 
+		  * @param mode The new mode, or if none provided, it will default
 		  * to 0644
-		  * @return true if successful or false otherwise 
+		  * @return true if successful or false otherwise
 		  * @static
 		  */
 		 public static function chMod( $inFile, $mode = 0644 )
 		 {
 			 return chmod( $inFile, $mode );
 		 }
-		 
+
 		 /**
 		  * returns true if the file exists.
 		  *
@@ -469,16 +469,16 @@
 		  * @param fileName optinally, name of the file whose existance we'd
 		  * like to check
 		  * @return true if successful or false otherwise
-		  * @static 
+		  * @static
 		  */
-		 static function exists( $fileName ) 
+		 static function exists( $fileName )
 		 {
 			clearstatcache();
-			 
-			 return file_exists( $fileName );
-		 } 
 
-         /** 
+			 return file_exists( $fileName );
+		 }
+
+         /**
           * returns true if the file could be touched
           *
           * Can be used to create a file or to reset the timestamp.
@@ -494,7 +494,7 @@
              return touch($fileName);
          }
 
-         /** 
+         /**
           * returns the basename of a file
           *
           * @return basename of the file
@@ -535,7 +535,7 @@
             $file->open('w');
             $file->write($content);
             @$file->close();
-            
+
             return true;
         }
 
