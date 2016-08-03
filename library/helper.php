@@ -1,5 +1,8 @@
 <?php
 
+date_default_timezone_set('Asia/Taipei');
+ini_set( 'date.timezone', 'Asia/Taipei');
+
 require_once(__DIR__.'/../composer/vendor/autoload.php');
 
 include_once('NamePrototype.class.php');
