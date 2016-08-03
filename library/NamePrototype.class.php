@@ -25,10 +25,10 @@ class NamePrototype
     /**
      *  @param $string, 分離字元參數 可以使用
      *      space 空白 " "
-     *      underline 下底線符號 "_" 
-     *      也支援 駝峰式 字串分離 "helloWorld" 
+     *      underline 下底線符號 "_"
+     *      也支援 駝峰式 字串分離 "helloWorld"
      */
-    public function NamePrototype( $str )
+    public function __construct($str)
     {
         $str = str_replace('_', ' ', $str );
         // 駝峰式分離: "aaaBbbCcc" => "aaa bbb ccc"
@@ -46,7 +46,7 @@ class NamePrototype
     protected function _getArray()
     {
         return explode('_' , $this->_string );
-    }    
+    }
 
     /**
      *  一律轉為小寫
@@ -58,7 +58,7 @@ class NamePrototype
     }
 
     /**
-     *  駝峰式開頭小寫 
+     *  駝峰式開頭小寫
      *  @param $to - 分隔使用的字串
      */
     public function lowerCamel( $to='' )

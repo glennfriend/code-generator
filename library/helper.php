@@ -1,11 +1,21 @@
 <?php
 
-include_once('library/adodb-master/adodb.inc.php');
-include_once('library/smarty/libs/Smarty.class.php');
+require_once(__DIR__.'/../composer/vendor/autoload.php');
+
+include_once('NamePrototype.class.php');
+/*
+    $projectNameType1 = 'booksadmin';   // 全小寫
+    $projectNameType2 = 'booksAdmin';   // 開頭小寫
+    $projectNameType3 = 'BooksAdmin';   // 開頭大寫
+    $projectNameType4 = 'BOOKSADMIN';   // 全大寫
+    $projectNameType5 = 'books_admin';  // (帶底線) 全小寫
+    $projectNameType6 = 'Books_Admin';  // (帶底線) 開頭大寫
+    $projectNameType7 = 'BOOKS_ADMIN';  // (帶底線) 全大寫
+*/
 
 
 /*
-    get db connect 
+    get db connect
 */
 function getDbConnect( $databaseConfig, $databaseName ) {
     $db = NewADOConnection( $databaseConfig['type'] );
@@ -29,7 +39,7 @@ EOD;
 
 /*
     取得所需資料表的格式
-    P.S. 
+    P.S.
         若要取得 index 可以使用 $db->MetaIndexes( $table )
 
 */
@@ -100,13 +110,13 @@ function get($key, $defaultValue=null)
 */
 function getTemplate( $isDebug = false ) {
     $template = new Smarty;
-    $template->debugging    = $isDebug;
-    $template->caching      = false;
-    $template->cache_lifetime = 0;
-
+    $template->debugging        = $isDebug;
+    $template->caching          = false;
+    $template->cache_lifetime   = 0;
+    $template->compile_dir      = './tmp/';
+    $template->cache_dir        = './tmp/template_cache/';
     $template->setTemplateDir('./templates');
-    $template->compile_dir     = './tmp/';
-    $template->cache_dir       = './tmp/template_cache/';
+    $template->addPluginsDir('./library/smarty-plugins');
     //$template->left_delimiter  = '{';
     //$template->right_delimiter = '}';
 
