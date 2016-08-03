@@ -30,25 +30,25 @@ $tables = $db->MetaTables();
 
 
 //--------------------------------------------------------------------------------
-// function 
+// function
 //--------------------------------------------------------------------------------
 function shortType( $col ) {
     switch(strtolower(trim($col->type))) {
-        case "int": 
-        case "tinyint": 
+        case "int":
+        case "tinyint":
         case "smallint":
             $unsigned  = null;
             if( $col->unsigned ) {
                 $unsigned = " UNSIGNED";
             }
             return "I(". $col->max_length .")". $unsigned;
-        case "float": 
+        case "float":
             return "F";
-        case "timestamp": 
+        case "timestamp":
             return "T(14)";
-        case "datetime": 
+        case "datetime":
             return "DATETIME";
-        case "date": 
+        case "date":
             return "DATE";
         case "varchar":
         case "char":
@@ -59,7 +59,7 @@ function shortType( $col ) {
         case "longtext":
             return "X2";
         default:
-            return $type."(". $col->max_length .")";
+            return $col->type."(". $col->max_length .")";
     }
 }
 
@@ -73,9 +73,9 @@ function shortDefaultValue( $col ) {
 
     if($col->has_default) {
         switch( strtolower(trim($col->type))) {
-            case "timestamp": 
-            case "datetime": 
-            case "date": 
+            case "timestamp":
+            case "datetime":
+            case "date":
                 if(!$col->not_null) {
                     return "DEFAULT NULL ";
                 }
@@ -162,7 +162,7 @@ foreach( $tables as $table ) {
     $indexs = $db->MetaIndexes( $table );
 
     foreach( $columns as $col ) {
-        $tmp 
+        $tmp
            = $col->name." "
            . shortType($col)
            . " "
@@ -203,7 +203,7 @@ $tabname = 'table_name';
 $options["mysql"] = "TYPE=MyISAM";
 
 $dict = NewDataDictionary($db);
-$fields = " 
+$fields = "
   id I(10) UNSIGNED NOTNULL AUTOINCREMENT PRIMARY,
   date T(14) NOTNULL,
   user_id I(10) UNSIGNED NOTNULL DEFAULT '0',
@@ -213,8 +213,8 @@ $fields = "
   status I(5) NOTNULL DEFAULT 1,
   slug C(255) NOTNULL DEFAULT '',
   modification_date T(14) NOTNULL,
-  num_comments I(10) NOTNULL DEFAULT '0', 
-  num_nonspam_comments I(10) NOTNULL DEFAULT '0', 
+  num_comments I(10) NOTNULL DEFAULT '0',
+  num_nonspam_comments I(10) NOTNULL DEFAULT '0',
   num_trackbacks I(10) NOTNULL DEFAULT '0',
   num_nonspam_trackbacks I(10) NOTNULL DEFAULT '0',
   global_category_id I(10) NOTNULL DEFAULT '0',
