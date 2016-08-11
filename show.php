@@ -5,56 +5,31 @@
  *      index.php 用的是 js 上色
  */
 //--------------------------------------------------------------------------------
-// kernel
+// init
 //--------------------------------------------------------------------------------
-include_once('config/config.inc.php');
-include_once('library/helper.php');
+include_once('library/init.php');
 
-session_start();
-if ( !sessionCheck() ) {
+if (!sessionCheck()) {
     header('location: session-control.php');
     exit;
 }
 
-$projectKey = $_SESSION['projectKey'];
-$objectName = $_SESSION['useObject'];
-$daoName    = $_SESSION['useDao'];
-$table      = $_SESSION['useTable'];
-
-$db = getDbConnect( $config['database'] , $_SESSION['useDb'] );
-$status = getTableColumnsStatus( $db, $table );  // get meta columns
-//echo '<pre>';  print_r($status);  exit;
-
 //--------------------------------------------------------------------------------
-// request
+// menu & validate
 //--------------------------------------------------------------------------------
-$code_generator_template = get('t', 'dbobject');
-
-//--------------------------------------------------------------------------------
-//
-//--------------------------------------------------------------------------------
-/*
-$rs = $db->Execute("select * from {$prefix}epapers where id>=1 LIMIT 3");
-while ($row = $rs->FetchRow()) {
-    print_r($row);
-    echo '----------------';
+$page = get('t');
+$menu = getMenu($page);
+if (!$menu) {
+    redirect("?t=dbobject");
 }
-*/
-
 
 //--------------------------------------------------------------------------------
-// template
+// data
 //--------------------------------------------------------------------------------
-$template = getTemplate();
+$templateManager = new TemplateManager($menu);
+$template = $templateManager->genSmarty();
 
-// template program
-include_once( 'templates/'. $projectKey .'/_code.php');
-
-// create config
-include_once( 'templates/'. $projectKey .'/_create_config.inc.php' );
-$cf = $createConfig[ $code_generator_template ];
-$template->assign('cf', $cf );
-
+$lang = getLangType($menu);
 
 //--------------------------------------------------------------------------------
 // output
@@ -62,10 +37,10 @@ $template->assign('cf', $cf );
 headerOutput();
 
 ob_start();
-    $template->display( $projectKey.'/'.$code_generator_template.'.tpl' );
+    $template->display(getProjectKey() . '/' . $page . '.tpl');
     $showCode = ob_get_contents();
 ob_end_clean();
-//$showCode = str_replace('/##/', '', $showCode );
+// $showCode = str_replace('/##/', '', $showCode );
 
 
 ob_start();
@@ -76,7 +51,7 @@ ob_end_clean();
 
 
 
-echo $template->fetch( $projectKey.'/_header.tpl' ) ."<br />\n";
+echo $template->fetch(getProjectKey().'/_header.tpl' ) ."<br />\n";
 echo str_replace('<code>', '<code style="Font-family:dina,細明體;font-size:13px;">', $showCode );
 
 

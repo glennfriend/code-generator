@@ -1,10 +1,10 @@
 <?php
 //--------------------------------------------------------------------------------
-// kernel
+// init
 //--------------------------------------------------------------------------------
-include_once('config/config.inc.php');
-include_once('library/helper.php');
-session_start();
+include_once('library/init.php');
+$config = includeConfig();
+
 changeProcess( get('change'), get('val') );
 
 //--------------------------------------------------------------------------------

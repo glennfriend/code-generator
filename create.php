@@ -1,43 +1,30 @@
 <?php
 //--------------------------------------------------------------------------------
-// kernel
+// init
 //--------------------------------------------------------------------------------
-include_once('config/config.inc.php');
-include_once('library/helper.php');
+include_once('library/init.php');
 
-session_start();
-if ( !sessionCheck() ) {
+if (!sessionCheck()) {
     header('location: session-control.php');
     exit;
 }
 
-$projectKey = $_SESSION['projectKey'];
-$objectName = $_SESSION['useObject'];
-$daoName    = $_SESSION['useDao'];
-$table      = $_SESSION['useTable'];
-
-$db = getDbConnect( $config['database'] , $_SESSION['useDb'] );
-$status = getTableColumnsStatus( $db, $table );  // get meta columns
-//echo '<pre>';  print_r($status);  exit;
+//--------------------------------------------------------------------------------
+// menu & validate
+//--------------------------------------------------------------------------------
+$page = get('t');
+$menu = getMenu($page);
+if (!$menu) {
+    redirect("?t=dbobject");
+}
 
 //--------------------------------------------------------------------------------
-// request
+// data
 //--------------------------------------------------------------------------------
-$code_generator_template = get('t', 'dbobject');
+$templateManager = new TemplateManager($menu);
+$template = $templateManager->genSmarty();
 
-//--------------------------------------------------------------------------------
-// template
-//--------------------------------------------------------------------------------
-$template = getTemplate();
-
-// template program
-include_once( 'templates/'. $projectKey .'/_code.php');
-
-// create config
-include_once( 'templates/'. $projectKey .'/_create_config.inc.php' );
-$cf = $createConfig[ $code_generator_template ];
-$template->assign('cf', $cf );
-
+$lang = getLangType($menu);
 
 //--------------------------------------------------------------------------------
 // output
@@ -45,7 +32,7 @@ $template->assign('cf', $cf );
 headerOutput();
 
 ob_start();
-    $template->display( $projectKey.'/'.$code_generator_template.'.tpl' );
+    $template->display(getProjectKey() . '/' . $page . '.tpl');
     $showCode = ob_get_contents();
 ob_end_clean();
 //echo $showCode;
@@ -58,7 +45,7 @@ ob_end_clean();
 include_once('library/file.class.php');
 $createFileDirectory = "tmp_create/";
 
-$result = file::createDir(  $createFileDirectory.$cf['path'], $mode1 = 0777, $mode2 = 'www-data' );
+$result = file::createDir(  $createFileDirectory.$menu['path'], $mode1 = 0777, $mode2 = 'www-data' );
 if( $result ) {
     echo '<span style="color:green">create directory success</span>';
 } else {
@@ -66,8 +53,8 @@ if( $result ) {
 }
 echo "<br />\n";
 
-$result = file::createFile( $createFileDirectory.$cf['path'], $cf['filename'], $showCode, true);
-echo $createFileDirectory.$cf['path'];
+$result = file::createFile( $createFileDirectory.$menu['path'], $menu['filename'], $showCode, true);
+echo $createFileDirectory.$menu['path'];
 if( $result ) {
     echo '<span style="color:green">create file success</span>';
 } else {
@@ -75,7 +62,7 @@ if( $result ) {
 }
 echo "<br />\n";
 
-file::chMod( $createFileDirectory.$cf['path'].$cf['filename'], 0777 );
+file::chMod( $createFileDirectory.$menu['path'].$menu['filename'], 0777 );
 if( $result ) {
     echo '<span style="color:green">chmod file success</span>';
 } else {
