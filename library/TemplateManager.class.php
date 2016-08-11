@@ -8,12 +8,11 @@ class TemplateManager
     public function __construct($menu)
     {
         $this->projectKey   = $_SESSION['projectKey'];
-        $this->objectName   = $_SESSION['useObject'];
-        $this->daoName      = $_SESSION['useDao'];
         $this->table        = $_SESSION['useTable'];
+      //$this->objectName   = $_SESSION['useObject'];
+      //$this->daoName      = $_SESSION['useDao'];
+      //$this->status       = getTableColumnsStatus();  // get meta columns
         $this->db           = getDbConnect();
-        // get meta columns
-        $this->status       = getTableColumnsStatus();
         $this->menu         = $menu;
 
         $config = includeConfig();
