@@ -1,4 +1,4 @@
-config/*
+config/config.inc.php
 !config/.gitkeep
 templates/*
 !templates/.gitkeep

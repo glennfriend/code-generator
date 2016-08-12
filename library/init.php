@@ -7,9 +7,11 @@ error_reporting(E_ALL);
 ini_set('html_errors','On');
 ini_set('display_errors','On');
 
+$day30 = 86400 * 30;
+ini_set('session.gc_maxlifetime', $day30);
 session_start();
-require_once(__DIR__.'/../composer/vendor/autoload.php');
 
+require_once(__DIR__.'/../composer/vendor/autoload.php');
 include_once('TemplateManager.class.php');
 include_once('NamePrototype.class.php');
 /*

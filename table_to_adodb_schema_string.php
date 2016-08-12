@@ -5,13 +5,11 @@
 
 */
 //--------------------------------------------------------------------------------
-// kernel
+// init
 //--------------------------------------------------------------------------------
-include_once('config/config.inc.php');
-include_once('library/helper.php');
+include_once('library/init.php');
 
-session_start();
-if ( !sessionCheck() ) {
+if (!sessionCheck()) {
     header('location: session-control.php');
     exit;
 }
@@ -21,7 +19,7 @@ $objectName = $_SESSION['useObject'];
 $daoName    = $_SESSION['useDao'];
 $table      = $_SESSION['useTable'];
 
-$db = getDbConnect( $config['database'] , $_SESSION['useDb'] );
+$db = getDbConnect();
 $tables = $db->MetaTables();
 
 //--------------------------------------------------------------------------------
