@@ -150,7 +150,7 @@ function showTopMenu()
 function showSession()
 {
     $show  = 'SESSION &raquo;';
-    $show .= '<pre style="height: 120px;">';
+    $show .= '<pre>';
     $show .=    print_r($_SESSION, true);
     $show .= '</pre>';
     return $show;
@@ -168,7 +168,6 @@ function showDatabase()
             $databaseName === $_SESSION['useDb']
         );
 
-        // $show .= str_repeat("&nbsp;", 4);
         if ($focus) {
             $show .= groupUrl($databaseName, $databaseName, true);
         }
@@ -200,7 +199,6 @@ function showTable()
             );
             $key = "{$_SESSION['useDb']},{$objectName},{$daoName},{$table}";
 
-            // $show .= str_repeat("&nbsp;", 4);
             if ($focus) {
                 $show .= groupUrl($table, $key, true);
                 $show .= '<br>';

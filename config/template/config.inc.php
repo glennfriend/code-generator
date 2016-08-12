@@ -3,7 +3,11 @@
 $config['base'] = dirname(__DIR__);
 
 $config['list'] = [
-    'key'   => ['yii', 'phalcon'],
+    'key'       => ['yii', 'phalcon'],
+    'databases' => ['users', 'search_user_facebook_mix'],
+    /**
+     *  完全自訂的地方
+     */
     'items' => [
         [
             'db'        => 'test',
