@@ -12,6 +12,7 @@ ini_set('session.gc_maxlifetime', $day30);
 session_start();
 
 require_once(__DIR__.'/../composer/vendor/autoload.php');
+include_once('Inflector.class.php');
 include_once('TemplateManager.class.php');
 include_once('NamePrototype.class.php');
 /*

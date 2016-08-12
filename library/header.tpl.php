@@ -18,4 +18,18 @@ body {
     margin:0px;
     padding:0px;
 }
+
+#controlTable {
+    border:1px solid;
+    border-collapse:collapse;
+    word-break:break-all;
+    word-wrap:break-word;
+    table-layout:fixed;
+
+    min-height: 300px;
+}
+#controlTable tr td {
+    text-align: left;
+    vertical-align: text-top;
+}
 </style>
