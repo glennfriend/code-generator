@@ -192,7 +192,7 @@ function showTable()
         foreach ($tables as $table) {
 
             $objectName = Cake_Utility_Inflector::singularize($table);
-            $daoName    = $table;
+            $daoName    = Cake_Utility_Inflector::pluralize($objectName);
 
             $focus = (
                 isset($_SESSION['useTable']) &&
@@ -208,7 +208,7 @@ function showTable()
                 $show .= 'dao &nbsp;&nbsp; &raquo; ' . $objectName;
                 $show .= '<br>';
                 $show .= str_repeat("&nbsp;", 4);
-                $show .= 'object &raquo; ' . $table;
+                $show .= 'object &raquo; ' . $daoName;
                 $show .= '<br>';
             }
             else {
