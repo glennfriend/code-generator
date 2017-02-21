@@ -40,7 +40,7 @@ function changeProcess( $change, $value )
     $change = strtolower($change);
 
     // NOTE: 有些 db name, table name 有可能是大寫, 所以這裡不強迫轉成小寫
-    $value  = preg_replace("/[^a-zA-Z-9,_]+/", '', $value );
+    $value  = preg_replace("/[^a-zA-Z0-9,_]+/", '', $value );
     if ( !$change || !$value ) {
         return;
     }
