@@ -33,9 +33,8 @@ class TemplateManager
         // 不要快取 template
         $this->smarty->clearCompiledTemplate();
 
-
-        $this->smarty->assign('tableName',  $this->table    );
-        $this->smarty->assign('cf',         $this->menu     );
+        $this->smarty->assign('tableName', new NamePrototype($this->table) );
+        $this->smarty->assign('cf', $this->menu );
     }
 
     /**

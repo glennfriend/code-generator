@@ -1,8 +1,8 @@
-<meta http-equiv="Content-Language" content="zh-tw" />
+    <meta http-equiv="Content-Language" content="zh-tw" />
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <style>
 body {
-    Font-family: hack, dina, 細明體;
+    font-family: hack, dina, 細明體;
     font-size: 13px;
 }
 

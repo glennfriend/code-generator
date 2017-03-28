@@ -42,6 +42,7 @@ function getProjectKey()  { return $_SESSION['projectKey']; }
 function getProjectName() { return $_SESSION['useObject'];  }
 function getDaoName()     { return $_SESSION['useDao'];     }
 function getTable()       { return $_SESSION['useTable'];   }
+function getDatabase()    { return $_SESSION['useDb'];   }
 
 /**
  *  check all basic session name

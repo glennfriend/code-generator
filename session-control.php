@@ -4,7 +4,7 @@
 //--------------------------------------------------------------------------------
 include_once('library/init.php');
 
-changeProcess( get('change'), get('val') );
+changeProcess(get('change'), get('val'));
 
 //--------------------------------------------------------------------------------
 // output
@@ -17,9 +17,16 @@ echo '
 <table id="controlTable" cellpadding="10" cellspacing="0">
     <tbody>
         <tr>
-            <td style="width: 300px;">'. showDatabase() .'</td>
-            <td style="width: 500px;">'. showTable()    .'</td>
-            <td style="width: 300px;">'. showSession()  .'</td>
+            <td style="width: 400px;">'
+                . showTable()
+            . '</td>
+            <td style="width: 400px;">'
+                . showSearchTable()
+            . '</td>
+            <td style="width: 300px;">'
+                . showDatabase()
+                . showSession()
+           . '</td>
         </tr>
     </tbody>
 </table>
@@ -40,8 +47,8 @@ function changeProcess( $change, $value )
     $change = strtolower($change);
 
     // NOTE: 有些 db name, table name 有可能是大寫, 所以這裡不強迫轉成小寫
-    $value  = preg_replace("/[^a-zA-Z0-9,_]+/", '', $value );
-    if ( !$change || !$value ) {
+    $value = preg_replace("/[^a-zA-Z0-9,_-]+/", '', $value );
+    if (! $change || ! $value) {
         return;
     }
 
@@ -142,7 +149,6 @@ function showTopMenu()
     echo '
         <div style="float:right;">
             [<a href="./">index.php</a>]
-            [<a href="search-table.php">Search Table</a>]
         </div>
     ';
 }
@@ -177,17 +183,28 @@ function showDatabase()
         $show .= '<br>';
     }
 
+    $show .= '<br>';
     return $show;
 }
 
 function showTable()
 {
     $show = "Table &raquo;<br><br>";
-
     if (isset($_SESSION['useDb'])) {
 
         $db = getDbConnect();
-        $tables = $db->MetaTables();
+        $allTables = $db->MetaTables();
+
+        $tables = [];
+        foreach ($allTables as $table) {
+            if ('search_' === mb_substr($table, 0, 7)) {
+                //
+            }
+            else {
+                $tables[] = $table;
+            }
+        }
+
         foreach ($tables as $table) {
 
             $objectName = Cake_Utility_Inflector::singularize($table);
@@ -216,9 +233,59 @@ function showTable()
             $show .= '<br>';
 
         }
-
     }
 
+    $show .= '<br>';
+
+    return $show;
+}
+
+function showSearchTable()
+{
+    $show = "Search Table &raquo;<br><br>";
+    if (isset($_SESSION['useDb'])) {
+
+        $db = getDbConnect();
+        $allTables = $db->MetaTables();
+
+        $tables = [];
+        foreach ($allTables as $table) {
+            if ('search_' === mb_substr($table, 0, 7)) {
+                $tables[] = $table;
+            }
+        }
+
+        foreach ($tables as $table) {
+
+            $objectName = Cake_Utility_Inflector::singularize($table);
+            $daoName    = Cake_Utility_Inflector::pluralize($objectName);
+
+            $focus = (
+                isset($_SESSION['useTable']) &&
+                $table === $_SESSION['useTable']
+            );
+            $key = "{$_SESSION['useDb']},{$objectName},{$daoName},{$table}";
+
+            if ($focus) {
+                $show .= groupUrl($table, $key, true);
+                $show .= '<br>';
+                $show .= str_repeat("&nbsp;", 4);
+                $show .= 'dao &nbsp;&nbsp; &raquo; ' . $objectName;
+                $show .= '<br>';
+                $show .= str_repeat("&nbsp;", 4);
+                $show .= 'object &raquo; ' . $daoName;
+                $show .= '<br>';
+            }
+            else {
+                $show .= groupUrl($table, $key, false);
+            }
+
+            $show .= '<br>';
+
+        }
+    }
+
+    $show .= '<br>';
     return $show;
 }
 
@@ -234,6 +301,8 @@ function showCustom()
         }
         $show .= customUrl($item, $focus);
     }
+
+    $show .= '<br>';
     return $show;
 }
 

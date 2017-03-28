@@ -3,8 +3,8 @@
 $config['base'] = dirname(__DIR__);
 
 $config['list'] = [
-    'key'       => ['yii', 'phalcon'],
-    'databases' => ['users', 'search_user_facebook_mix'],
+    'key'       => ['laravel', 'laravel-search-table', 'phalcon'],
+    'databases' => ['erp', 'crm', 'shop'],
     /**
      *  完全自訂的地方
      */
