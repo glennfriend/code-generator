@@ -3,8 +3,8 @@
 $config['base'] = dirname(__DIR__);
 
 $config['list'] = [
-    'key'       => ['laravel', 'laravel-search-table', 'phalcon'],
-    'databases' => ['erp', 'crm', 'shop'],
+    'key'       => ['lifetype', 'yii', 'zalora', 'gear', 'wms', 'wms-search-table', 'laravel'],
+    'databases' => ['erp', 'crm', 'wms', 'shop', 'site'],
     /**
      *  完全自訂的地方
      */
@@ -16,14 +16,14 @@ $config['list'] = [
             'table'     => 'users',
         ],[
             'db'        => 'test',
-            'object'    => 'config',
-            'dao'       => 'configs',
-            'table'     => 'configs',
+            'object'    => 'article',
+            'dao'       => 'articles',
+            'table'     => 'articles',
         ],[
             'db'        => 'test',
             'object'    => 'article',
             'dao'       => 'articles',
-            'table'     => 'test'.'articles',
+            'table'     => 'plog'.'articles',
         ],
     ],
 ];
