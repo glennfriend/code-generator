@@ -1,7 +1,5 @@
 config/config.inc.php
 !config/.gitkeep
-templates/*
-!templates/.gitkeep
 templates_c/*
 !templates_c/.gitkeep
 tmp/*
