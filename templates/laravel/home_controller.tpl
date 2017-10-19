@@ -4,9 +4,9 @@ namespace App\Http\Controllers\Admin\______;
 use Illuminate\Http\Request;
 use App\Utility\Output\FormMessageManager;
 use App\Http\Controllers\AdminController;
-use App\Business\{$obj->upperCamel()}\{$obj->upperCamel()}Service;
 use App\Db\{$mod->upperCamel()};
 use App\Db\{$obj->upperCamel()};
+use App\Business\{$obj->upperCamel()}\{$obj->upperCamel()}Service;
 
 /**
  *
@@ -23,13 +23,13 @@ class Home extends AdminController
         // blog
         $blogId = (int) InputBrg::get('blogId');
         if (! $blogId) {
-            FormMessageManager::addErrorResultMessage('Can not find blog id');
+            FormMessageManager::addErrorResult('Can not find blog id');
             redirect('/blog');
         }
         $blogs = new Blogs();
         $this->_blog = $blogs->getBlog($blogId);
         if (!$this->_blog) {
-            FormMessageManager::addErrorResultMessage('Can not find blog id');
+            FormMessageManager::addErrorResult('Can not find blog id');
             redirect('/blog');
         }
         */
@@ -97,8 +97,8 @@ class Home extends AdminController
 
             $object = $this->_postProcess($object);
             if ($fieldMessages = $object->validate()) {
-                FormMessageManager::addErrorResultMessage('Error');
-                FormMessageManager::setFieldMessages($fieldMessages);
+                FormMessageManager::addErrorResult('Error');
+                FormMessageManager::setFields($fieldMessages);
                 break;
             }
 
@@ -109,13 +109,13 @@ class Home extends AdminController
                 }
             */
             if ($error = {$obj->upperCamel()}Service::getError()) {
-                FormMessageManager::addErrorResultMessage($error);  // '新增失敗, 發現有重覆的資料, 請使用其它名稱'
-                FormMessageManager::addFieldMessage( array('____name____' => '發現有重覆的資料, 請使用其它名稱') );
-                FormMessageManager::addFieldMessage( array('____mail____' => '發現有重覆的資料, 請使用其它電子郵件') );
+                FormMessageManager::addErrorResult($error);  // '新增失敗, 發現有重覆的資料, 請使用其它名稱'
+                FormMessageManager::addField( array('____name____' => '發現有重覆的資料, 請使用其它名稱') );
+                FormMessageManager::addField( array('____mail____' => '發現有重覆的資料, 請使用其它電子郵件') );
                 break;
             }
 
-            FormMessageManager::addSuccessResultMessage('Success');
+            FormMessageManager::addSuccessResult('Success');
             redirect('/index', [
                 'id' => $this->_blog->getId()
             ]);
@@ -132,38 +132,37 @@ class Home extends AdminController
     /**
      *  edit
      */
-    protected function editAction()
+    public function edit(Request $request, int ${$obj}Id)
     {
-        ${$mod} = new {$mod->UpperCamel()}();
-        $objectId = (int) InputBrg::get('{$obj}Id');
-        $object   = ${$mod}->get{$obj->upperCamel()}($objectId);
-        if (!$object) {
-            redirect('/index');
+        ${$obj} = {$mod->UpperCamel()}::get(${$obj}Id);
+        if (! ${$obj}) {
+            return redirect(admin_url('/dashboard'));
         }
 
         do {
             // update only
-            if (! InputBrg::isPost()) {
+            if (! $request->isMethod('post')) {
                 break;
             }
 
-            $object = $this->_postProcess($object);
-            if ($fieldMessages = $object->validate()) {
-                FormMessageManager::addErrorResultMessage('Error');
-                FormMessageManager::setFieldMessages( $fieldMessages );
+            $this->update{$obj->UpperCamel()}ByPost($request, ${$obj});
+            if ($fieldMessages = ${$obj}->validate()) {
+                FormMessageManager::addErrorResult('{$obj->UpperCamel()} validate fail');
+                FormMessageManager::setFields($fieldMessages);
                 break;
             }
 
-            {$obj->upperCamel()}Service::update($object);
-            if ($error = {$obj->upperCamel()}Service::getError()) {
-                FormMessageManager::addErrorResultMessage($error);  // '更新失敗, 發現有重覆的資料, 請使用其它名稱'
-                FormMessageManager::addFieldMessage( array('____name____' => '發現有重覆的資料, 請使用其它名稱') );
-                FormMessageManager::addFieldMessage( array('____mail____' => '發現有重覆的資料, 請使用其它電子郵件') );
+            if (! {$mod->UpperCamel()}Service::update(${$obj})) {
+                FormMessageManager::addErrorResult();    // '更新失敗, 發現有重覆的資料, 請使用其它名稱'
+                // FormMessageManager::addField( array('____name____' => '發現有重覆的資料, 請使用其它名稱') );
+                // FormMessageManager::addField( array('____mail____' => '發現有重覆的資料, 請使用其它電子郵件') );
                 break;
             }
 
-            FormMessageManager::addSuccessResultMessage('Update success');
-
+            FormMessageManager::addSuccessResult();
+            return redirect(url()->current());
+            
+            /*
             $stayCurrentPage = true;
             if ($stayCurrentPage) {
                 // 留在原本修改的頁面
@@ -178,14 +177,16 @@ class Home extends AdminController
                     'blogId' => $this->_blog->getId()
                 ]);
             }
+            */
 
         } while(false);
 
         // edit & update
-        $this->render('{$obj}.home.editAction', array(
-            '{$obj}' => $object,
-        ));
-
+        return view('admin.{$obj}.edit', [
+            '{$obj}'   => ${$obj},
+            'menuMain'  => '{$obj}',
+            'menuSub'   => '',
+        ]);
     }
 
 
@@ -223,7 +224,7 @@ class Home extends AdminController
     {
         $chooseItems = InputBrg::post('chooseItems');
         if (! $chooseItems) {
-            FormMessageManager::addErrorResultMessage('You not choose any item');
+            FormMessageManager::addErrorResult('You not choose any item');
             redirect('/index', [
                 'parentId' => $this->_parent->getParentId()
             ]);
@@ -241,10 +242,10 @@ class Home extends AdminController
         }
 
         if ($successIds) {
-            FormMessageManager::addSuccessResultMessage('Delete success ('. join(', ',$successIds) .')');
+            FormMessageManager::addSuccessResult('Delete success ('. join(', ',$successIds) .')');
         }
         if ($failIds) {
-            FormMessageManager::addErrorResultMessage('Delete fail ('. join(', ',$failIds) .')');
+            FormMessageManager::addErrorResult('Delete fail ('. join(', ',$failIds) .')');
         }
 
         $params = array(

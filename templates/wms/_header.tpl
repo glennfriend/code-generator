@@ -3,6 +3,7 @@
     <a href="?t=model">Model</a>,
     <a href="?t=locale">Locale</a>,
     <a href="?t=homeController">HomeController</a>,
+    <a href="?t=searchTable">SearchTable</a>,
     view {
         <a href="?t=index_view">Index</a>,
         <a href="?t=new_view">New</a>,

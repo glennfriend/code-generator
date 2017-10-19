@@ -9,6 +9,11 @@
  * @method void   setProperty($key, $value)
  * @method array  getProperties()
  * @method void   setProperties(array $data)
+{elseif $key=='attribs'}
+ * @method string getAttrib($key, $defaultValue)
+ * @method void   setAttrib($key, $value)
+ * @method array  getAttribs()
+ * @method void   setAttribs(array $data)
 {elseif $field.ado->type=='tinyint'
     || $field.ado->type=='int'
     || $field.ado->type=='smallint'
@@ -51,6 +56,9 @@ class {$obj->upperCamel()} extends BaseObject
             '{$key}' => array(
 {if $key=='properties'}
                 'type'    => 'string',
+                'filters' => array('arrayval'),
+{elseif $key=='attribs'}
+                'type'    => 'json',
                 'filters' => array('arrayval'),
 {elseif $field.ado->type=='tinyint' || $field.ado->type=='int' || $field.ado->type=='smallint'}
                 'type'    => 'integer',
@@ -130,6 +138,7 @@ class {$obj->upperCamel()} extends BaseObject
         }
 
 {elseif $key=='properties'}
+{elseif $key=='attribs'}
 {elseif $field.ado->type=='text'}
 {elseif $key=='name' || $key=='title' || $key=='topic'}
         if (!$this->{$field.name->get()}()) {

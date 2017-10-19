@@ -36,11 +36,13 @@ class {$mod->upperCamel()} extends ZendModel
         $object = new {$obj->upperCamel()}();
 {foreach $tab as $key => $field}
 {if $field.ado->type=="timestamp" || $field.ado->type=="date" || $field.ado->type=="datetime"}
-        $object->{$field.name->set()}{$key|space_even} (strtotime($row['{$field.ado->name}']){$key|space_even:11} );
+        $object->{$field.name->set()}{$key|space_even} (strtotime($row['{$field.ado->name}']){$key|space_even:11});
 {elseif $key=="properties"}
-        $object->{$field.name->set()}{$key|space_even} (unserialize($row['{$field.ado->name}']){$key|space_even:10} );
+        $object->{$field.name->set()}{$key|space_even} (unserialize($row['{$field.ado->name}']){$key|space_even:10});
+{elseif $key=="attribs"}
+        $object->{$field.name->set()}{$key|space_even} (json_decode($row['{$field.ado->name}'], true));
 {else}
-        $object->{$field.name->set()}{$key|space_even} ($row['{$field.ado->name}']{$field.ado->name|space_even:23} );
+        $object->{$field.name->set()}{$key|space_even} ($row['{$field.ado->name}']{$field.ado->name|space_even:23});
 {/if}{/foreach}
         return $object;
     }
@@ -58,12 +60,12 @@ class {$mod->upperCamel()} extends ZendModel
     public function add{$obj->upperCamel()}({$obj->upperCamel()} $object): ?{$obj->upperCamel()}
     {
         $insertId = $this->addObject($object, true);
-        if (!$insertId) {
+        if (! $insertId) {
             return null;
         }
 
         $object = $this->{$obj->get()}($insertId);
-        if (!$object) {
+        if (! $object) {
             return null;
         }
 
@@ -80,7 +82,7 @@ class {$mod->upperCamel()} extends ZendModel
     public function update{$obj->upperCamel()}({$obj->upperCamel()} $object)
     {
         $result = $this->updateObject($object);
-        if (!$result) {
+        if (! $result) {
             return 0;
         }
 
@@ -97,11 +99,11 @@ class {$mod->upperCamel()} extends ZendModel
     public function delete{$obj->upperCamel()}($id)
     {
         $object = $this->{$obj->get()}($id);
-        if (!$object) {
+        if (! $object) {
             // 原本資料就不存在, 預期會是 true 的值
             return true;
         }
-        if (!$this->deleteObject($id)) {
+        if (! $this->deleteObject($id)) {
             return false;
         }
 
@@ -149,7 +151,7 @@ class {$mod->upperCamel()} extends ZendModel
     public function {$obj->get()}($id): ?{$obj->upperCamel()}
     {
         $object = $this->getObject('id', $id, {$mod->upperCamel()}::CACHE_{$obj->upper('_')});
-        if (!$object) {
+        if (! $object) {
             return null;
         }
         return $object;
@@ -164,7 +166,7 @@ class {$mod->upperCamel()} extends ZendModel
     public function getEnable{$obj->upperCamel()}($id): ?{$obj->upperCamel()}
     {
         $object = $this->{$obj->get()}($id);
-        if (!$object) {
+        if (! $object) {
             return null;
         }
         if ($object->getStatus() !== {$obj->upperCamel()}::STATUS_ENABLE) {
@@ -284,7 +286,7 @@ class {$mod->upperCamel()} extends ZendModel
 {/if}
 {/foreach}
 
-        if (!$isGetCount) {
+        if (! $isGetCount) {
             return $this->findObjects($select, $opt);
         }
         return $this->numFindObjects($select, $opt);
@@ -340,7 +342,7 @@ class {$mod->upperCamel()} extends ZendModel
                 ->or->like(    'description', '%'. $opt['_searchKey'] .'%' );
         }
 
-        if (!$isGetCount) {
+        if (! $isGetCount) {
             return $this->searchObjects($select, $opt);
         }
         return $this->numSearchObjects($select);
@@ -444,7 +446,7 @@ EOD;
             // return false;
         }
 
-        if (!$rows) {
+        if (! $rows) {
             return [];
         }
         return $objects;

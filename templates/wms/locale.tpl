@@ -10,7 +10,7 @@
         'dbobject_{$obj->lower()}_{$field.name->lower("_")}_disable'{$field.name->lower("_")|space_even:32} => '關閉',
         'dbobject_{$obj->lower()}_{$field.name->lower("_")}_delete'{$field.name->lower("_")|space_even:32}  => '刪除',
     // ==== {$obj} {$key} ============================================================
-{elseif in_array( $key, array('id','createTime','updateTime','properties') ) }
+{elseif in_array( $key, array('id','createTime','updateTime','properties','attribs') ) }
 {else}
     'dbobject_{$obj->lower()}_{$field.name->lower("_")}'{$field.name->lower("_")|space_even:39} => '{$field.name->lower(' ')|ucwords}',
 {/if}

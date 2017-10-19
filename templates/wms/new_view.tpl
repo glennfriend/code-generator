@@ -14,6 +14,7 @@
 {foreach $tab as $key => $field}
 {if $key=='id'}
 {elseif $key=='properties'}
+{elseif $key=='attribs'}
 {elseif $key=='status' || $key=='type' ||  $field.ado->type=='tinyint'}
                 <div class="form-group <?php echo FormMessageManager::getFieldStatus('{$field.name->lower("_")}'); ?>">
                     <label for="{$field.name->lower("_")}">

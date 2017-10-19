@@ -30,6 +30,13 @@ return [
         'clear_comment' => false,
     ),
 
+    // SearchTable
+    'searchTable' => array(
+        'path'          => "protected/components/SearchTable/",
+        'filename'      => "Search{$mod->upperCamel()}.php",
+        'clear_comment' => false,
+    ),
+
     // js
     'js' => array(
         'path'          => "admin/modules/{$obj}/",

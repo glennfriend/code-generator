@@ -172,7 +172,7 @@ class HomeController extends AdminBaseController
     {
         $missFields = [];
 {foreach $tab as $key => $field}
-{if in_array($key, ['id','properties','createTime','updateTime'])}
+{if in_array($key, ['id','properties','attribs','createTime','updateTime'])}
 {else}
         if (null===InputBrg::post('{$field.ado->name}')){$field.ado->name|space_even:26} { $missFields[] = '{$field.ado->name}';{$field.ado->name|space_even:26} }
 {/if}
@@ -188,6 +188,8 @@ class HomeController extends AdminBaseController
 {if $key=="id"}
 {elseif $key=="properties"}
         // properties
+{elseif $key=="attribs"}
+        // attribs
 {elseif $key=="customSearch"}
         // customSearch
 {elseif $key=="createTime"}

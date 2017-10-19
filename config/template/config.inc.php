@@ -3,7 +3,7 @@
 $config['base'] = dirname(__DIR__);
 
 $config['list'] = [
-    'key'       => ['lifetype', 'yii', 'zalora', 'gear', 'wms', 'wms-search-table', 'laravel'],
+    'key'       => ['lifetype', 'yii', 'zalora', 'gear', 'wms', 'laravel'],
     'databases' => ['erp', 'crm', 'wms', 'shop', 'site'],
     /**
      *  完全自訂的地方

@@ -125,6 +125,7 @@
 {if $key=='id'}
                     <th style="width:55px;">id</th>
 {elseif $key=='properties'}
+{elseif $key=='attribs'}
 {else}
                     <th><?php echo lgg('dbobject_{$obj->lower()}_{$key|lowerChar}');{$key|lowerChar|space_even} ?></th>
 {/if}
@@ -139,6 +140,7 @@
 {if $key=='id'}
                     <th class="js_field_{$field.name}" style="width:55px;">id</th>
 {elseif $key=='properties'}
+{elseif $key=='attribs'}
 {else}
                     <th class="js_field_{$field.name}"{$field.name|space_even}>{$field.name->upperCamel(' ')}{$field.name->upperCamel(' ')|space_even}</th>
 {/if}
@@ -150,6 +152,7 @@
 {if $key=='id'}
                     <td><input type="text" class="form-control input-sm" name="findKeys[id]"                   /></td>
 {elseif $key=='properties'}
+{elseif $key=='attribs'}
 {else}
                     <td><input type="text" class="form-control input-sm" name="findKeys[{$key}]" {$key|space_even}/></td>
 {/if}
@@ -166,6 +169,7 @@
                 $view = array();
 {foreach from=$tab key=key item=field}
 {if $key=='properties'}
+{elseif $key=='attribs'}
 {elseif $field.ado->type=='tinyint'}
                 $view['{$key}']{$key|space_even} = cc('attribLgg', ${$obj}, '{$key}', ${$obj}->{$key|camelGet}() )
 {elseif $field.ado->type=='int'}
@@ -186,6 +190,7 @@
 {if $key=='id'}
                         <td><a href="{ldelim}$showLink{rdelim}"><div class="fam-application-home"></div>{ldelim}$view['{$key}']{rdelim}</a></td>
 {elseif $key=='properties'}
+{elseif $key=='attribs'}
 {elseif $field.ado->type=='tinyint'}
                         <td>{ldelim}$view['{$key}']{rdelim}</td>
 {elseif $field.ado->type=='int'}

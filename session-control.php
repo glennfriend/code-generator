@@ -17,13 +17,10 @@ echo '
 <table id="controlTable" cellpadding="10" cellspacing="0">
     <tbody>
         <tr>
-            <td style="width: 400px;">'
+            <td style="width: 500px;">'
                 . showTable()
             . '</td>
-            <td style="width: 400px;">'
-                . showSearchTable()
-            . '</td>
-            <td style="width: 300px;">'
+            <td style="width: 500px;">'
                 . showDatabase()
                 . showSession()
            . '</td>
@@ -194,18 +191,7 @@ function showTable()
 
         $db = getDbConnect();
         $allTables = $db->MetaTables();
-
-        $tables = [];
         foreach ($allTables as $table) {
-            if ('search_' === mb_substr($table, 0, 7)) {
-                //
-            }
-            else {
-                $tables[] = $table;
-            }
-        }
-
-        foreach ($tables as $table) {
 
             $objectName = Cake_Utility_Inflector::singularize($table);
             $daoName    = Cake_Utility_Inflector::pluralize($objectName);
@@ -237,55 +223,6 @@ function showTable()
 
     $show .= '<br>';
 
-    return $show;
-}
-
-function showSearchTable()
-{
-    $show = "Search Table &raquo;<br><br>";
-    if (isset($_SESSION['useDb'])) {
-
-        $db = getDbConnect();
-        $allTables = $db->MetaTables();
-
-        $tables = [];
-        foreach ($allTables as $table) {
-            if ('search_' === mb_substr($table, 0, 7)) {
-                $tables[] = $table;
-            }
-        }
-
-        foreach ($tables as $table) {
-
-            $objectName = Cake_Utility_Inflector::singularize($table);
-            $daoName    = Cake_Utility_Inflector::pluralize($objectName);
-
-            $focus = (
-                isset($_SESSION['useTable']) &&
-                $table === $_SESSION['useTable']
-            );
-            $key = "{$_SESSION['useDb']},{$objectName},{$daoName},{$table}";
-
-            if ($focus) {
-                $show .= groupUrl($table, $key, true);
-                $show .= '<br>';
-                $show .= str_repeat("&nbsp;", 4);
-                $show .= 'dao &nbsp;&nbsp; &raquo; ' . $objectName;
-                $show .= '<br>';
-                $show .= str_repeat("&nbsp;", 4);
-                $show .= 'object &raquo; ' . $daoName;
-                $show .= '<br>';
-            }
-            else {
-                $show .= groupUrl($table, $key, false);
-            }
-
-            $show .= '<br>';
-
-        }
-    }
-
-    $show .= '<br>';
     return $show;
 }
 
