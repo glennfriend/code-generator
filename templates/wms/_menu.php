@@ -15,6 +15,11 @@ return [
         'filename'      => "{$mod->upperCamel()}.php",
         'clear_comment' => false,
     ),
+    'modelExtend' => array(
+        'path'          => "protected/models/",
+        'filename'      => "{$mod->upperCamel()}Extend.php",
+        'clear_comment' => false,
+    ),
 
     //
     'locale' => array(

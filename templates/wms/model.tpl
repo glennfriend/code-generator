@@ -391,67 +391,6 @@ class {$mod->upperCamel()} extends ZendModel
 
     }
 
-    /**
-     *  xxxxxxxxxx option by SQL query
-     *  @return objects or record total
-     */
-    protected function xxxxxxxxxx(array $opt)
-    {
-        $this->error = null;
-
-        // 請注意 pure sql 的 security
-
-        // default
-        $opt += array(
-            '_param1'       => '',
-            '_param2'       => '',
-            '_order'        => 'id DESC',
-            '_page'         => 1,
-            '_itemsPerPage' => conf('db.items_per_page')
-        );
-
-        $sql =<<<EOD
-            SELECT  id
-            FROM    `{ldelim}$this->tableName{rdelim}`
-            WHERE   field1 = ?
-            AND     field2 = ?
-EOD;
-        $values = array(
-            $opt['_param1'],
-            $opt['_param2'],
-        );
-
-        $rows = [];
-        $objects = [];
-        $getMethod = $this->getMethod;
-
-        try {
-            $adapter   = $this->getAdapter();
-            $statement = $adapter->query($sql, $values);
-            while ($row = $statement->current()) {
-                ....
-                ....
-                $rows[] = $row;
-
-                ....
-                ....
-                $objects[] = $this->$getMethod($row['id']);
-
-                $statement->next();
-            };
-        }
-        catch (Exception $e) {
-            throw new Exception($e);
-            // $this->error = $e;
-            // return false;
-        }
-
-        if (! $rows) {
-            return [];
-        }
-        return $objects;
-    }
-
     /* ================================================================================
         extends
     ================================================================================ */

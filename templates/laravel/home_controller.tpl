@@ -33,6 +33,9 @@ class Home extends AdminController
             redirect('/blog');
         }
         */
+
+        view()->share('menuMain', '{$obj}');
+        view()->share('menuSub',  '{$obj}-list');
     }
 
     /**
@@ -43,9 +46,8 @@ class Home extends AdminController
         ${$mod} = {$mod->upperCamel()}::getMany('parent_id', $parentId);
 
         return view('admin.{$obj}.index', [
-            '{$mod}'    => ${$mod},
-            'menuMain'  => '{$mod}',
-            'menuSub'   => '',
+            '{$mod}' => ${$mod},
+            'menuSub' => '',
         ]);
 
 
@@ -123,7 +125,7 @@ class Home extends AdminController
         } while(false);
 
         // new & add
-        $this->render('{$obj}.home.newAction', [
+        $this->render('{$obj}.home.{$obj}-new', [
             'blogId' => $this->_blog->getId(),
             '{$obj}' => $object,
         ]);
@@ -183,9 +185,8 @@ class Home extends AdminController
 
         // edit & update
         return view('admin.{$obj}.edit', [
-            '{$obj}'   => ${$obj},
-            'menuMain'  => '{$obj}',
-            'menuSub'   => '',
+            '{$obj}' => ${$obj},
+            'menuSub' => '',
         ]);
     }
 
