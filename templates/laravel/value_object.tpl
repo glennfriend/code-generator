@@ -2,15 +2,26 @@
 declare(strict_types = 1);
 namespace App\Db;
 use App\Db\Base\BaseObject;
-use App\Db\Base\ValueObjectExtendProperties;
 use App\Db\Base\ValueObjectExtendFetch;
+use App\Db\Base\ValueObjectExtendAttribs;
+use App\Db\Base\ValueObjectExtendProperties;
 use vvh;
 
 /**
  * {$obj->upperCamel()} value object
  *
 {foreach from=$tab key=key item=field}
-{if $field.ado->type=='tinyint'
+{if $key=='properties'}
+ * @method string getProperty($key, $defaultValue)
+ * @method void   setProperty($key, $value)
+ * @method array  getProperties()
+ * @method void   setProperties(array $data)
+{elseif $key=='attribs'}
+ * @method string getAttrib($key, $defaultValue)
+ * @method void   setAttrib($key, $value)
+ * @method array  getAttribs()
+ * @method void   setAttribs(array $data)
+{elseif $field.ado->type=='tinyint'
     || $field.ado->type=='int'
     || $field.ado->type=='smallint'
     || $field.ado->type=='bigint'
@@ -30,8 +41,9 @@ use vvh;
  */
 class {$obj->upperCamel()} extends BaseObject
 {
-    use ValueObjectExtendProperties;
     use ValueObjectExtendFetch;
+    use ValueObjectExtendAttribs;
+    use ValueObjectExtendProperties;
 
 {foreach $tab as $key => $field}
 {if $field.ado->type=='tinyint'}
@@ -71,6 +83,9 @@ class {$obj->upperCamel()} extends BaseObject
 {elseif $key=='properties'}
                 'filter'   => 'arrayval',
                 'type'     => 'array',
+{elseif $key=='attribs'}
+                'filter'   => 'arrayval',
+                'type'     => 'json',
 {elseif $field.ado->type=='tinyint'}
                 'filter'   => 'intval',
                 'value'    => self::{$tab[$key].name->upper('_')}_ENABLE,
@@ -100,9 +115,9 @@ class {$obj->upperCamel()} extends BaseObject
         ];
     }
 
-    /* ------------------------------------------------------------------------------------------------------------------------
+    /* --------------------------------------------------------------------------------
         rewrite
-    ------------------------------------------------------------------------------------------------------------------------ */
+    -------------------------------------------------------------------------------- */
 
     /*
     public function resetValue()
@@ -135,21 +150,21 @@ class {$obj->upperCamel()} extends BaseObject
     }
     */
 
-    /* ------------------------------------------------------------------------------------------------------------------------
+    /* --------------------------------------------------------------------------------
         hook
-    ------------------------------------------------------------------------------------------------------------------------ */
+    -------------------------------------------------------------------------------- */
 
     // protected static function writeHook($object)
 
-    /* ------------------------------------------------------------------------------------------------------------------------
+    /* --------------------------------------------------------------------------------
         extends
-    ------------------------------------------------------------------------------------------------------------------------ */
+    -------------------------------------------------------------------------------- */
 
 
 
-    /* ------------------------------------------------------------------------------------------------------------------------
+    /* --------------------------------------------------------------------------------
         lazy loading methods
-    ------------------------------------------------------------------------------------------------------------------------ */
+    -------------------------------------------------------------------------------- */
 
     /**
      *  fetch User

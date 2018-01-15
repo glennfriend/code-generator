@@ -26,6 +26,11 @@ return [
         'filename'      => "{$mod->upperCamel()}.php",
         'clear_comment' => false,
     ],
+    'search_table' => [
+        'path'          => "app/Db/SearchTable",
+        'filename'      => "Search{$mod->upperCamel()}.php",
+        'clear_comment' => false,
+    ],
     'migration' => [
         'path'          => "database/migrations/",
         'filename'      => $today ."_000001_{$mod->lower('_')}_table.php",

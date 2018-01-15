@@ -9,7 +9,13 @@ use App\Db\Eloquent\{$obj->upperCamel()}Emodel;
 use App\Db\{$obj->upperCamel()};
 
 /**
- *  {$mod->upperCamel()} model
+ * {$mod->upperCamel()} model
+ *
+ * @method {$obj->upperCamel()}   add({$obj->upperCamel()} ${$obj->lowerCamel()})
+ * @method {$obj->upperCamel()}   update({$obj->upperCamel()} ${$obj->lowerCamel()})
+ * @method {$obj->upperCamel()}   delete(int ${$obj->lowerCamel()}Id)
+ * @method {$obj->upperCamel()}   get(int ${$obj->lowerCamel()}Id)
+ * @method {$obj->upperCamel()}[] getMany(string $fieldName, $value, string $orderBy, int $limit)
  */
 class {$mod->upperCamel()} extends BaseModel
 {

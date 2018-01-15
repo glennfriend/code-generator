@@ -3,6 +3,7 @@
     <a href="?t=eloquent">Eloquent</a>,
     <a href="?t=model">Model</a>,
     <a href="?t=model_extend">Model Extend</a>,
+    <a href="?t=search_table">Search Table</a>,
     <a href="?t=migration">Migration</a>,
     <a href="?t=locale">Locale</a>,
     <a href="?t=home_controller">HomeController</a>,

@@ -4,7 +4,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class {$obj->upperCamel()}Emodel extends Model
 {
-    protected $table = '{$tableName}';
+    protected $table = '{$tableName->lower("_")}';
     public $timestamps = false;
 
     /*
