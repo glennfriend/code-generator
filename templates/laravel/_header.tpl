@@ -1,5 +1,5 @@
 <div class="bar1">
-    <a href="?t=value_object">ValueObject</a>,
+    <a href="?t=value_object">Value Object</a>,
     <a href="?t=eloquent">Eloquent</a>,
     <a href="?t=model">Model</a>,
     <a href="?t=model_extend">Model Extend</a>,
@@ -10,14 +10,13 @@
     <a href="?t=home_ajax_controller">HomeAjaxController</a>,
     <a href="?t=business_service">Service</a>,
     <a href="?t=business_helper">Helper</a>
-    view {
-        <a href="?t=index_view">Index</a>,
-        <a href="?t=new_view">New</a>,
+    <br>
+    [view]
+        <a href="?t=view_index">index</a>,
+        <a href="?t=view_create">create</a>,
         <a href="?t=js_object">js object</a>
-    }
-    test {
-        <a href="?t=test_db_object">DbObject</a>
-    }
+    [test]
+        <a href="?t=test_value_object">Value Object</a>
 </div>
 
 <div class="bar2">

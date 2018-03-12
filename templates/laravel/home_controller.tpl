@@ -85,54 +85,59 @@ class Home extends AdminController
     }
 
     /**
-     *  new
+     *  create & add
      */
-    protected function newAction()
+    protected function create(Request $request)
     {
         $object = new {$obj->upperCamel()}();
 
         do {
             // add only
-            if (! InputBrg::isPost()) {
+            if (! $request->isMethod('post')) {
                 break;
             }
 
-            $object = $this->_postProcess($object);
+            $this->modifyByCreatePost($object);
             if ($fieldMessages = $object->validate()) {
-                FormMessageManager::addErrorResult('Error');
+                FormMessageManager::addErrorResult('{$mod->upperCamel()} validate fail');
                 FormMessageManager::setFields($fieldMessages);
                 break;
             }
 
+            if (! {$obj->upperCamel()}Service::add($object)) {
+                FormMessageManager::addErrorResult();
+                break;
+            }
+
             $object = {$obj->upperCamel()}Service::add($object);
+            if (! $object instanceof {$obj->upperCamel()}) {
+                echo 'Error 534252534';
+                exit;
+            }
+
             /*
-                if (!$object instanceof {$obj->upperCamel()}) {
-                    // error
-                }
-            */
             if ($error = {$obj->upperCamel()}Service::getError()) {
                 FormMessageManager::addErrorResult($error);  // '新增失敗, 發現有重覆的資料, 請使用其它名稱'
                 FormMessageManager::addField( array('____name____' => '發現有重覆的資料, 請使用其它名稱') );
                 FormMessageManager::addField( array('____mail____' => '發現有重覆的資料, 請使用其它電子郵件') );
                 break;
             }
+            */
 
-            FormMessageManager::addSuccessResult('Success');
-            redirect('/index', [
-                'id' => $this->_blog->getId()
-            ]);
+            FormMessageManager::addSuccessResult();
+            return redirect(url()->current());
 
         } while(false);
 
-        // new & add
-        $this->render('{$obj}.home.{$obj}-new', [
+        // create & add
+        $this->render('{$obj}.home.{$obj}-create', [
             'blogId' => $this->_blog->getId(),
             '{$obj}' => $object,
         ]);
     }
 
     /**
-     *  edit
+     *  edit & update
      */
     public function edit(Request $request, int ${$obj}Id)
     {
@@ -147,7 +152,7 @@ class Home extends AdminController
                 break;
             }
 
-            $this->update{$obj->UpperCamel()}ByPost($request, ${$obj});
+            $this->modifyByEditPost($request, ${$obj});
             if ($fieldMessages = ${$obj}->validate()) {
                 FormMessageManager::addErrorResult('{$obj->UpperCamel()} validate fail');
                 FormMessageManager::setFields($fieldMessages);
@@ -190,40 +195,13 @@ class Home extends AdminController
         ]);
     }
 
-
-    /**
-     * @param Request $request
-     * @param {$obj->UpperCamel()} ${$obj}
-     * @return {$obj->UpperCamel()}
-     */
-    private function update{$obj->UpperCamel()}ByPost(Request $request, {$obj->UpperCamel()} ${$obj})
-    {
-        if (! $request->isMethod('post')) {
-            return;
-        }
-
-{foreach $tab as $key => $field}
-{if $key=="id"}
-{elseif $key=="properties"}
-      //${$obj}->setProperty             ('key', 'value'                                              );
-{elseif $key=="createAt"}
-{elseif $key=="deleteAt"}
-{elseif $key=="updateAt"}
-        ${$obj}->{$field.name->set()}{$key|space_even} ( time()                                                     );
-{elseif $field.ado->type=="timestamp" || $field.ado->type=="date" || $field.ado->type=="datetime"}
-        ${$obj}->{$field.name->set()}{$key|space_even} ( strtotime(InputBrg::post('{$field.ado->name}')){$field.ado->name|space_even:29} );
-{else}
-        ${$obj}->{$field.name->set()}{$key|space_even} ( $request->post('{$field.ado->name}'){$field.ado->name|space_even:40} );
-{/if}
-{/foreach}
-    }
-
     /**
      *  delete
      */
-    protected function actionDelete()
+    protected function delete(Request $request)
     {
-        $chooseItems = InputBrg::post('chooseItems');
+        /*
+        $chooseItems = $request->post('chooseItems');
         if (! $chooseItems) {
             FormMessageManager::addErrorResult('You not choose any item');
             redirect('/index', [
@@ -257,120 +235,47 @@ class Home extends AdminController
             $params['page'] = $page;
         }
         redirect('/index', $params);
-    }
-
-    /**
-     *  myself setting
-     */
-    protected function settingAction()
-    {
-        exit;
-
-        $blogs = new Blogs();
-        $blogId = ??????????????????
-        if (! $blogId || ! $blog = $blogs->getBlog($blogId) ) {
-            redirect('admin/');
-        }
-
-        // update setting
-        if (InputBrg::isPost()) {
-            $posts = get post .....
-            // set ......
-            // ..........
-        }
-
-        // setting
-        $this->render('{$obj}.home.setting',array(
-            '' => '',
-        ));
+        */
     }
 
     /* --------------------------------------------------------------------------------
-        處理 table list 的相關參數: sortField, sortBy, findKeys
+        private
     -------------------------------------------------------------------------------- */
 
     /**
-     *  使用白名單過濾參數, 只予許特定欄位做 custom find
-     *  @return array
+     * @param Request $request
+     * @param {$obj->upperCamel()} ${$obj}
      */
-    private function getAllowFind()
+    private function modifyByCreatePost(Request $request, {$obj->upperCamel()} ${$obj})
     {
-        return [
-{foreach from=$tab key=key item=field}
-            '{$key}',
+        if (! $request->isMethod('post')) {
+            return;
+        }
+
+{foreach $tab as $key => $field}
+{if $key=="id"}
+{elseif $key=="properties"}
+{elseif $key=="attribs"}
+{elseif $key=="createAt"}
+{elseif $key=="deleteAt"}
+{elseif $key=="updateAt"}
+        ${$obj}->{$field.name->set()}{$key|space_even} ( time()                                                     );
+{elseif $field.ado->type=="timestamp" || $field.ado->type=="date" || $field.ado->type=="datetime"}
+        ${$obj}->{$field.name->set()}{$key|space_even} ( strtotime($request->post('{$field.ado->name}')){$field.ado->name|space_even:29} );
+{else}
+        ${$obj}->{$field.name->set()}{$key|space_even} ( $request->post('{$field.ado->name}'){$field.ado->name|space_even:40} );
+{/if}
 {/foreach}
-        ];
     }
 
     /**
-     *  custom find keys
-     *  @return array - 所有予許的 findKeys 欄位資料
+     * @param Request $request
+     * @param {$obj->upperCamel()} ${$obj}
      */
-    private function parseFind($findKeys)
+    private function modifyByEditPost(Request $request, {$obj->upperCamel()} ${$obj})
     {
-        if (! is_array($findKeys)) {
-            // default
-            $findKeys = [];
-        }
-
-        $allows = array();
-        foreach ($this->getAllowFind() as $name) {
-            $allows[$name] = isset($findKeys[$name]) ? trim(strip_tags($findKeys[$name])) : '';
-        }
-        return $allows;
+        $this->modifyByCreatePost($request, ${$obj});
     }
 
-
-    /**
-     *  get default order by
-     *  @return array
-     */
-    private function getDefaultOrderBy()
-    {
-        return ['id', 'asc'];
-    }
-
-    /**
-     *  使用白名單過濾參數, 只予許特定欄位做 order by
-     *  @return boolean
-     */
-    private function isAllowOrderField($fieldName)
-    {
-        $mapping = [
-{foreach from=$tab key=key item=field}
-            '{$key}',
-{/foreach}
-        ];
-        if (in_array($fieldName, $mapping)) {
-            return true;
-        }
-        return false;
-    }
-
-    /**
-     *  field sort information
-     */
-    private function parseOrder($sortField, $sortBy)
-    {
-        $sortField = trim(strip_tags($sortField));
-        $sortBy    = ($sortBy==='desc') ? 'desc' : 'asc';
-
-        // default
-        if (! $sortField) {
-            list($sortField, $sortBy) = $this->getDefaultOrderBy();
-        }
-
-        if ($this->isAllowOrderField($sortField)) {
-            $order = $sortField .','. $sortBy;
-        }
-        else {
-            $order = '';
-            $sortField = '';
-        }
-
-        return [$sortBy, $sortField, $order];
-    }
-
-    // 以上
 
 }

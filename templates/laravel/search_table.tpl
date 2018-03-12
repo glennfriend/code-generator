@@ -1,5 +1,6 @@
 <?php
 namespace App\Db\SearchTable;
+
 use App\Db\{$mod->upperCamel()};
 use DB;
 

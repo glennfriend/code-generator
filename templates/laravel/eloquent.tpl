@@ -1,5 +1,6 @@
 <?php
 namespace App\Db\Eloquent;
+
 use Illuminate\Database\Eloquent\Model;
 
 class {$obj->upperCamel()}Emodel extends Model

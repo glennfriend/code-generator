@@ -1,6 +1,7 @@
 <?php
 declare(strict_types = 1);
 namespace App\Business\{$obj->upperCamel()};
+
 use DB;
 use Exception;
 use App\Db\{$obj->upperCamel()};

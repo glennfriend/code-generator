@@ -27,7 +27,7 @@ return [
         'clear_comment' => false,
     ],
     'search_table' => [
-        'path'          => "app/Db/SearchTable",
+        'path'          => "app/Db/SearchTable/",
         'filename'      => "Search{$mod->upperCamel()}.php",
         'clear_comment' => false,
     ],
@@ -81,25 +81,25 @@ return [
     ],
 
     // view
-    'index_view' => [
+    'view_index' => [
         'path'          => "resourdce/views/{$obj}/views/",
         'filename'      => "home.index.phtml",
         'clear_comment' => false,
     ],
-    'new_view' => [
+    'view_create' => [
         'path'          => "resourdce/views/{$obj}/views/",
-        'filename'      => "home.new.phtml",
+        'filename'      => "home.create.phtml",
         'clear_comment' => false,
     ],
-    'edit_view' => [
+    'view_edit' => [
         'path'          => "resourdce/views/{$obj}/views/",
         'filename'      => "home.edit.phtml",
         'clear_comment' => false,
     ],
 
     // test
-    'test_db_object' => [
-        'path'          => "test/model/",
+    'test_value_object' => [
+        'path'          => "tests/app/Db/",
         'filename'      => "{$obj->upperCamel()}Test.php",
         'clear_comment' => false,
     ],

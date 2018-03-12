@@ -1,6 +1,7 @@
 <?php
 declare(strict_types = 1);
 namespace App\Db;
+
 use App\Db\Base\BaseObject;
 use App\Db\Base\ValueObjectExtendFetch;
 use App\Db\Base\ValueObjectExtendAttribs;

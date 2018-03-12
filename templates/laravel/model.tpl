@@ -5,6 +5,7 @@ namespace App\Db;
 use Illuminate\Database\Eloquent\Model as EloquentModel;
 use App\Db\Base\BaseModel;
 use App\Db\Base\ModelExtendCurd;
+use App\Db\Base\ModelExtendGenAll;
 use App\Db\Eloquent\{$obj->upperCamel()}Emodel;
 use App\Db\{$obj->upperCamel()};
 
@@ -16,6 +17,7 @@ use App\Db\{$obj->upperCamel()};
  * @method {$obj->upperCamel()}   delete(int ${$obj->lowerCamel()}Id)
  * @method {$obj->upperCamel()}   get(int ${$obj->lowerCamel()}Id)
  * @method {$obj->upperCamel()}[] getMany(string $fieldName, $value, string $orderBy, int $limit)
+ * @method {$obj->upperCamel()}   genAll(string $orderBy)
  */
 class {$mod->upperCamel()} extends BaseModel
 {
@@ -30,8 +32,8 @@ class {$mod->upperCamel()} extends BaseModel
      */
     // protected static function mapValueObject(EloquentModel $model)
     // {
-    //     $userLog = parent::mapValueObject($model);
-    //     return $userLog;
+    //     ${$obj} = parent::mapValueObject($model);
+    //     return ${$obj};
     // }
 
 
