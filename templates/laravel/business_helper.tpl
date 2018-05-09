@@ -1,5 +1,6 @@
 <?php
-namespace App\Business\{$obj->upperCamel()};
+
+namespace App\Service\{$obj->upperCamel()};
 
 use ??????????
 
@@ -11,7 +12,7 @@ class {$obj->upperCamel()}Helper
     /**
      *
      */
-    protected static $error = null;
+    protected $error = null;
 
     // --------------------------------------------------------------------------------
     //
@@ -20,9 +21,9 @@ class {$obj->upperCamel()}Helper
     /**
      *  add to cart
      */
-    public static function addToCart(ShopProduct $shopProduct)
+    public function addToCart(ShopProduct $shopProduct)
     {
-        self::$error = null;
+        $this->error = null;
 
         return [
             'cart_total_item_ids' => [],
@@ -33,9 +34,9 @@ class {$obj->upperCamel()}Helper
     /**
      *
      */
-    public static function addNewBlog(Blog $blog)
+    public function addNewBlog(Blog $blog)
     {
-        self::$error = null;
+        $this->error = null;
 
         // model -> begin
         // add blog
@@ -52,9 +53,9 @@ class {$obj->upperCamel()}Helper
     /**
      *
      */
-    public static function getError()
+    public function getError()
     {
-        return self::$error;
+        return $this->error;
     }
 
 }

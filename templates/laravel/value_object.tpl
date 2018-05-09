@@ -2,23 +2,30 @@
 declare(strict_types = 1);
 namespace App\Db;
 
+use vvh;
 use App\Db\Base\BaseObject;
 use App\Db\Base\ValueObjectExtendFetch;
+{foreach from=$tab key=key item=field}
+{if $key=='attribs'}
 use App\Db\Base\ValueObjectExtendAttribs;
+{elseif $key=='properties'}
 use App\Db\Base\ValueObjectExtendProperties;
-use vvh;
+{elseif $key=='userId'}
+use App\Db\User;
+{/if}
+{/foreach}
 
 /**
  * {$obj->upperCamel()} value object
  *
 {foreach from=$tab key=key item=field}
 {if $key=='properties'}
- * @method string getProperty($key, $defaultValue)
+ * @method        getProperty($key, $defaultValue)
  * @method void   setProperty($key, $value)
  * @method array  getProperties()
  * @method void   setProperties(array $data)
 {elseif $key=='attribs'}
- * @method string getAttrib($key, $defaultValue)
+ * @method        getAttrib($key, $defaultValue)
  * @method void   setAttrib($key, $value)
  * @method array  getAttribs()
  * @method void   setAttribs(array $data)
@@ -43,29 +50,27 @@ use vvh;
 class {$obj->upperCamel()} extends BaseObject
 {
     use ValueObjectExtendFetch;
+{foreach from=$tab key=key item=field}
+{if $key=='attribs'}
     use ValueObjectExtendAttribs;
+{elseif $key=='properties'}
     use ValueObjectExtendProperties;
+{/if}
+{/foreach}
 
 {foreach $tab as $key => $field}
-{if $field.ado->type=='tinyint'}
-{if $field.ado->name=='status'}
-    // {$field.name->lower('_')} (語系檔案於 resources/lang/en/value_object.php)
-    const {$field.name->upper()}_DISABLE    = 0;
-    const {$field.name->upper()}_ENABLE     = 1;
-    const {$field.name->upper()}_DELETE     = 9;
-    {else}
+{if $field.ado->type=='tinyint' && $field.ado->name=='status'}
     // {$field.name->lower('_')}
     const {$field.name->upper()}_DISABLE    = 0;
     const {$field.name->upper()}_ENABLE     = 1;
     const {$field.name->upper()}_DELETE     = 9;
-    {/if}
-
 {/if}
 {/foreach}
+
     /**
-     *  @return array()
+     * @return array
      */
-    public static function attributesDefinition()
+    public function attributesDefinition()
     {
         return [
 {foreach from=$tab key=key item=field}
@@ -76,11 +81,14 @@ class {$obj->upperCamel()} extends BaseObject
 {elseif $key=='status'}
                 'validate' => 'required, integer',
                 'value'    => self::STATUS_DISABLE,
-{elseif $key=='createAt' || $key=='updateAt'}
-                'filter'   => 'dateval',
+{elseif $key=='createAt'}
+                'filter'   => 'timestamp_or_null',
                 'validate' => 'timestamp',
                 'type'     => 'timestamp',
-                'value'    => time(),
+                'value'    => time(),   // microtime(true)
+{elseif $key=='updateAt' || $key=='deleteAt'}
+                'filter'   => 'timestamp_or_null',
+                'type'     => 'timestamp',
 {elseif $key=='properties'}
                 'filter'   => 'arrayval',
                 'type'     => 'array',
@@ -102,7 +110,11 @@ class {$obj->upperCamel()} extends BaseObject
 {elseif $field.ado->type=='char'}
                 'filter'   => 'strip_tags',
                 'validate' => 'required',
-{elseif $field.ado->type=='timestamp' || $field.ado->type=='datetime' || $field.ado->type=='date'}
+{elseif $field.ado->type=='timestamp'}
+                'filter'   => 'timestamp_or_null',
+                'validate' => 'timestamp',
+                'type'     => 'timestamp',
+{elseif $field.ado->type=='datetime' || $field.ado->type=='date'}
                 'filter'   => 'dateval',
                 'validate' => 'timestamp',
                 'type'     => 'timestamp',
@@ -120,15 +132,7 @@ class {$obj->upperCamel()} extends BaseObject
         rewrite
     -------------------------------------------------------------------------------- */
 
-    /*
-    public function resetValue()
-    {
-        parent::resetValue();
-    }
-    */
-
-    /*
-    public function validate(): array
+    /* public function validate(): array
     {
         $errors = parent::validate();
         $errors = $this->validateStatus($errors);
@@ -148,14 +152,14 @@ class {$obj->upperCamel()} extends BaseObject
         }
 
         return $errors;
-    }
-    */
+    } */
 
     /* --------------------------------------------------------------------------------
         hook
     -------------------------------------------------------------------------------- */
 
-    // protected static function writeHook($object)
+    // protected static function writeHook($object) { // by ModelExtendCurd
+    // }
 
     /* --------------------------------------------------------------------------------
         extends
@@ -167,18 +171,21 @@ class {$obj->upperCamel()} extends BaseObject
         lazy loading methods
     -------------------------------------------------------------------------------- */
 
+{foreach from=$tab key=key item=field}
+{if $key=='userId'}
     /**
-     *  fetch User
+     * fetch User
      *
-     *  @param isCacheBuffer , is store object
-     *  @return User|null
+     * @param bool isCacheBuffer , is storage in the object
+     * @return User|null
      */
-    public function fetchUser($isCacheBuffer=true): ?User
+    public function fetchUser(bool $isCacheBuffer=true): ?User
     {
         $userId = $this->getUserId();
-        return $this->_fetch(\App\Db\User::class, $userId, $isCacheBuffer);
+        return $this->_fetch(User::class, $userId, $isCacheBuffer);
     }
-
+{/if}
+{/foreach}
 
 }
 

@@ -1,6 +1,6 @@
 <?php
 declare(strict_types = 1);
-namespace App\Business\{$obj->upperCamel()};
+namespace App\Service\{$obj->upperCamel()};
 
 use DB;
 use Exception;
@@ -8,33 +8,63 @@ use App\Db\{$obj->upperCamel()};
 use App\Db\{$mod->upperCamel()};
 
 /**
- *  {$obj->upperCamel()} Service
+ * {$obj->upperCamel()} Service
  *
  */
 class {$obj->upperCamel()}Service
 {
+
+    public function __construct({$mod->upperCamel()} ${$mod})
+    {
+        $this->{$mod} = ${$mod};
+    }
+
     /**
-     *  add
+     * get
      *
-     * @param {$obj->upperCamel()} $new{$obj->upperCamel()})
+     * @param int ${$obj->lowerCamel()}Id
      * @return {$obj->upperCamel()}|null
      * @throws Exception
      */
-    public static function add({$obj->upperCamel()} $new{$obj->upperCamel()}): ?{$obj->upperCamel()}
+    public function get(int ${$obj->lowerCamel()}Id): ?{$obj->upperCamel()}
     {
-        if (! static::validate($new{$obj->upperCamel()})) {
+        try {
+            ${$obj} = $this->{$mod}->get($new{$obj->upperCamel()});
+            if (! ${$obj}) {
+                return null;
+            }
+
+            $this->postHook(${$obj});
+        }
+        catch (Exception $e) {
+            throw new Exception($e->getMessage());
+        }
+
+        return ${$obj};
+    }
+
+    /**
+     * add
+     *
+     * @param {$obj->upperCamel()} $new{$obj->upperCamel()}
+     * @return {$obj->upperCamel()}|null
+     * @throws Exception
+     */
+    public function add({$obj->upperCamel()} $new{$obj->upperCamel()}): ?{$obj->upperCamel()}
+    {
+        if (! $this->validate($new{$obj->upperCamel()})) {
             return null;
         }
 
         DB::beginTransaction();
 
         try {
-            ${$obj} = {$mod->upperCamel()}::add($new{$obj->upperCamel()});
+            ${$obj} = $this->{$mod}->add($new{$obj->upperCamel()});
             if (! ${$obj}) {
                 return null;
             }
 
-            static::postHook(${$obj});
+            $this->postHook(${$obj});
         }
         catch (Exception $e) {
             DB::rollBack();
@@ -52,20 +82,20 @@ class {$obj->upperCamel()}Service
      * @return bool
      * @throws Exception
      */
-    public static function update({$obj->upperCamel()} ${$obj}): bool
+    public function update({$obj->upperCamel()} ${$obj}): bool
     {
-        if (! static::validate(${$obj})) {
+        if (! $this->validate(${$obj})) {
             return false;
         }
 
         DB::beginTransaction();
 
         try {
-            if (! {$mod->upperCamel()}::update(${$obj})) {
+            if (! $this->{$mod}->update(${$obj})) {
                 return false;
             }
 
-            static::postHook(${$obj});
+            $this->postHook(${$obj});
         }
         catch (Exception $e) {
             DB::rollBack();
@@ -82,9 +112,9 @@ class {$obj->upperCamel()}Service
      * @param int $id
      * @return bool
      */
-    public static function delete($id): bool
+    public function delete($id): bool
     {
-        ${$obj} = {$mod->upperCamel()}::get($id);
+        ${$obj} = $this->{$mod}->get($id);
         if (! ${$obj}) {
             return true;
         }
@@ -92,11 +122,11 @@ class {$obj->upperCamel()}Service
         DB::beginTransaction();
 
         try {
-            if (! {$mod->upperCamel()}::delete($id)) {
+            if (! $this->{$mod}->delete($id)) {
                 return false;
             }
 
-            static::postHook(${$obj});
+            $this->postHook(${$obj});
         }
         catch (Exception $e) {
             DB::rollBack();
@@ -118,7 +148,7 @@ class {$obj->upperCamel()}Service
      * @param {$obj->upperCamel()} $object
      * @return bool
      */
-    private static function validate({$obj->upperCamel()} ${$obj}): bool
+    protected function validate({$obj->upperCamel()} ${$obj}): bool
     {
         return true;
     }
@@ -130,7 +160,7 @@ class {$obj->upperCamel()}Service
      *
      * @param {$obj->upperCamel()} $object
      */
-    private static function postHook({$obj->upperCamel()} ${$obj})
+    protected function postHook({$obj->upperCamel()} ${$obj})
     {
         /*
             例如 add article comment , 則 article of num_comments field 要做更新
@@ -139,7 +169,20 @@ class {$obj->upperCamel()}Service
             $article->setNumComments( $this->getNumArticleComments( $article->getId() ) );
             $articles = new Articles();
             $articles->updateArticle($article);
+
+            $this->updateSearchTable();
         */
     }
+
+    /**
+     *  update search table
+     */
+    /*
+    protected function updateSearchTable(${$obj})
+    {
+        $this->searchTable______->rebuild(${$obj}->getId());
+    }
+    */
+
 
 }

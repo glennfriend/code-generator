@@ -1,50 +1,82 @@
 <?php
 
-未整理 未整理 未整理 未整理 未整理 未整理
+
 
 class {$mod->upperCamel()}
 {
-    /**
-     *
-     */
-    protected function removeCache()
-    {
-        // "user_id" cache
-        $cacheKey = $this->getFullCacheKey($object->getUserId(), 'user_id');
-        CacheBrg::remove($cacheKey);
-
-        // 所有資料在 "_all" 的 cache
-        $cacheKey = $this->getFullCacheKey('_all', '_all');
-        CacheBrg::remove($cacheKey);
-    }
 
     /* ================================================================================
-        basic read function
+        extends
     ================================================================================ */
 
     /**
-     *  get by user_id
-     *  @param  int user_id
-     *  @return object or false
+     * get last
+     *
+     * @return {$obj->upperCamel()}|null
      */
-    public function {$obj->get()}ByUserId($userId)
+    public static function getLast(): ?{$obj->upperCamel()}
     {
-        $object = $this->getObject('user_id', $userId);
-        if (!$object) {
-            return false;
+        $eloquent = static::getModel();
+        $flight = $eloquent
+                    ->where('status', {$obj->upperCamel()}::STATUS_ENABLE)
+                    ->orderBy('id', 'DESC')
+                    ->first();
+
+        if (! $flight) {
+           return null;
         }
-        return $object;
+
+        return static::get($flight->id);
     }
 
     /**
-     *  get all
-     *  @return objects or false
+     * get last
+     *
+     * @return {$obj->upperCamel()}|null
      */
-    public function getAll{$mod->upperCamel()}()
+    public static function getLast(): ?{$obj->upperCamel()}
     {
-        // key is '_all'
-        ????
+        $table = static::getModel()->getTable();
+
+        $sql = <<<EOD
+            select `id`
+            from `{ldelim}$table{rdelim}`
+            where `status` = ?
+            order by id desc
+            limit 1
+EOD;
+
+        $objects = DB::select($sql, [{$obj->upperCamel()}::STATUS_ENABLE]);
+        foreach ($objects as $obj) {
+            return static::get($obj->id);
+        }
+
+        return null;
     }
+
+    /**
+     *  get by user_id
+     *
+     *  @param int user_id
+     *  @return {$obj->upperCamel()}|null
+     */
+    public function {$obj->get()}ByUserId($userId): ?{$obj->upperCamel()}
+    {
+        $objects = $this->getMany('user_id', $userId);
+        if (! $objects) {
+            return null;
+        }
+
+        return $objects[0];
+    }
+
+
+
+
+
+
+
+
 
     /* ================================================================================
         search {$mod->upperCamel()} and get count
@@ -54,8 +86,10 @@ class {$mod->upperCamel()}
     /**
      *  search many {$obj->upperCamel()}
      *  @param  option array
+     *
      *  @return objects or empty array
      */
+    未整理 未整理 未整理 未整理 未整理 未整理
     public function search{$mod->upperCamel()}(Array $values, $opt=[])
     {
         $opt += [
@@ -87,6 +121,7 @@ class {$mod->upperCamel()}
      *
      *  @return objects or record total
      */
+    未整理 未整理 未整理 未整理 未整理 未整理
     protected function search{$mod->upperCamel()}Real(Array $vals, $opt=[], $isGetCount=false)
     {
         // validate 欄位 白名單
@@ -147,54 +182,11 @@ class {$mod->upperCamel()}
     ================================================================================ */
 
     /**
-     *  update search table
-     *
-     *  請注意 該呼叫程式要移到 business layer, update 可能還是留在該處
-     *  請注意 sql 的 security !!
-     */
-    protected function _updateSearchTable(${$obj})
-    {
-        $table = '{$obj->lower("_")}_search_xxxxs';
-        $mainField = '{$obj->lower("_")}_id';
-        $id = ${$obj}->getId();
-
-        // delete sql
-        $select = $this->getDbSelectTable($table);
-        $select->where->equalTo( $mainField, $id );
-        $result = $this->query( $select );
-        if ( $result ) {
-            while( $row = $result->next() ) {
-
-                $delete = new Zend\Db\Sql\Delete($table);
-                $delete->where([
-                     $mainField => $id,
-                ]);
-                $this->execute($delete);
-
-            }
-        }
-
-        // insert sql
-        $data = ${$obj}->get??????????();
-        if ( $data ) {
-            foreach ( $data as $key => $value ) {
-                $insert = new Zend\Db\Sql\Insert($table);
-                $insert->values([
-                     $mainField     => $id,
-                     'field_name??' => $key,
-                     'field_name??' => $value,
-                ]);
-                $this->execute($insert);
-            }
-        }
-
-    }
-
-    /**
      *  custom select SQL query
      *
      *  @return objects or record total
      */
+    未整理 未整理 未整理 未整理 未整理 未整理
     protected function findXxxxxxxxxx(Array, $values, Array $opt=[])
     {
         $this->error = null;
@@ -244,6 +236,7 @@ EOD;
      *  getRowsBy______ option by SQL query
      *  @return objects or record total
      */
+    未整理 未整理 未整理 未整理 未整理 未整理
     protected function getRowsBy______xxxxxx(array $vals=[], array $opt=[], $isQueryCount=false)
     {
         $this->error = null;

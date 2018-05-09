@@ -168,7 +168,7 @@ class Home extends AdminController
 
             FormMessageManager::addSuccessResult();
             return redirect(url()->current());
-            
+
             /*
             $stayCurrentPage = true;
             if ($stayCurrentPage) {
@@ -246,7 +246,7 @@ class Home extends AdminController
      * @param Request $request
      * @param {$obj->upperCamel()} ${$obj}
      */
-    private function modifyByCreatePost(Request $request, {$obj->upperCamel()} ${$obj})
+    protected function modifyByCreatePost(Request $request, {$obj->upperCamel()} ${$obj})
     {
         if (! $request->isMethod('post')) {
             return;
@@ -272,7 +272,7 @@ class Home extends AdminController
      * @param Request $request
      * @param {$obj->upperCamel()} ${$obj}
      */
-    private function modifyByEditPost(Request $request, {$obj->upperCamel()} ${$obj})
+    protected function modifyByEditPost(Request $request, {$obj->upperCamel()} ${$obj})
     {
         $this->modifyByCreatePost($request, ${$obj});
     }

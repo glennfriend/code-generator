@@ -39,7 +39,7 @@ class {$mod->upperCamel()}Table extends Migration
     /**
      *
      */
-    private function createTableSql()
+    protected function createTableSql()
     {
         #
         #   請用 phpmyadmin dump
@@ -76,7 +76,7 @@ EOD;
     /**
      *
      */
-    private function changeTableSql()
+    protected function changeTableSql()
     {
         /*
             變更 varchar 欄位
@@ -112,7 +112,7 @@ EOD;
     /**
      *
      */
-    private function createDataSql()
+    protected function createDataSql()
     {
         $sql = <<<EOD
 

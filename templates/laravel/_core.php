@@ -33,17 +33,19 @@ function assingTemplate($template)
     $template->assign('tab', $tab);
     $template->assign('today', date("Ymd"));
 
+
     /*
     echo '<pre style="background-color:#def;color:#000;text-align:left;font-size:10px;font-family:dina,GulimChe;">';
-    //print_r( $mod           ); echo "\n";
-    //print_r( $obj           ); echo "\n";
-    //print_r( $tab           ); echo "\n";
-    print_r( getTableColumnsStatus() ); echo "\n";
-    print_r( getProjectName()        ); echo "\n";
-    print_r( getDaoName()            ); echo "\n";
-    print_r( getTable()              ); echo "\n";
+    // print_r( $mod           ); echo "\n";
+    // print_r( $obj           ); echo "\n";
+    print_r( $tab           ); echo "\n";
+    // print_r( getTableColumnsStatus() ); echo "\n";
+    // print_r( getProjectName()        ); echo "\n";
+    // print_r( getDaoName()            ); echo "\n";
+    // print_r( getTable()              ); echo "\n";
     echo "</pre>\n"; exit;
     */
+
 
     return $template;
 }

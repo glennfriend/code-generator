@@ -8,10 +8,16 @@ use App\Db\Base\ModelExtendCurd;
 use App\Db\Base\ModelExtendGenAll;
 use App\Db\Eloquent\{$obj->upperCamel()}Emodel;
 use App\Db\{$obj->upperCamel()};
+{foreach from=$tab key=key item=field}
+{if $key=='userId'}
+use App\Db\User;
+{/if}
+{/foreach}
 
 /**
  * {$mod->upperCamel()} model
  *
+ * @method {$obj->upperCamel()}   vo()
  * @method {$obj->upperCamel()}   add({$obj->upperCamel()} ${$obj->lowerCamel()})
  * @method {$obj->upperCamel()}   update({$obj->upperCamel()} ${$obj->lowerCamel()})
  * @method {$obj->upperCamel()}   delete(int ${$obj->lowerCamel()}Id)
@@ -22,19 +28,26 @@ use App\Db\{$obj->upperCamel()};
 class {$mod->upperCamel()} extends BaseModel
 {
     use ModelExtendCurd;
+    use ModelExtendGenAll;
 
     protected static $valueObjectName = {$obj->upperCamel()}::class;
     protected static $modelObjectName = {$obj->upperCamel()}Emodel::class;
     protected static $cacheFields     = ['id'];
 
     /**
-     *  map laravel eloquent model to value object
+     * build value object after hook
      */
-    // protected static function mapValueObject(EloquentModel $model)
+    // protected static function valueObjectHook(${$obj})
     // {
-    //     ${$obj} = parent::mapValueObject($model);
+    //     // {$obj->upperCamel()} append extended info
+    //     $user->setAttrib('test_only', 'test_only');
+    //
     //     return ${$obj};
     // }
+
+
+
+
 
 
     /* ================================================================================
@@ -47,17 +60,20 @@ class {$mod->upperCamel()} extends BaseModel
         extends
     ================================================================================ */
 
+{foreach from=$tab key=key item=field}
+{if $key=='userId'}
     /**
      * get {$mod}
      *
      * @param $userId
      * @return array
      */
-    /*
     public static function get{$mod->upperCamel()}ByUserId($userId): array
     {
         return static::getMany('user_id', $userId);
     }
-    */
+{/if}
+{/foreach}
+
 
 }

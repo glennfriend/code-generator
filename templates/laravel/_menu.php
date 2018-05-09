@@ -58,12 +58,12 @@ return [
 
     // business layer
     'business_service' => [
-        'path'          => "app/Business/{$obj->upperCamel()}/",
+        'path'          => "app/Service/{$obj->upperCamel()}/",
         'filename'      => "{$obj->upperCamel()}Service.php",
         'clear_comment' => false,
     ],
     'business_helper' => [
-        'path'          => "app/Business/{$obj->upperCamel()}/",
+        'path'          => "app/Service/{$obj->upperCamel()}/",
         'filename'      => "{$obj->upperCamel()}Helper.php",
         'clear_comment' => false,
     ],
