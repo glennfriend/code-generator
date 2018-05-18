@@ -3,13 +3,13 @@ declare(strict_types = 1);
 namespace App\Db;
 
 use vvh;
-use App\Db\Base\BaseObject;
-use App\Db\Base\ValueObjectExtendFetch;
+use Model\BaseObject;
+use Model\ValueObjectExtendFetch;
 {foreach from=$tab key=key item=field}
 {if $key=='attribs'}
-use App\Db\Base\ValueObjectExtendAttribs;
+use Model\ValueObjectExtendAttribs;
 {elseif $key=='properties'}
-use App\Db\Base\ValueObjectExtendProperties;
+use Model\ValueObjectExtendProperties;
 {elseif $key=='userId'}
 use App\Db\User;
 {/if}
@@ -81,12 +81,12 @@ class {$obj->upperCamel()} extends BaseObject
 {elseif $key=='status'}
                 'validate' => 'required, integer',
                 'value'    => self::STATUS_DISABLE,
-{elseif $key=='createAt'}
+{elseif $key=='createdAt'}
                 'filter'   => 'timestamp_or_null',
                 'validate' => 'timestamp',
                 'type'     => 'timestamp',
-                'value'    => time(),   // microtime(true)
-{elseif $key=='updateAt' || $key=='deleteAt'}
+                'value'    => time(),   // microtime(true),
+{elseif $key=='updatedAt' || $key=='deletedAt'}
                 'filter'   => 'timestamp_or_null',
                 'type'     => 'timestamp',
 {elseif $key=='properties'}

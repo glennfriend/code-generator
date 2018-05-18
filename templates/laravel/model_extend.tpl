@@ -274,8 +274,8 @@ EOD;
         $conditionValue = ZendPureSqlModel::arrayFilter([
             'status'            => $status,
             'payment_method'    => $paymentMethod,
-            'create_time_start' => $dateStart,
-            'create_time_end'   => $dateEnd,
+            'created_at_start' => $dateStart,
+            'created_at_end'   => $dateEnd,
         ]);
 
         $querySelect = "SELECT m.*";
@@ -289,8 +289,8 @@ EOD;
             ON    `m`.`order_id`            = `orders`.`id`
             WHERE `m`.`status`              = {ldelim}$pf('status'){rdelim}
             AND   `m`.`payment_method`      = {ldelim}$pf('payment_method'){rdelim}
-            AND   `m`.`create_time`        >= {ldelim}$pf('create_time_start'){rdelim}
-            AND   `m`.`create_time`        <= {ldelim}$pf('create_time_end'){rdelim}
+            AND   `m`.`created_at`          >= {ldelim}$pf('created_at_start'){rdelim}
+            AND   `m`.`created_at`          <= {ldelim}$pf('created_at_end'){rdelim}
 EOD;
 
         // 不一定存在的條件

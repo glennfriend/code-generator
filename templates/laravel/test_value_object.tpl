@@ -33,10 +33,10 @@ class {$obj->upperCamel()}Test extends TestCase
      // ${$obj}->setId                  (0);
 {elseif $key==='attribs'}
      // ${$obj}->setAttrib              ('key', 'value');
-{elseif $key==='createAt'}
-     // ${$obj}->setCreateAt            (time());
-{elseif $key==='updateAt'}
-        ${$obj}->setUpdateAt            (time());
+{elseif $key==='createdAt'}
+     // ${$obj}->setCreatedAt           (time());
+{elseif $key==='updatedAt'}
+        ${$obj}->setUpdatedAt           (time());
 {elseif $field.ado->type=='tinyint' || $field.ado->type=='smallint' || $field.ado->type=='mediumint' || $field.ado->type=='int'}
         ${$obj}->{$field.name->set()}{$key|space_even}(0);
 {elseif $field.ado->type=='timestamp' || $field.ado->type=='datetime' || $field.ado->type=='date'}

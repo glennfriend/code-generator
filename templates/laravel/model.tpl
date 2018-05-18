@@ -3,9 +3,9 @@ declare(strict_types = 1);
 namespace App\Db;
 
 use Illuminate\Database\Eloquent\Model as EloquentModel;
-use App\Db\Base\BaseModel;
-use App\Db\Base\ModelExtendCurd;
-use App\Db\Base\ModelExtendGenAll;
+use Model\BaseModel;
+use Model\ModelExtendCurd;
+use Model\ModelExtendGenAll;
 use App\Db\Eloquent\{$obj->upperCamel()}Emodel;
 use App\Db\{$obj->upperCamel()};
 {foreach from=$tab key=key item=field}

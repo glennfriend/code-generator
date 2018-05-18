@@ -43,7 +43,7 @@
                     @endif
                 </div>
 
-{elseif $key=='createAt' || $key=='updateAt' || $key=='deleteAt'}
+{elseif $key=='createdAt' || $key=='updatedAt' || $key=='deletedAt'}
 {elseif $field.ado->type=='timestamp' || $field.ado->type=='datetime' || $field.ado->type=='date'}
                 <div class="form-group">
                     <label>{$field.name->upperCamel(' ')}</label>

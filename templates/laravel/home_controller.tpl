@@ -256,9 +256,9 @@ class Home extends AdminController
 {if $key=="id"}
 {elseif $key=="properties"}
 {elseif $key=="attribs"}
-{elseif $key=="createAt"}
-{elseif $key=="deleteAt"}
-{elseif $key=="updateAt"}
+{elseif $key=="createdAt"}
+{elseif $key=="deletedAt"}
+{elseif $key=="updatedAt"}
         ${$obj}->{$field.name->set()}{$key|space_even} ( time()                                                     );
 {elseif $field.ado->type=="timestamp" || $field.ado->type=="date" || $field.ado->type=="datetime"}
         ${$obj}->{$field.name->set()}{$key|space_even} ( strtotime($request->post('{$field.ado->name}')){$field.ado->name|space_even:29} );

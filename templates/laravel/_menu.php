@@ -27,7 +27,7 @@ return [
         'clear_comment' => false,
     ],
     'search_table' => [
-        'path'          => "app/Db/SearchTable/",
+        'path'          => "app/Extend/SearchTable/",
         'filename'      => "Search{$mod->upperCamel()}.php",
         'clear_comment' => false,
     ],

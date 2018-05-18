@@ -1,8 +1,10 @@
 <?php
-namespace App\Db\SearchTable;
+namespace App\Extend\SearchTable;
 
-use App\Db\{$mod->upperCamel()};
 use DB;
+use Model\SearchTable\SearchBase;
+use App\Db\{$mod->upperCamel()};
+
 
 /**
  * Search Table
@@ -12,7 +14,7 @@ class Search{$mod->upperCamel()}
     /**
      *
      */
-    use Library\SearchBase;
+    use SearchBase;
 
     /**
      *
