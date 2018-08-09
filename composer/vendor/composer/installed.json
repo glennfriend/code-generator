@@ -1,23 +1,23 @@
 [
     {
         "name": "adodb/adodb-php",
-        "version": "v5.20.4",
-        "version_normalized": "5.20.4.0",
+        "version": "v5.20.13",
+        "version_normalized": "5.20.13.0",
         "source": {
             "type": "git",
             "url": "https://github.com/ADOdb/ADOdb.git",
-            "reference": "1a47f1078318557ac278c82b1b401c8dfc62ae4d"
+            "reference": "1141326db4b5092cee95841a1c056f876b9b4c83"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/ADOdb/ADOdb/zipball/1a47f1078318557ac278c82b1b401c8dfc62ae4d",
-            "reference": "1a47f1078318557ac278c82b1b401c8dfc62ae4d",
+            "url": "https://api.github.com/repos/ADOdb/ADOdb/zipball/1141326db4b5092cee95841a1c056f876b9b4c83",
+            "reference": "1141326db4b5092cee95841a1c056f876b9b4c83",
             "shasum": ""
         },
         "require": {
             "php": ">=5.3.2"
         },
-        "time": "2016-03-31 08:10:52",
+        "time": "2018-08-06T16:04:33+00:00",
         "type": "library",
         "installation-source": "dist",
         "autoload": {
@@ -28,7 +28,7 @@
         "notification-url": "https://packagist.org/downloads/",
         "license": [
             "BSD-3-Clause",
-            "LGPL-2.1"
+            "LGPL-2.1-or-later"
         ],
         "authors": [
             {
@@ -46,7 +46,7 @@
             }
         ],
         "description": "ADOdb is a PHP database abstraction layer library",
-        "homepage": "http://adodb.sourceforge.net/",
+        "homepage": "http://adodb.org/",
         "keywords": [
             "abstraction",
             "database",
@@ -57,23 +57,23 @@
     },
     {
         "name": "smarty/smarty",
-        "version": "v3.1.29",
-        "version_normalized": "3.1.29.0",
+        "version": "v3.1.32",
+        "version_normalized": "3.1.32.0",
         "source": {
             "type": "git",
             "url": "https://github.com/smarty-php/smarty.git",
-            "reference": "35480f10e7ce9b0fdaf23d3799d7b79463919b1e"
+            "reference": "ac9d4b587e5bf53381e21881820a9830765cb459"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/smarty-php/smarty/zipball/35480f10e7ce9b0fdaf23d3799d7b79463919b1e",
-            "reference": "35480f10e7ce9b0fdaf23d3799d7b79463919b1e",
+            "url": "https://api.github.com/repos/smarty-php/smarty/zipball/ac9d4b587e5bf53381e21881820a9830765cb459",
+            "reference": "ac9d4b587e5bf53381e21881820a9830765cb459",
             "shasum": ""
         },
         "require": {
             "php": ">=5.2"
         },
-        "time": "2015-12-21 01:57:06",
+        "time": "2018-04-24T14:53:33+00:00",
         "type": "library",
         "extra": {
             "branch-alias": {
@@ -82,10 +82,8 @@
         },
         "installation-source": "dist",
         "autoload": {
-            "classmap": [
-                "libs/Smarty.class.php",
-                "libs/SmartyBC.class.php",
-                "libs/sysplugins/"
+            "files": [
+                "libs/bootstrap.php"
             ]
         },
         "notification-url": "https://packagist.org/downloads/",
