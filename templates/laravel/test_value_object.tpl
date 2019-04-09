@@ -16,6 +16,10 @@ class {$obj->upperCamel()}Test extends TestCase
      */
     public function setUp()
     {
+        parent::setUp();
+        $this->{$mod->lowerCamel()} = $this->app->make({$mod->upperCamel()}::class);
+
+        // dependency injection
         // include library
         // reset env
         // reset variables
@@ -30,7 +34,7 @@ class {$obj->upperCamel()}Test extends TestCase
         ${$obj} = new {$obj->upperCamel()}();
 {foreach $tab as $key => $field}
 {if $key==='id'}
-     // ${$obj}->setId                  (0);
+     // ${$obj}->setId                  (null);
 {elseif $key==='attribs'}
      // ${$obj}->setAttrib              ('key', 'value');
 {elseif $key==='createdAt'}

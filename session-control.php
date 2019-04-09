@@ -190,7 +190,7 @@ function showTable()
     if (isset($_SESSION['useDb'])) {
 
         $db = getDbConnect();
-        $allTables = $db->MetaTables();
+        $allTables = (array) $db->MetaTables();
         foreach ($allTables as $table) {
 
             $objectName = Cake_Utility_Inflector::singularize($table);

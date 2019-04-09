@@ -3,7 +3,7 @@
 $config['base'] = dirname(__DIR__);
 
 $config['list'] = [
-    'key'       => ['lifetype', 'yii', 'zalora', 'gear', 'wms', 'laravel'],
+    'key'       => ['lifetype', 'yii', 'zalora', 'gear', 'wms', 'laravel_static', 'laravel'],
     'databases' => ['erp', 'crm', 'wms', 'shop', 'site'],
     /**
      *  完全自訂的地方
@@ -33,7 +33,8 @@ $config['list'] = [
 //
 $config['database'] = Array(
     'type'      => 'mysqli',
-    'server'    => 'localhost',
+    'server'    => '127.0.0.1',
+  //'server'    => 'localhost',
     'user'      => 'root',
     'password'  => '',
 );

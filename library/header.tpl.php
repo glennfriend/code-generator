@@ -1,6 +1,11 @@
     <meta http-equiv="Content-Language" content="zh-tw" />
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <style>
+.icon {
+  color: transparent;
+  text-shadow: 0 0 #ec2930;
+}
+
 body {
     font-family: hack, dina, 細明體;
     font-size: 13px;
