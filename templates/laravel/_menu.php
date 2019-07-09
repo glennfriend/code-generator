@@ -7,28 +7,28 @@ $today = date("Y_m_d");
 return [
 
     'value_object' => [
-        'path'          => "app/Db/",
+        'path'          => "app/Entities/",
         'filename'      => "{$obj->upperCamel()}.php",
         'clear_comment' => false,
     ],
     'eloquent' => [
-        'path'          => "app/Db/Eloquent/",
-        'filename'      => "{$obj->upperCamel()}Emodel.php",
+        'path'          => "app/Entities/Eloquent/",
+        'filename'      => "{$obj->upperCamel()}Eloquent.php",
         'clear_comment' => false,
     ],
     'model' => [
-        'path'          => "app/Db/",
+        'path'          => "app/Entities/",
         'filename'      => "{$mod->upperCamel()}.php",
         'clear_comment' => false,
     ],
     'model_extend' => [
-        'path'          => "app/Db/",
+        'path'          => "app/Entities/",
         'filename'      => "{$mod->upperCamel()}.php",
         'clear_comment' => false,
     ],
     'search_table' => [
-        'path'          => "app/Extend/SearchTable/",
-        'filename'      => "Search{$mod->upperCamel()}.php",
+        'path'          => "app/Entities/SearchTable/",
+        'filename'      => "{$mod->upperCamel()}.php",
         'clear_comment' => false,
     ],
     'migration' => [
@@ -99,8 +99,13 @@ return [
 
     // test
     'test_value_object' => [
-        'path'          => "tests/app/Db/",
+        'path'          => "tests/app/Unit/Entities/",
         'filename'      => "{$obj->upperCamel()}Test.php",
+        'clear_comment' => false,
+    ],
+    'test_api' => [
+        'path'          => "tests/app/Feature/Api/",
+        'filename'      => "{$obj->upperCamel()}ApiTest.php",
         'clear_comment' => false,
     ],
 

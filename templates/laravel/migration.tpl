@@ -29,7 +29,7 @@ class {$mod->upperCamel()}Table extends Migration
     public function down()
     {
         // $sql = 'DROP TABLE `{$mod->lower('_')}`';
-        Schema::drop('{$mod->lower('_')}');
+        Schema::dropIfExists('{$mod->lower('_')}');
     }
 
     /* --------------------------------------------------------------------------------

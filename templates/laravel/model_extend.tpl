@@ -14,10 +14,10 @@ class {$mod->upperCamel()}
      *
      * @return {$obj->upperCamel()}|null
      */
-    public static function getLast(): ?{$obj->upperCamel()}
+    public function getLast(): ?{$obj->upperCamel()}
     {
-        $eloquent = static::getModel();
-        $flight = $eloquent
+        $model = $this->getModel();
+        $flight = $model
                     ->where('status', {$obj->upperCamel()}::STATUS_ENABLE)
                     ->orderBy('id', 'DESC')
                     ->first();
@@ -26,7 +26,7 @@ class {$mod->upperCamel()}
            return null;
         }
 
-        return static::get($flight->id);
+        return $this->get($flight->id);
     }
 
     /**
@@ -36,7 +36,7 @@ class {$mod->upperCamel()}
      */
     public static function getLast(): ?{$obj->upperCamel()}
     {
-        $table = static::getModel()->getTable();
+        $table = $this->getModel()->getTable();
 
         $sql = <<<EOD
             select `id`
@@ -47,6 +47,39 @@ class {$mod->upperCamel()}
 EOD;
 
         $objects = DB::select($sql, [{$obj->upperCamel()}::STATUS_ENABLE]);
+        foreach ($objects as $obj) {
+            return static::get($obj->id);
+        }
+
+        return null;
+
+        /*
+            以下的語法 未經過測試
+
+            注意
+            可能要在 database.php config 設定
+
+                'mysql' => [
+                    'driver' => 'mysql',
+                    ...
+                    'options' => [
+                        PDO::ATTR_EMULATE_PREPARES => true,
+                    ],
+                ],
+
+        */
+
+        $sql = <<<EOD
+            select `id`
+            from `{$table}`
+            where `status` = :status
+            order by id desc
+            limit 1
+EOD;
+
+        $objects = DB::select(DB::raw($sql), [
+            'status' => SearchBiSubscriptionPayment::STATUS_ENABLE,
+        ]);
         foreach ($objects as $obj) {
             return static::get($obj->id);
         }

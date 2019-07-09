@@ -1,10 +1,10 @@
 <?php
-namespace Tests\app\Db;
+namespace Tests\app\Entities;
 
 use Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use App\Db\{$mod->upperCamel()};
-use App\Db\{$obj->upperCamel()};
+use App\Entities\{$mod->upperCamel()};
+use App\Entities\{$obj->upperCamel()};
 
 /**
  *
@@ -14,10 +14,11 @@ class {$obj->upperCamel()}Test extends TestCase
     /**
      *
      */
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $this->{$mod->lowerCamel()} = $this->app->make({$mod->upperCamel()}::class);
+     // $this->{$mod} = app({$mod->upperCamel()}::class);
 
         // dependency injection
         // include library
@@ -26,29 +27,12 @@ class {$obj->upperCamel()}Test extends TestCase
     }
 
     /**
-     * test value object basic get/set
+     * @testdox {$obj->upperCamel()} value object basic get/set
      */
-    public function testValueObjectBasicAccess()
+    public function test_create{$obj->upperCamel()}()
     {
-        //
-        ${$obj} = new {$obj->upperCamel()}();
-{foreach $tab as $key => $field}
-{if $key==='id'}
-     // ${$obj}->setId                  (null);
-{elseif $key==='attribs'}
-     // ${$obj}->setAttrib              ('key', 'value');
-{elseif $key==='createdAt'}
-     // ${$obj}->setCreatedAt           (time());
-{elseif $key==='updatedAt'}
-        ${$obj}->setUpdatedAt           (time());
-{elseif $field.ado->type=='tinyint' || $field.ado->type=='smallint' || $field.ado->type=='mediumint' || $field.ado->type=='int'}
-        ${$obj}->{$field.name->set()}{$key|space_even}(0);
-{elseif $field.ado->type=='timestamp' || $field.ado->type=='datetime' || $field.ado->type=='date'}
-        ${$obj}->{$field.name->set()}{$key|space_even}('2000-01-01');
-{else}
-        ${$obj}->{$field.name->set()}{$key|space_even}('{$field.ado->type}');
-{/if}
-{/foreach}
+        $object = $this->factory{$obj->upperCamel()}();
+        ${$obj} = $this->{$mod}->add($object);
 
         //
         $this->assertEquals(
@@ -66,6 +50,44 @@ class {$obj->upperCamel()}Test extends TestCase
             '${$obj}->getFullName() 取得的值有問題'
         );
 
+    }
+
+    // ------------------------------------------------------------
+    //  private
+    // ------------------------------------------------------------
+
+    protected function factory{$obj->upperCamel()}()
+    {
+        ${$obj} = ${$mod}->vo();
+
+{foreach $tab as $key => $field}
+{if $key==='id'}
+{elseif $key==='attribs'}
+     // ${$obj}->setAttrib              ('key', 'value');
+{elseif $key==='createdAt'}
+     // ${$obj}->setCreatedAt           (time());
+{elseif $key==='updatedAt'}
+        ${$obj}->setUpdatedAt           (time());
+{elseif $field.ado->type=='tinyint' || $field.ado->type=='smallint' || $field.ado->type=='mediumint' || $field.ado->type=='int'}
+        ${$obj}->{$field.name->set()}{$key|space_even}(0);
+{elseif $field.ado->type=='timestamp' || $field.ado->type=='datetime' || $field.ado->type=='date'}
+        ${$obj}->{$field.name->set()}{$key|space_even}('2000-01-01');
+{else}
+        ${$obj}->{$field.name->set()}{$key|space_even}('{$field.ado->type}');
+{/if}
+{/foreach}
+        // $obj->setName(data_get($data, 'my.name'));
+
+        return ${$obj};
+    }
+
+    protected function getData()
+    {
+        $data = [
+{foreach from=$tab key=key item=field}
+            '{$field.ado->name}'{$key|space_even} => '',
+{/foreach}
+        ];
     }
 
 }

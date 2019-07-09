@@ -1,17 +1,18 @@
 <?php
 declare(strict_types = 1);
-namespace App\Db;
+namespace App\Entities;
 
 use vvh;
-use Model\BaseObject;
-use Model\ValueObjectExtendFetch;
+use Cor\Model\{ldelim}BaseObject, ValueObjectExtendFetch{rdelim};
 {foreach from=$tab key=key item=field}
 {if $key=='attribs'}
-use Model\ValueObjectExtendAttribs;
+use Cor\Model\ValueObjectExtendAttribs;
 {elseif $key=='properties'}
-use Model\ValueObjectExtendProperties;
+use Cor\Model\ValueObjectExtendProperties;
+{elseif $key=='updatedAt'}
+use Cor\Model\ValueObjectExtendTouch;
 {elseif $key=='userId'}
-use App\Db\User;
+use App\Entities\User;
 {/if}
 {/foreach}
 
@@ -55,22 +56,37 @@ class {$obj->upperCamel()} extends BaseObject
     use ValueObjectExtendAttribs;
 {elseif $key=='properties'}
     use ValueObjectExtendProperties;
+{elseif $key=='updatedAt'}
+    use ValueObjectExtendTouch;
 {/if}
 {/foreach}
 
 {foreach $tab as $key => $field}
-{if $field.ado->type=='tinyint' && $field.ado->name=='status'}
-    // {$field.name->lower('_')}
+{if $field.ado->name=='status' && $field.ado->type=='enum'}
+    // {$field.name->lower('_')} ({$field.ado->type})
+    const {$field.name->upper()}_ENABLE     = 'enable';
+    const {$field.name->upper()}_DISABLE    = 'disable';
+{elseif $field.ado->name=='status'}
+    // {$field.name->lower('_')} ({$field.ado->type})
     const {$field.name->upper()}_DISABLE    = 0;
     const {$field.name->upper()}_ENABLE     = 1;
     const {$field.name->upper()}_DELETE     = 9;
+{elseif $field.ado->type=='tinyint'}
+    // {$field.name->lower('_')} ({$field.ado->type})
+    const {$field.name->upper()}_TYPE0      = 0;
+    const {$field.name->upper()}_TYPE1      = 1;
+{elseif $field.ado->type=='enum'}
+    // {$field.name->lower('_')} ({$field.ado->type})
+    const {$field.name->upper()}_ITEM_DISABLE   = 'disable';
+    const {$field.name->upper()}_ITEM_ENABLE    = 'enable';
+    const {$field.name->upper()}_ITEM_DELETE    = 'delete';
 {/if}
 {/foreach}
 
     /**
      * @return array
      */
-    public function attributesDefinition()
+    public function attributesDefinition(): array
     {
         return [
 {foreach from=$tab key=key item=field}
@@ -78,14 +94,17 @@ class {$obj->upperCamel()} extends BaseObject
 {if $key=='id'}
                 'filter'   => 'intval',
                 'validate' => 'required, integer, min:0',
+{elseif $key=='status' && $field.ado->type=='enum'}
+                'validate' => 'required',
+                'value'    => self::STATUS_ENABLE,
 {elseif $key=='status'}
                 'validate' => 'required, integer',
-                'value'    => self::STATUS_DISABLE,
+                'value'    => self::STATUS_ENABLE,
 {elseif $key=='createdAt'}
                 'filter'   => 'timestamp_or_null',
                 'validate' => 'timestamp',
                 'type'     => 'timestamp',
-                'value'    => time(),   // microtime(true),
+                'value'    => microtime(true),   // tmie(), microtime(true),
 {elseif $key=='updatedAt' || $key=='deletedAt'}
                 'filter'   => 'timestamp_or_null',
                 'type'     => 'timestamp',
@@ -119,6 +138,9 @@ class {$obj->upperCamel()} extends BaseObject
                 'validate' => 'timestamp',
                 'type'     => 'timestamp',
                 'value'    => strtotime('2000-01-01'),
+{elseif $field.ado->type=='enum'}
+                'validate' => 'required, integer',
+                'value'    => self::ITEM_OPTIONS, // enum
 {else}
                 'filter'   => '??????',
                 'validate' => '??????',  // {$field.ado->type}

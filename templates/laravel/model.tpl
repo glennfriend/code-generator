@@ -1,16 +1,15 @@
 <?php
 declare(strict_types = 1);
-namespace App\Db;
+namespace App\Entities;
 
-use Illuminate\Database\Eloquent\Model as EloquentModel;
-use Model\BaseModel;
-use Model\ModelExtendCurd;
-use Model\ModelExtendGenAll;
-use App\Db\Eloquent\{$obj->upperCamel()}Emodel;
-use App\Db\{$obj->upperCamel()};
+use Cor\Model\BaseModel;
+use Cor\Model\ModelExtendCurd;
+use Cor\Model\ModelExtendGenAll;
+use App\Entities\Eloquent\{$obj->upperCamel()}Eloquent;
+use App\Entities\{$obj->upperCamel()};
 {foreach from=$tab key=key item=field}
 {if $key=='userId'}
-use App\Db\User;
+use App\Entities\User;
 {/if}
 {/foreach}
 
@@ -30,20 +29,19 @@ class {$mod->upperCamel()} extends BaseModel
     use ModelExtendCurd;
     use ModelExtendGenAll;
 
-    protected static $valueObjectName = {$obj->upperCamel()}::class;
-    protected static $modelObjectName = {$obj->upperCamel()}Emodel::class;
-    protected static $cacheFields     = ['id'];
+    protected $valueObjectName = {$obj->upperCamel()}::class;
+    protected $modelObjectName = {$obj->upperCamel()}Eloquent::class;
+    protected $cacheFields     = ['id'];
 
     /**
      * build value object after hook
      */
-    // protected static function valueObjectHook(${$obj})
-    // {
-    //     // {$obj->upperCamel()} append extended info
-    //     $user->setAttrib('test_only', 'test_only');
-    //
-    //     return ${$obj};
-    // }
+    protected function valueObjectHook(${$obj})
+    {
+        // {$obj->upperCamel()} append extended info
+        // $user->setAttrib('test_only', 'test_only');
+        return ${$obj};
+    }
 
 
 
@@ -70,7 +68,7 @@ class {$mod->upperCamel()} extends BaseModel
      */
     public static function get{$mod->upperCamel()}ByUserId($userId): array
     {
-        return static::getMany('user_id', $userId);
+        return $this->getMany('user_id', $userId);
     }
 {/if}
 {/foreach}

@@ -1,9 +1,9 @@
 <?php
-namespace App\Db\Eloquent;
+namespace App\Entities\Eloquent;
 
 use Illuminate\Database\Eloquent\Model;
 
-class {$obj->upperCamel()}Emodel extends Model
+class {$obj->upperCamel()}Eloquent extends Model
 {
     protected $table = '{$tableName->lower("_")}';
     public $timestamps = false;

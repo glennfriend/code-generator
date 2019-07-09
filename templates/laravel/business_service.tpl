@@ -4,8 +4,8 @@ namespace App\Service\{$obj->upperCamel()};
 
 use DB;
 use Exception;
-use App\Db\{$obj->upperCamel()};
-use App\Db\{$mod->upperCamel()};
+use App\Entities\{$obj->upperCamel()};
+use App\Entities\{$mod->upperCamel()};
 
 /**
  * {$obj->upperCamel()} Service
@@ -29,7 +29,7 @@ class {$obj->upperCamel()}Service
     public function get(int ${$obj->lowerCamel()}Id): ?{$obj->upperCamel()}
     {
         try {
-            ${$obj} = $this->{$mod}->get($new{$obj->upperCamel()});
+            ${$obj} = $this->{$mod}->get(${$obj->lowerCamel()}Id);
             if (! ${$obj}) {
                 return null;
             }
@@ -46,20 +46,20 @@ class {$obj->upperCamel()}Service
     /**
      * add
      *
-     * @param {$obj->upperCamel()} $new{$obj->upperCamel()}
+     * @param {$obj->upperCamel()} $newObject
      * @return {$obj->upperCamel()}|null
      * @throws Exception
      */
-    public function add({$obj->upperCamel()} $new{$obj->upperCamel()}): ?{$obj->upperCamel()}
+    public function add({$obj->upperCamel()} $newObject): ?{$obj->upperCamel()}
     {
-        if (! $this->validate($new{$obj->upperCamel()})) {
+        if (! $this->validate($newObject)) {
             return null;
         }
 
         DB::beginTransaction();
 
         try {
-            ${$obj} = $this->{$mod}->add($new{$obj->upperCamel()});
+            ${$obj} = $this->{$mod}->add($newObject);
             if (! ${$obj}) {
                 return null;
             }
@@ -178,9 +178,9 @@ class {$obj->upperCamel()}Service
      *  update search table
      */
     /*
-    protected function updateSearchTable(${$obj})
+    protected function updateSearchTable({$obj->upperCamel()} ${$obj})
     {
-        $this->searchTable______->rebuild(${$obj}->getId());
+        $this->search______->rebuild(${$obj}->getId());
     }
     */
 

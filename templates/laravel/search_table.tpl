@@ -1,26 +1,30 @@
 <?php
-namespace App\Extend\SearchTable;
+namespace App\Entities\SearchTable;
+// namespace Modules\______\Entities\SearchTable;
 
 use DB;
-use Model\SearchTable\SearchBase;
+use Cor\Model\SearchTable\SearchBase;
+use Cor\Model\Utility\ArrayKit\Dot;
 use App\Db\{$mod->upperCamel()};
+// use Modules\____\Entities\{$mod->upperCamel()};
 
 
 /**
  * Search Table
  */
-class Search{$mod->upperCamel()}
+class {$mod->upperCamel()}
 {
-    /**
-     *
-     */
+    // trait
     use SearchBase;
 
-    /**
-     *
-     */
-    const TABLE      = 'search_{$tableName->lower('_')}';
-    const MASTER_KEY = '{$obj->lower('_')}_id';
+    //
+    const TABLE      = '{$tableName->lower('_')}';
+    const MASTER_KEY = '{$obj->lower('_')}_id';     // please modify, is your parent id
+
+    public function __construct({$mod->upperCamel()} ${$mod})
+    {
+        $this->{$mod} = ${$mod};
+    }
 
     /**
      * 依照需求, 重新建立 一筆或多筆 供搜尋使用的資料
@@ -29,10 +33,10 @@ class Search{$mod->upperCamel()}
      *
      * @param ${$obj}Id
      */
-    public static function rebuild(${$obj}Id)
+    public function rebuild(${$obj}Id)
     {
-        ${$mod->lowerCamel()} = new {$mod->upperCamel()}();
-        ${$obj} = ${$mod->lowerCamel()}->get(${$obj}Id);
+        ${$mod} = $this->{$mod}->get(${$obj}Id);
+        ${$obj} = ${$mod}->get(${$obj}Id);
         if (! ${$obj}) {
             return;
         }
@@ -41,30 +45,37 @@ class Search{$mod->upperCamel()}
         $masterKey   = static::MASTER_KEY;
         $masterValue = ${$obj}->getId();
 
-        // delete
-        // !!!!!!!!!!!! 內容請改成 array !!??
-        static::_delete($masterKey, $masterValue);
+        //
+        $this->deleteManyByMasterKey($masterValue);
 
-        /*
         // check insert condition
-        $isInsert = ${$obj}->getProperty('is_insert_extends');
-        $isInsert = ${$obj}->getAttrib('is_insert_extends');
-        if (! $isInsert) {
+        $attribRaw = ${$mod}->getAttrib('raw');
+        if (! $attribRaw) {
             return;
         }
-        */
+        $get = Dot::factory($attribRaw);
+        
 
         // build row
         $row = [
-            'id'                    => 0,
-            $masterKey              => (string) $masterValue,
+{foreach from=$tab key=key item=field}
+{if $field.ado->type=='tinyint' || $field.ado->type=='int' || $field.ado->type=='smallint' || $field.ado->type=='bigint'}
+            '{$field.ado->name}' {$field.ado->name|space_even} => (int)    $get('oooooo.xxxxxx'),
+{elseif $field.ado->type=="timestamp" || $field.ado->type=="date" || $field.ado->type=="datetime"}
+            '{$field.ado->name}' {$field.ado->name|space_even} =>          date("c", ${$obj}->{$field.name->get()}()),
+{else}
+            '{$field.ado->name}' {$field.ado->name|space_even} => (string) $get('oooooo.xxxxxx'),
+{/if}
+{/foreach}
+            //
             'link_aaaa_id'          => (string) ${$obj}->getAttrib('xxxxxx'),
             'link_bbbb_id'          => (string) ${$obj}->getAttrib('xxxxxx'),
-            'tag_name'              => (string) ${$obj}->getAttrib('xxxxxx'),
-            'full_name'             => (string) ${$obj}->getAttrib('xxxxxx'),
+            'tag_name'              =>          ${$obj}->getAttrib('xxxxxx') ?? null,
+            'full_name'             =>          ${$obj}->getAttrib('xxxxxx') ?? null,
             'email_hostname'        => (string) ${$obj}->getAttrib('xxxxxx'),
             'user_age'              => (string) ${$obj}->getAttrib('xxxxxx'),
             'image_mime_type'       => (string) ${$obj}->getAttrib('xxxxxx'),
+            'canceled_at'           =>          ($at = $get('meta.canceled_at')) ? date('c', $at) : null,
             'user_gender_convert'   => (string) (${$obj}->getGender()==1) ? "male" : "female"),
             'price_scope_convert'   => (string) (${$obj}->getPrice()>=1000) ? "expensive" : "cheap"),
             'status_convert'        => (string) (${$obj}->getStatus()==1) ? "enable" : "disable"),
@@ -72,15 +83,18 @@ class Search{$mod->upperCamel()}
             'popular_article_id'    => (string) ${$obj}->getBlog()->getPopularArticle()->getId(),
             'popular_article_view'  => (string) ${$obj}->getBlog()->getPopularArticle()->getTheNumberOfClicks(),
             'referrer_host'         => (string) getUrlHost(${$obj}->getAttrib('referrer'));
+            //
+            $masterKey              => (string) $masterValue,
         ];
-        // pr($row);
+        $row = $this->arrayRemoveNullValue($row);
+        // dd($row);
 
-        // first insert
+
+        // myself insert, or more insert other row
         static::_insert($row);
 
-        // extends insert
-        // ....
-        // static::_insert($row);
+        // myself update
+        // $this->_update($row);
     }
 
     /**
@@ -95,11 +109,13 @@ class Search{$mod->upperCamel()}
      *
      * @return \Generator
      */
-    public static function reset()
+    public function reset()
     {
         // clear all
-        $originTable = {$mod->upperCamel()}::getModel()->getTable();
-        static::_truncate();
+        $originTable = $this->biSources->getModel()->getTable();
+        
+
+        $this->_truncate();
 
         // build all
         $page = 1;
@@ -107,7 +123,7 @@ class Search{$mod->upperCamel()}
         while (true) {
 
             $recordStart = ($page-1) * $itemsPerPage;
-            $sql = "select id from `{ldelim}$originTable{rdelim}` where 1 order by id ASC limit ?, ?";
+            $sql = "SELECT id FROM `{ldelim}$originTable{rdelim}` WHERE 1 ORDER BY id ASC LIMIT ?, ?";
             $stds = DB::select($sql, [$recordStart, $itemsPerPage]);
             if (! $stds) {
                 break;
@@ -123,7 +139,7 @@ class Search{$mod->upperCamel()}
             ];
 
             foreach ($stds as $std) {
-                static::rebuild($std->id);
+                $this->rebuild($std->id);
             }
 
             $page++;
@@ -136,10 +152,22 @@ class Search{$mod->upperCamel()}
     -------------------------------------------------------------------------------- */
 
     /**
+     * @param int $masterValue
+     */
+    protected function deleteManyByMasterKey(int $masterValue)
+    {
+        $masterKey = static::MASTER_KEY;
+
+        // delete many by master key of value
+        $this->_delete($masterKey, $masterValue);
+    }
+
+    /**
      * @param $url
      * @return array
      */
-    protected static function parseUrlParams($url)
+    /*
+    protected function parseUrlParams($url)
     {
         $referInfo = parse_url($url);
         if (!isset($referInfo['query'])) {
@@ -173,5 +201,6 @@ class Search{$mod->upperCamel()}
 
         return $result;
     }
+    */
 
 }
