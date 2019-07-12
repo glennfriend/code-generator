@@ -108,7 +108,12 @@ return [
         'filename'      => "{$obj->upperCamel()}ApiTest.php",
         'clear_comment' => false,
     ],
-
+    'database_factory' => [
+        'path'          => "app/database/factories/",
+        'filename'      => "{$obj->upperCamel()}Facotry.php",
+        'clear_comment' => false,
+    ],
+    
 ];
 
 //

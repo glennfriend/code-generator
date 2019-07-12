@@ -16,8 +16,9 @@
         <a href="?t=view_create">create</a>,
         <a href="?t=js_object">js object</a>
     [test]
-    <a href="?t=test_value_object">Value Object</a>
-    <a href="?t=test_api">Api</a>
+        <a href="?t=test_value_object">Value Object</a>
+        <a href="?t=test_api">Api</a>
+        <a href="?t=database_factory">database/factories</a>
 </div>
 
 <div class="bar2">
