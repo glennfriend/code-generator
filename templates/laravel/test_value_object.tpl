@@ -2,24 +2,29 @@
 namespace Tests\app\Entities;
 
 use Tests\TestCase;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Foundation\Testing\{ldelim}RefreshDatabase, DatabaseTransactions{rdelim};
 use App\Entities\{$mod->upperCamel()};
 use App\Entities\{$obj->upperCamel()};
+use App\Entities\Eloquent\{$obj->upperCamel()}Eloquent;
+// use Modules\______\Entities\{$mod->upperCamel()};
+// use Modules\______\Entities\{$obj->upperCamel()};
+// use Modules\______\Entities\Eloquent\{$obj->upperCamel()}Eloquent;
 
 /**
  *
  */
 class {$obj->upperCamel()}Test extends TestCase
 {
+    use DatabaseTransactions;
+
     /**
      *
      */
     public function setUp(): void
     {
         parent::setUp();
-        $this->{$mod->lowerCamel()} = $this->app->make({$mod->upperCamel()}::class);
-     // $this->{$mod} = app({$mod->upperCamel()}::class);
 
+        $this->initBuild();
         // dependency injection
         // include library
         // reset env
@@ -29,10 +34,11 @@ class {$obj->upperCamel()}Test extends TestCase
     /**
      * @testdox {$obj->upperCamel()} value object basic get/set
      */
-    public function test_create{$obj->upperCamel()}()
+    public function test_create_{$obj->lowerCamel()}()
     {
-        $object = $this->factory{$obj->upperCamel()}();
-        ${$obj} = $this->{$mod}->add($object);
+        ${$obj} = $this->{$mod}->get(1);
+     // ${$obj} = $this->{$mod}->get($this->{$obj}Eloquent_1->id);
+
 
         //
         $this->assertEquals(
@@ -49,17 +55,20 @@ class {$obj->upperCamel()}Test extends TestCase
             ${$obj}->getFullName(),
             '${$obj}->getFullName() 取得的值有問題'
         );
-
     }
 
     // ------------------------------------------------------------
     //  private
     // ------------------------------------------------------------
 
-    protected function factory{$obj->upperCamel()}()
+    protected function initBuild()
     {
-        ${$obj} = ${$mod}->vo();
+        $this->{$obj}Eloquent_1 = factory({$obj->upperCamel()}Eloquent::class)->create();
 
+        //
+        $this->{$mod->lowerCamel()} = $this->app->make({$mod->upperCamel()}::class);
+     // $this->{$mod} = app({$mod->upperCamel()}::class);
+        ${$obj} = $this->{$mod}->vo();
 {foreach $tab as $key => $field}
 {if $key==='id'}
 {elseif $key==='attribs'}
@@ -77,18 +86,19 @@ class {$obj->upperCamel()}Test extends TestCase
 {/if}
 {/foreach}
         // $obj->setName(data_get($data, 'my.name'));
-
-        return ${$obj};
+        $this->{$mod}->add(${$obj});
     }
 
+    /*
     protected function getData()
     {
         $data = [
 {foreach from=$tab key=key item=field}
-            '{$field.ado->name}'{$key|space_even} => '',
+            '{$field.ado->name}'{$field.ado->name|space_even} => '',
 {/foreach}
         ];
     }
+    */
 
 }
 
