@@ -32,20 +32,34 @@ function assingTemplate($template)
     $template->assign('obj', $obj);
     $template->assign('tab', $tab);
     $template->assign('today', date("Ymd"));
+    return $template;
+}
 
+function show_debug_information(
+    $mod = null,
+    $obj = null,
+    $tab = null)
+{
+    if ($mod) {
+        echo '$mod' . " => ";
+        print_r($mod);
+        echo "\n";
+    }
 
-    /*
-    echo '<pre style="background-color:#def;color:#000;text-align:left;font-size:10px;font-family:dina,GulimChe;">';
-    // print_r( $mod           ); echo "\n";
-    // print_r( $obj           ); echo "\n";
-    print_r( $tab           ); echo "\n";
+    if ($obj) {
+        echo '$obj' . " => ";
+        print_r($obj);
+        echo "\n";
+    }
+
+    if ($tab) {
+        echo '$tab' . " => ";
+        print_r($tab);
+        echo "\n";
+    }
+
     // print_r( getTableColumnsStatus() ); echo "\n";
     // print_r( getProjectName()        ); echo "\n";
     // print_r( getDaoName()            ); echo "\n";
     // print_r( getTable()              ); echo "\n";
-    echo "</pre>\n"; exit;
-    */
-
-
-    return $template;
 }

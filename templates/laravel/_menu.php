@@ -113,6 +113,13 @@ return [
         'filename'      => "{$obj->upperCamel()}Facotry.php",
         'clear_comment' => false,
     ],
+  
+    // for debug
+    'debug_only' => [
+        'path'          => "app/",
+        'filename'      => "Debug.php",
+        'clear_comment' => false,
+    ],
     
 ];
 

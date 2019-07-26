@@ -2,8 +2,9 @@
 declare(strict_types = 1);
 namespace App\Service\{$obj->upperCamel()};
 
-use DB;
 use Exception;
+use DB;
+use Log;
 use App\Entities\{$obj->upperCamel()};
 use App\Entities\{$mod->upperCamel()};
 
@@ -33,8 +34,6 @@ class {$obj->upperCamel()}Service
             if (! ${$obj}) {
                 return null;
             }
-
-            $this->postHook(${$obj});
         }
         catch (Exception $e) {
             throw new Exception($e->getMessage());
@@ -57,21 +56,19 @@ class {$obj->upperCamel()}Service
         }
 
         DB::beginTransaction();
-
         try {
             ${$obj} = $this->{$mod}->add($newObject);
             if (! ${$obj}) {
                 return null;
             }
-
-            $this->postHook(${$obj});
         }
         catch (Exception $e) {
             DB::rollBack();
             throw new Exception($e->getMessage());
         }
-
         DB::commit();
+
+        $this->postHook(${$obj});
         return ${$obj};
     }
 
@@ -89,20 +86,18 @@ class {$obj->upperCamel()}Service
         }
 
         DB::beginTransaction();
-
         try {
             if (! $this->{$mod}->update(${$obj})) {
                 return false;
             }
-
-            $this->postHook(${$obj});
         }
         catch (Exception $e) {
             DB::rollBack();
             throw new Exception($e->getMessage());
         }
-
         DB::commit();
+
+        $this->postHook(${$obj});
         return true;
     }
 
@@ -120,20 +115,18 @@ class {$obj->upperCamel()}Service
         }
 
         DB::beginTransaction();
-
         try {
             if (! $this->{$mod}->delete($id)) {
                 return false;
             }
-
-            $this->postHook(${$obj});
         }
         catch (Exception $e) {
             DB::rollBack();
             throw new Exception($e->getMessage());
         }
-
         DB::commit();
+
+        $this->postHook(${$obj});
         return true;
     }
 
@@ -162,16 +155,22 @@ class {$obj->upperCamel()}Service
      */
     protected function postHook({$obj->upperCamel()} ${$obj})
     {
-        /*
-            例如 add article comment , 則 article of num_comments field 要做更新
+        try {
+            /*
+                例如 add article comment , 則 article of num_comments field 要做更新
 
-            $article = $object->getArticle();
-            $article->setNumComments( $this->getNumArticleComments( $article->getId() ) );
-            $articles = new Articles();
-            $articles->updateArticle($article);
+                $article = $object->getArticle();
+                $article->setNumComments( $this->getNumArticleComments( $article->getId() ) );
+                $articles = new Articles();
+                $articles->updateArticle($article);
 
-            $this->updateSearchTable();
-        */
+                $this->updateSearchTable();
+            */
+        }
+        catch (Exception $e) {
+            // hook allow error
+            Log::warning('hook exception: ' . $e->getMessage());
+        }
     }
 
     /**
