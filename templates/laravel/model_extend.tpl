@@ -71,7 +71,7 @@ EOD;
 
         $sql = <<<EOD
             select `id`
-            from `{$table}`
+            from `{ldelim}$table{rdelim}`
             where `status` = :status
             order by id desc
             limit 1
@@ -103,6 +103,30 @@ EOD;
         return $objects[0];
     }
 
+    /**
+     *  find by scope
+     *
+     *  @return array {$mod->upperCamel()}
+     */
+    public function findByScope(int $fromId, int $toId): array
+    {
+        $flight = $this->getModel()
+            ->where('id', '>=', $fromId)
+            ->where('id', '<=', $toId)
+            ->orderBy('id', 'asc')
+            ->get();
+
+        if (0 === count($flight)) {
+            return [];
+        }
+
+        ${$mod} = [];
+        foreach ($flight as $model) {
+            ${$mod}[] = $this->get($model->id);
+        }
+
+        return ${$mod};
+    }
 
 
 
