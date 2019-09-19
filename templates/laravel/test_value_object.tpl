@@ -100,6 +100,21 @@ class {$obj->upperCamel()}Test extends TestCase
     }
     */
 
+    /*
+    protected function createElquentData()
+    {
+        // $faker = \Faker\Factory::create();
+
+        // ->make()     不會進到 database
+        // ->create()   建立到 database
+        $contact = factory({$obj->upperCamel()}::class)->create([
+{foreach from=$tab key=key item=field}
+            '{$field.ado->name}'{$field.ado->name|space_even} => '',
+{/foreach}
+        ]);
+    }
+    */
+
 }
 
 

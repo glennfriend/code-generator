@@ -18,6 +18,8 @@
     [test]
         <a href="?t=test_value_object">Value Object</a>
         <a href="?t=test_api">Api</a>
+        <a href="?t=test_controller">controller</a>
+        <a href="?t=test_service">service</a>
         <a href="?t=database_factory">database/factories</a>
     [other]
         <a href="?t=debug_only">D</a>

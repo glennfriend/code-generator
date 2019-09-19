@@ -1,18 +1,175 @@
 <?php
-namespace App\Http\Controllers\Admin\______;
+declare(strict_types = 1);
+namespace App\Http\Controllers;
+namespace Modules\{$mod->upperCamel()}\Http\Controllers;
 
+use Exception;
 use Illuminate\Http\Request;
-use App\Utility\Output\FormMessageManager;
-use App\Http\Controllers\AdminController;
-use App\Db\{$mod->upperCamel()};
-use App\Db\{$obj->upperCamel()};
-use App\Business\{$obj->upperCamel()}\{$obj->upperCamel()}Service;
+use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Log;
+
+use App\Entities\{$mod->upperCamel()};
+use App\Entities\{$obj->upperCamel()};
+use App\Services\{$obj->upperCamel()}\{$obj->upperCamel()}Service;
 
 /**
  *
  */
-class Home extends AdminController
+class {$mod->upperCamel()}Controller extends Controller
 {
+    /**
+     *
+     */
+    public function __construct(
+        {$mod->upperCamel()} ${$mod}
+    )
+    {
+        $this->{$mod} = ${$mod};
+    }
+
+
+    /**
+     * @param Request $request
+     * @param ${$obj}Id
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function index(Request $request, ${$obj}Id)
+    {
+        try {
+            // 
+        }
+        catch (Exception $e) {
+            return response()->json([], 200);
+        }
+
+        //
+        return response()->json([], 200);
+    }
+
+
+
+    /**
+     *  input validate example
+     */
+    public function inputValidate__Example(Request $request)
+    {
+        $validator = Validator::make($request->query(), [
+            'required_keys'          => 'required|array|min:1',
+            'required_keys.*'        => ['required', 'regex:/^(processor_id|card_type|subscription_plan)$/i'],
+            'my_status'              => 'exists:enabled,disabled,draft,deleted',
+            //
+{foreach $tab as $key => $field}
+{if $key=="id"}
+{elseif $key=="properties"}
+{elseif $key=="attribs"}
+{elseif $key=="createdAt"}
+{elseif $key=="deletedAt"}
+{elseif $key=="updatedAt"}
+{elseif $key=="email"}
+            '{$field.ado->name}'{$field.ado->name|space_even}   => 'email',
+{elseif $field.ado->type=='timestamp'
+     || $field.ado->type=='datetime'
+     || $field.ado->type=='date'
+}
+            '{$field.ado->name}'{$field.ado->name|space_even}   => 'nullable|date',
+{elseif $field.ado->type=='tinyint'
+     || $field.ado->type=='int'
+     || $field.ado->type=='smallint'
+     || $field.ado->type=='bigint'
+     || $field.ado->type=='float'
+     || $field.ado->type=='decimal'
+}
+            '{$field.ado->name}'{$field.ado->name|space_even}   => 'required|int|min:1',
+{else}
+            '{$field.ado->name}'{$field.ado->name|space_even}   => 'nullable|string',
+{/if}
+{/foreach}
+        ]);
+
+        /*
+        $validator->after(function ($validator) {
+            if ($this->somethingElseIsInvalid()) {
+                $validator->errors()->add('field', 'Something is wrong with this field!');
+            }
+        });
+        */
+
+        if ($validator->fails()) {
+            $body = [
+                'message' => $validator->errors()->first()
+            ];
+            return response()->json($body, 400);
+        }
+
+        // return response()->json(????);
+    }
+
+
+    // --------------------------------------------------------------------------------
+    //  private
+    // --------------------------------------------------------------------------------
+
+    /**
+     * example
+     *      $output = $this->reportOutput($results, $query['group_keys'];
+     *      response()->json($output));
+     */
+    protected function reportOutput(array $data, array $groupKeys): array
+    {
+        $results = [
+            'column_defs' => $this->convertColumnDefs($groupKeys),
+            'fields'      => [],
+            'data'        => $this->convertData($data, $groupKeys),
+        ];
+        // echo '<pre>' . json_encode($results, JSON_PRETTY_PRINT); exit;
+        return $results;
+    }
+
+    protected function convertColumnDefs(array $groupKeys)
+    {
+        $column = [];
+        if (in_array('status', $groupKeys)) {
+            $column[] = [
+                'header_name'   => '[Status]',
+                'field'         => 'status'
+            ];
+        }
+
+        return array_merge(
+            $column,
+            [
+                ['header_name' => 'Attempt Count',                  'field' => 'attempt_count'],
+                ['header_name' => 'Authorization Success Count',    'field' => 'authorization_success_count'],
+                ['header_name' => 'Activation Success Count',       'field' => 'activation_success_count'],
+            ]
+        );
+    }
+
+    protected function convertData($data, array $groupKeys)
+    {
+        $results = [];
+        foreach ($data as $row) {
+            $results[] = [
+                'attempt_count'                 => (int) data_get($row, 'attempt_count'),
+                'authorization_success_count'   => (int) data_get($row, 'authorization_success_count'),
+                'activation_success_count'      => (int) data_get($row, 'activation_success_count'),
+            ];
+        }
+
+        return $results;
+    }
+
+
+
+
+
+
+
+
+
+
+
 
     /**
      *
@@ -238,9 +395,9 @@ class Home extends AdminController
         */
     }
 
-    /* --------------------------------------------------------------------------------
-        private
-    -------------------------------------------------------------------------------- */
+    // --------------------------------------------------------------------------------
+    //  private
+    // --------------------------------------------------------------------------------
 
     /**
      * @param Request $request

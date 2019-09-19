@@ -108,6 +108,16 @@ return [
         'filename'      => "{$obj->upperCamel()}ApiTest.php",
         'clear_comment' => false,
     ],
+    'test_controller' => [
+        'path'          => "tests/app/Feature/Http/Controllers/",
+        'filename'      => "{$obj->upperCamel()}ControllerTest.php",
+        'clear_comment' => false,
+    ],
+    'test_service' => [
+        'path'          => "tests/app/Feature/Services/",
+        'filename'      => "{$obj->upperCamel()}ServiceTest.php",
+        'clear_comment' => false,
+    ],
     'database_factory' => [
         'path'          => "app/database/factories/",
         'filename'      => "{$obj->upperCamel()}Facotry.php",

@@ -17,16 +17,16 @@ class {$mod->upperCamel()}
     public function getLast(): ?{$obj->upperCamel()}
     {
         $model = $this->getModel();
-        $flight = $model
+        $eloquent = $model
                     ->where('status', {$obj->upperCamel()}::STATUS_ENABLE)
                     ->orderBy('id', 'DESC')
                     ->first();
 
-        if (! $flight) {
+        if (! $eloquent) {
            return null;
         }
 
-        return $this->get($flight->id);
+        return $this->get($eloquent->id);
     }
 
     /**

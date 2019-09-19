@@ -25,21 +25,33 @@ EOD;
 {foreach $tab as $key => $field}
 {if $key==='id'}
 {elseif $key==='attribs'}
-        '{$field.ado->name}'{$key|space_even} => $attribs,
+        '{$field.ado->name}'{$field.ado->name|space_even} => $attribs,
 {elseif $key==='createdAt'}
-        '{$field.ado->name}'{$key|space_even} => $faker->dateTime('now', date_default_timezone_get()),
+        '{$field.ado->name}'{$field.ado->name|space_even} => $faker->dateTime('now', date_default_timezone_get()),
 {elseif $key==='updatedAt'}
-        '{$field.ado->name}'{$key|space_even} => $faker->dateTime(),
+        '{$field.ado->name}'{$field.ado->name|space_even} => $faker->dateTime(),
 {elseif $key==='deletedAt'}
-        '{$field.ado->name}'{$key|space_even} => null,
+        '{$field.ado->name}'{$field.ado->name|space_even} => null,
 {elseif $key==='name'}
-        '{$field.ado->name}'{$key|space_even} => $faker->name(),
-{elseif $field.ado->type=='tinyint' || $field.ado->type=='smallint' || $field.ado->type=='mediumint' || $field.ado->type=='int'}
-        '{$field.ado->name}'{$key|space_even} => $faker->randomDigit(),
+        '{$field.ado->name}'{$field.ado->name|space_even} => $faker->name(),
+{elseif $key==='firstName'}
+        '{$field.ado->name}'{$field.ado->name|space_even} => $faker->firstName(),
+{elseif $key==='lastName'}
+        '{$field.ado->name}'{$field.ado->name|space_even} => $faker->lastName(),
+{elseif $key==='uuid'}
+        '{$field.ado->name}'{$field.ado->name|space_even} => $faker->unique()->uuid(),
+{elseif $key==='email'}
+        '{$field.ado->name}'{$field.ado->name|space_even} => $faker->safeEmail(),
+{elseif $field.ado->type=='tinyint'}
+        '{$field.ado->name}'{$field.ado->name|space_even} => (int) $faker->boolean(),
+{elseif $field.ado->type=='smallint' || $field.ado->type=='mediumint' || $field.ado->type=='int' || $field.ado->type=='bigint'}
+        '{$field.ado->name}'{$field.ado->name|space_even} => $faker->randomDigit(),
 {elseif $field.ado->type=='timestamp' || $field.ado->type=='datetime' || $field.ado->type=='date'}
-        '{$field.ado->name}'{$key|space_even} => $faker->dateTime(),
+        '{$field.ado->name}'{$field.ado->name|space_even} => $faker->dateTime(),
+{elseif $field.ado->type=='text' || $field.ado->type=='mediumtext' || $field.ado->type=='longtext'}
+        '{$field.ado->name}'{$field.ado->name|space_even} => $faker->lexify('?????? {$field.ado->name}') . ' ' . $faker->emoji(),
 {else}
-        '{$field.ado->name}'{$key|space_even} => $faker->lexify('??????'),
+        '{$field.ado->name}'{$field.ado->name|space_even} => $faker->lexify('?????? {$field.ado->name}'),
 {/if}
 {/foreach}
     ];
@@ -47,4 +59,5 @@ EOD;
 
 }
 
+// 請查 https://github.com/fzaninotto/Faker
 // 請查 https://www.cnblogs.com/love-snow/articles/7655450.html

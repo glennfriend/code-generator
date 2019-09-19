@@ -19,12 +19,10 @@ class {$obj->upperCamel()}ApiTest extends TestCase
     public function setUp(): void
     {
         parent::setUp();
-
-        $this->api = '/api/{$obj->lower("_")}';
     }
 
     /**
-     *
+     * @group only
      */
     public function test_post()
     {
@@ -46,12 +44,21 @@ class {$obj->upperCamel()}ApiTest extends TestCase
 
     protected function postHttp($jsonFile)
     {
+        $api = '/api/{$obj->lower("_")}';
         $this
-            ->withHeaders([])
-            ->json('POST', $this->api, $this->getTestJson($jsonFile))
+            ->getThis()
+            ->json('POST', $api, $this->getTestJson($jsonFile))
             ->assertStatus(200)
             ->assertJson([
                 'ok' => true,
+            ]);
+    }
+
+    protected function getThis()
+    {
+        return $this
+            ->withHeaders([
+                'Authorization' => "Bearer $this->apiToken",
             ]);
     }
 
@@ -66,5 +73,10 @@ class {$obj->upperCamel()}ApiTest extends TestCase
         return json_decode($text, true);
     }
 
+    protected function factory{$mod->upperCamel()}()
+    {
+
+    }
+    
 }
 
