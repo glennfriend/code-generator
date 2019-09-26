@@ -27,9 +27,9 @@ EOD;
 {elseif $key==='attribs'}
         '{$field.ado->name}'{$field.ado->name|space_even} => $attribs,
 {elseif $key==='createdAt'}
-        '{$field.ado->name}'{$field.ado->name|space_even} => $faker->dateTime('now', date_default_timezone_get()),
+        '{$field.ado->name}'{$field.ado->name|space_even} => $faker->dateTime('now', date_default_timezone_get()),  // {$field.ado->name} 可能沒有做用
 {elseif $key==='updatedAt'}
-        '{$field.ado->name}'{$field.ado->name|space_even} => $faker->dateTime(),
+        '{$field.ado->name}'{$field.ado->name|space_even} => $faker->dateTime(),  // {$field.ado->name} 可能沒有做用
 {elseif $key==='deletedAt'}
         '{$field.ado->name}'{$field.ado->name|space_even} => null,
 {elseif $key==='name'}

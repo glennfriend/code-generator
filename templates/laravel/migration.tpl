@@ -15,6 +15,50 @@ class {$mod->upperCamel()}Table extends Migration
      */
     public function up()
     {
+        Schema::create('{$mod->lower('_')}', function (Blueprint $table) {
+{foreach from=$tab key=key item=field}
+{if $key=='id'}
+            $table->bigIncrements('id')->unsigned();
+{elseif $key=='status' && $field.ado->type=='enum'}
+            $table->enum('{$field.ado->name}', ['enable', 'disable']);
+{elseif $key=='status'}
+            $table->string('{$field.ado->name}')->unsigned()->index('{$field.ado->name}');
+{elseif $key=='createdAt'}
+            $table->timestamp('{$field.ado->name}');
+{elseif $key=='updatedAt' || $key=='deletedAt'}
+            $table->timestamp('{$field.ado->name}')->nullable();
+{elseif $key=='properties' || $key=='attribs'}
+            $table->text('{$field.ado->name}');
+{elseif $field.ado->type=='tinyint'}
+            $table->string('{$field.ado->name}')->nullable();
+{elseif $field.ado->type=='smallint'}
+            $table->smallInteger('{$field.ado->name}')->unsigned();
+{elseif $field.ado->type=='int'}
+            $table->integer('{$field.ado->name}')->nullable();
+{elseif $field.ado->type=='bigint'}
+            $table->bigIncrements('{$field.ado->name}')->nullable();
+{elseif $field.ado->type=='float'}
+            $table->float('{$field.ado->name}', 8, 2);
+{elseif $field.ado->type=='decimal'}
+            $table->unsignedDecimal('{$field.ado->name}', 8, 2);
+{elseif $field.ado->type=='varchar'}
+            $table->string('{$field.ado->name}', 100)->nullable()->index('{$field.ado->name}');
+{elseif $field.ado->type=='text'}
+            $table->text('{$field.ado->name}')->nullable();
+{elseif $field.ado->type=='mediumtext'}
+            $table->mediumText('{$field.ado->name}')->nullable();
+{elseif $field.ado->type=='timestamp'}
+            $table->timestamp('{$field.ado->name}');
+{elseif $field.ado->type=='datetime' || $field.ado->type=='date'}
+            $table->timestamp('{$field.ado->name}');    // {$field.ado->type}
+{elseif $field.ado->type=='enum'}
+            $table->enum('{$field.ado->name}', ['type1', 'type2']);
+{else}
+            $table->string('{$field.ado->name}', 255)->nullable();
+{/if}
+{/foreach}
+        });
+
         Schema::table(null, function(Blueprint $table) {
             // $sql = $this->createTableSql();
             // $sql = $this->changeTableSql();

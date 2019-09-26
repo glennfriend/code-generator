@@ -48,11 +48,11 @@ class {$obj->upperCamel()}ServiceTest extends TestCase
 
         //
         $result = $this->service->getEmailTemplate();
-
+        
         $this->assertEquals(123, data_get('data.user.id', $result));
         $this->assertJsonCount(3, data_get('data', $result));
         $this->assertNotRegExp(
-            '/{{/',
+            '/{ldelim}{ldelim}/',
             data_get('data.template.body', $result),
             'have not redner variable in template'
         );
