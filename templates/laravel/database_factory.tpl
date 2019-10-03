@@ -1,8 +1,8 @@
 <?php
 
 use Faker\Generator as Faker;
-use App\Entities\Eloquent\{$mod->upperCamel()};
-use Modules\xxxxxx\Entities\Eloquent\{$obj->upperCamel()};
+{if $isApp}use App\Entities\Eloquent\{$mod->upperCamel()};{/if}
+{if $isModule}use Modules\xxxxxx\Entities\Eloquent\{$obj->upperCamel()};{/if} 
 
 $factory->define({$obj->upperCamel()}::class, function (Faker $faker)
 {
@@ -45,7 +45,7 @@ EOD;
 {elseif $field.ado->type=='tinyint'}
         '{$field.ado->name}'{$field.ado->name|space_even} => (int) $faker->boolean(),
 {elseif $field.ado->type=='smallint' || $field.ado->type=='mediumint' || $field.ado->type=='int' || $field.ado->type=='bigint'}
-        '{$field.ado->name}'{$field.ado->name|space_even} => $faker->randomDigit(),
+        '{$field.ado->name}'{$field.ado->name|space_even} => $faker->randomDigitNotNull(),
 {elseif $field.ado->type=='timestamp' || $field.ado->type=='datetime' || $field.ado->type=='date'}
         '{$field.ado->name}'{$field.ado->name|space_even} => $faker->dateTime(),
 {elseif $field.ado->type=='text' || $field.ado->type=='mediumtext' || $field.ado->type=='longtext'}
@@ -57,7 +57,6 @@ EOD;
     ];
 });
 
-}
 
 // 請查 https://github.com/fzaninotto/Faker
 // 請查 https://www.cnblogs.com/love-snow/articles/7655450.html

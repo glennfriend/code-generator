@@ -50,9 +50,9 @@ return [
         'filename'      => "HomeController.php",
         'clear_comment' => false,
     ],
-    'home_ajax_controller' => [
+    'home_api_controller' => [
         'path'          => "app/Http/Controllers/{$obj->upperCamel()}/",
-        'filename'      => "HomeAjaxController.php",
+        'filename'      => "HomeApiController.php",
         'clear_comment' => false,
     ],
 
@@ -124,6 +124,13 @@ return [
         'clear_comment' => false,
     ],
   
+    //
+    'kos_repository' => [
+        'path'          => "app/Repositories",
+        'filename'      => "{$obj->upperCamel()}Repository.php",
+        'clear_comment' => false,
+    ],
+
     // for debug
     'debug_only' => [
         'path'          => "app/",

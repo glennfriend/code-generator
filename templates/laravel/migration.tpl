@@ -7,7 +7,7 @@ use Illuminate\Database\Migrations\Migration;
 /**
  *
  */
-class {$mod->upperCamel()}Table extends Migration
+class Create{$mod->upperCamel()} extends Migration
 {
 
     /**
@@ -15,10 +15,16 @@ class {$mod->upperCamel()}Table extends Migration
      */
     public function up()
     {
+        if (Schema::hasTable('{$mod->lower('_')}')) {
+            // exists
+            return;
+        }
+
+        // "不是" 依照資料表的欄位, 是依照 name, type 的一般建議方式
         Schema::create('{$mod->lower('_')}', function (Blueprint $table) {
 {foreach from=$tab key=key item=field}
 {if $key=='id'}
-            $table->bigIncrements('id')->unsigned();
+            $table->bigIncrements('id');
 {elseif $key=='status' && $field.ado->type=='enum'}
             $table->enum('{$field.ado->name}', ['enable', 'disable']);
 {elseif $key=='status'}
@@ -34,9 +40,9 @@ class {$mod->upperCamel()}Table extends Migration
 {elseif $field.ado->type=='smallint'}
             $table->smallInteger('{$field.ado->name}')->unsigned();
 {elseif $field.ado->type=='int'}
-            $table->integer('{$field.ado->name}')->nullable();
+            $table->integer('{$field.ado->name}')->unsigned()->nullable();
 {elseif $field.ado->type=='bigint'}
-            $table->bigIncrements('{$field.ado->name}')->nullable();
+            $table->bigInteger('{$field.ado->name}')->unsigned()->nullable();
 {elseif $field.ado->type=='float'}
             $table->float('{$field.ado->name}', 8, 2);
 {elseif $field.ado->type=='decimal'}
@@ -57,6 +63,12 @@ class {$mod->upperCamel()}Table extends Migration
             $table->string('{$field.ado->name}', 255)->nullable();
 {/if}
 {/foreach}
+
+            $table->engine = 'InnoDB';
+        });
+
+        Schema::create('{$mod->lower('_')}', function (Blueprint $table) {
+            
         });
 
         Schema::table(null, function(Blueprint $table) {

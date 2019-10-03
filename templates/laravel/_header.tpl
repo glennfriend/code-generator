@@ -7,7 +7,7 @@
     <a href="?t=migration">Migration</a>,
     <a href="?t=locale">Locale</a>,
     <a href="?t=home_controller">HomeController</a>,
-    <a href="?t=home_ajax_controller">HomeAjaxController</a>,
+    <a href="?t=home_api_controller">HomeApi</a>,
     <a href="?t=business_service">Service</a>,
     <a href="?t=business_helper">Helper</a>
     <br>
@@ -23,6 +23,8 @@
         <a href="?t=database_factory">database/factories</a>
     [other]
         <a href="?t=debug_only">D</a>
+    [Kos]
+        <a href="?t=kos_repository">Repository</a>
 </div>
 
 <div class="bar2">
