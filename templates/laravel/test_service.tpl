@@ -6,11 +6,12 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Mockery;
 use GuzzleHttp\Psr7;
 use Modules\______\Services\{$obj->UpperCamel()}Service;
+use Modules\______\Repositories\{$obj->UpperCamel()}Repository;
 
 /**
  *
  */
-class {$obj->upperCamel()}ServiceTest extends TestCase
+final class {$obj->upperCamel()}ServiceTest extends TestCase
 {
     // use RefreshDatabase;
 
@@ -24,19 +25,23 @@ class {$obj->upperCamel()}ServiceTest extends TestCase
         $this->service = Mockery::mock({$obj->upperCamel()}Service::class)
             ->shouldAllowMockingProtectedMethods()
             ->makePartial();
+
+        // the service used injection class
+        $this->service->{$obj}Repository        = $this->app->make({$obj->UpperCamel()}Repository::class);
+        $this->service->apiService              = $this->app->make(ApiService::class);
+        $this->service->otherService            = $this->app->make(OtherService::class);
     }
 
     /**
      * @group only
+     * @test
      */
     public function getEmailTemplate_should_work_test()
     {
-        // the service used injection object
-        $this->service->templateVariableService = $this->app->make(TemplateVariableService::class);
         // the service method used object
         /*
         $this->user = factory(User::class)->create();
-        $this->blog = factory(Action::class)->create([
+        $this->blog = factory(Blog::class)->create([
             'user_id' => $this->user->id,
         ]);
         */
@@ -60,6 +65,7 @@ class {$obj->upperCamel()}ServiceTest extends TestCase
 
     /**
      * @group only
+     * @test
      */
     public function getApi_should_work_test()
     {

@@ -7,7 +7,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 /**
  *
  */
-class {$obj->upperCamel()}ApiTest extends TestCase
+final class {$obj->upperCamel()}ApiTest extends TestCase
 {
     // use RefreshDatabase;
 

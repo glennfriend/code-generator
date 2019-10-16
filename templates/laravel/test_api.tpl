@@ -9,7 +9,7 @@ use App\Entities\{$obj->upperCamel()};
 /**
  *
  */
-class {$obj->upperCamel()}ApiTest extends TestCase
+final class {$obj->upperCamel()}ApiTest extends TestCase
 {
     // use RefreshDatabase;
 
@@ -19,6 +19,13 @@ class {$obj->upperCamel()}ApiTest extends TestCase
     public function setUp(): void
     {
         parent::setUp();
+
+        /*
+        $this->{$obj} = factory(Users::class)->create();
+        $this->{$obj} = factory({$mod->upperCamel()}::class)->create([
+            'user_id' => $this->user->id,
+        ]);
+        */
     }
 
     /**

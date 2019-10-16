@@ -1,7 +1,8 @@
 <?php
-declare(strict_types = 1);
-{if $isApp}namespace App\Http\Controllers;{/if}
-{if $isModule}namespace Modules\{$mod->upperCamel()}\Http\Controllers;{/if} 
+declare(strict_types=1);
+{if $isModule}namespace Modules\{$mod->upperCamel()}\Http\Controllers;
+{else        }namespace App\Http\Controllers;
+{/if}
 
 use Exception;
 use Illuminate\Http\Request;

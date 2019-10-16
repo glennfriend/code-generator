@@ -1,6 +1,9 @@
 <?php
-declare(strict_types = 1);
-namespace App\Entities;
+declare(strict_types=1);
+{if $isModule}namespace Modules\{$obj->upperCamel()}\Entities;
+{else        }namespace App\Entities;
+{/if}
+
 
 use vvh;
 use Cor\Model\{ldelim}BaseObject, ValueObjectExtendFetch{rdelim};

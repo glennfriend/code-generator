@@ -13,7 +13,7 @@ use App\Entities\Eloquent\{$obj->upperCamel()}Eloquent;
 /**
  *
  */
-class {$obj->upperCamel()}Test extends TestCase
+final class {$obj->upperCamel()}Test extends TestCase
 {
     use DatabaseTransactions;
 
@@ -34,7 +34,7 @@ class {$obj->upperCamel()}Test extends TestCase
     /**
      * @testdox {$obj->upperCamel()} value object basic get/set
      */
-    public function test_create_{$obj->lowerCamel()}()
+    final public function test_create_{$obj->lowerCamel()}()
     {
         ${$obj} = $this->{$mod}->get(1);
      // ${$obj} = $this->{$mod}->get($this->{$obj}Eloquent_1->id);

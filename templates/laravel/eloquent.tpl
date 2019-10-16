@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 namespace App\Entities\Eloquent;
 
 use Illuminate\Database\Eloquent\Model;

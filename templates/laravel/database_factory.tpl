@@ -1,8 +1,10 @@
 <?php
+declare(strict_types=1);
 
 use Faker\Generator as Faker;
-{if $isApp}use App\Entities\Eloquent\{$mod->upperCamel()};{/if}
-{if $isModule}use Modules\xxxxxx\Entities\Eloquent\{$obj->upperCamel()};{/if} 
+{if $isModule}use Modules\xxxxxx\Entities\Eloquent\{$obj->upperCamel()};
+{else        }use App\Entities\Eloquent\{$mod->upperCamel()};
+{/if}
 
 $factory->define({$obj->upperCamel()}::class, function (Faker $faker)
 {
