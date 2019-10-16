@@ -52,25 +52,25 @@ function changeProcess( $change, $value )
     switch ($change)
     {
         case "key":
-            $_SESSION['projectKey'] = $value;
+            SessionManager::set('projectKey', $value);
             /*
-            unset($_SESSION['useDb']);
-            unset($_SESSION['useObject']);
-            unset($_SESSION['useDao']);
-            unset($_SESSION['useTable']);
+            SessionManager::remove('useDb');
+            SessionManager::remove('useObject');
+            SessionManager::remove('useDao');
+            SessionManager::remove('useTable');
             */
             break;
 
         case "group":
-            $_SESSION['useDb']      = null;
-            $_SESSION['useObject']  = null;
-            $_SESSION['useDao']     = null;
-            $_SESSION['useTable']   = null;
+            SessionManager::set('useDb',     null);
+            SessionManager::set('useObject', null);
+            SessionManager::set('useDao',    null);
+            SessionManager::set('useTable',  null);
             $list = explode(',', $value);
-            if (isset($list[0])) {  $_SESSION['useDb']      = $list[0]; }
-            if (isset($list[1])) {  $_SESSION['useObject']  = $list[1]; }
-            if (isset($list[2])) {  $_SESSION['useDao']     = $list[2]; }
-            if (isset($list[3])) {  $_SESSION['useTable']   = $list[3]; }
+            if (isset($list[0])) {  SessionManager::set('useDb',        $list[0]); }
+            if (isset($list[1])) {  SessionManager::set('useObject',    $list[1]); }
+            if (isset($list[2])) {  SessionManager::set('useDao',       $list[2]); }
+            if (isset($list[3])) {  SessionManager::set('useTable',     $list[3]); }
             break;
 
     }
@@ -137,8 +137,8 @@ function showTopMenu()
     $focus = false;
 
     foreach ( $config['list']['key'] as $key ) {
-        if ( isset($_SESSION['projectKey']) ) {
-            $focus = ($key == $_SESSION['projectKey']);
+        if (SessionManager::projectKey()) {
+            $focus = ($key == SessionManager::projectKey());
         }
         echo url($key, $focus);
         echo "&nbsp; ";
@@ -167,8 +167,8 @@ function showDatabase()
     foreach ($config['list']['databases'] as $databaseName) {
 
         $focus = (
-            isset($_SESSION['useDb']) &&
-            $databaseName === $_SESSION['useDb']
+            SessionManager::database() &&
+            $databaseName === SessionManager::database()
         );
 
         if ($focus) {
@@ -187,7 +187,7 @@ function showDatabase()
 function showTable()
 {
     $show = "Table &raquo;<br><br>";
-    if (isset($_SESSION['useDb'])) {
+    if (SessionManager::database()) {
 
         $db = getDbConnect();
         $allTables = (array) $db->MetaTables();
@@ -197,10 +197,10 @@ function showTable()
             $daoName    = Cake_Utility_Inflector::pluralize($objectName);
 
             $focus = (
-                isset($_SESSION['useTable']) &&
-                $table === $_SESSION['useTable']
+                SessionManager::table() &&
+                $table === SessionManager::table()
             );
-            $key = "{$_SESSION['useDb']},{$objectName},{$daoName},{$table}";
+            $key = SessionManager::database() . ",{$objectName},{$daoName},{$table}";
 
             if ($focus) {
                 $show .= groupUrl($table, $key, true);
@@ -233,8 +233,8 @@ function showCustom()
 
     foreach ( $config['list']['items'] as $item ) {
         $focus = false;
-        if ( isset($_SESSION['useObject']) ) {
-            $focus = ($item['object'] == $_SESSION['useObject']);
+        if (SessionManager::projectName()) {
+            $focus = ($item['object'] == SessionManager::projectName());
         }
         $show .= customUrl($item, $focus);
     }

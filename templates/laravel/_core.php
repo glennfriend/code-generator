@@ -17,8 +17,9 @@ function assingTemplate($template)
     /* --------------------------------------------------------------------------------
         add to templates
     -------------------------------------------------------------------------------- */
-    $obj = new NamePrototype(getProjectName());
-    $mod = new NamePrototype(getDaoName());
+    $obj = new NamePrototype(SessionManager::projectKey());
+    $mod = new NamePrototype(SessionManager::daoName());
+
     //--------------------------------------------------------------------------------
     foreach (getTableColumnsStatus() as $name => $typeObject) {
         $nameObject = new NamePrototype($name);

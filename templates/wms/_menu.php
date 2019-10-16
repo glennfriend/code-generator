@@ -1,7 +1,7 @@
 <?php
 
-$obj = new NamePrototype(getProjectName());
-$mod = new NamePrototype(getDaoName());
+$obj = new NamePrototype(SessionManager::projectKey());
+$mod = new NamePrototype(SessionManager::daoName());
 
 return [
 
