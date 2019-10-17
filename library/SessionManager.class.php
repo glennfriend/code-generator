@@ -7,6 +7,8 @@ class SessionManager
     {
         $day30 = 86400 * 30;
         ini_set('session.gc_maxlifetime', $day30);
+        ini_set('session.cookie_lifetime', $day30);
+
         session_start();
     }
 
