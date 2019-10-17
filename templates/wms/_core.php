@@ -5,7 +5,7 @@ function assingTemplate($template)
     //--------------------------------------------------------------------------------
     // add to templates
     //--------------------------------------------------------------------------------
-    $obj = new NamePrototype(SessionManager::projectKey());
+    $obj = new NamePrototype(SessionManager::projectName());
     $mod = new NamePrototype(SessionManager::daoName());
     //--------------------------------------------------------------------------------
     foreach (getTableColumnsStatus() as $name => $typeObject) {

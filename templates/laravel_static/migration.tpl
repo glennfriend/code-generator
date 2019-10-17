@@ -43,7 +43,7 @@ class {$mod->upperCamel()}Table extends Migration
     {
         #
         #   請用 phpmyadmin dump
-        #       - "http://localhost/phpmyadmin/tbl_export.php?single_table=true&db={getDatabase()}&table={$tableName->lower('_')}"
+        #       - "http://localhost/phpmyadmin/tbl_export.php?single_table=true&db={SessionManager::database()}&table={$tableName->lower('_')}"
         #       - SQL schema
         #       - 索引
         #       - ENGINE=InnoDB

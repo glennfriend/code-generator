@@ -1,6 +1,6 @@
 <?php
 
-$obj = new NamePrototype(SessionManager::projectKey());
+$obj = new NamePrototype(SessionManager::projectName());
 $mod = new NamePrototype(SessionManager::daoName());
 $today = date("Ymd");
 
