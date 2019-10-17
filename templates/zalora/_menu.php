@@ -1,6 +1,6 @@
 <?php
 
-$nameObject = new NamePrototype( getProjectName() ); // model object
+$nameObject = new NamePrototype( SessionManager::projectName() ); // model object
 $oName1 = $nameObject->lower();
 $oName2 = $nameObject->lowerCamel();
 $oName3 = $nameObject->upperCamel();
@@ -10,7 +10,7 @@ $oName6 = $nameObject->upperCamel('_');
 $oName7 = $nameObject->upper('_');
 
 //--------------------------------------------------------------------------------
-$nameObject = new NamePrototype( getDaoName() ); // mapper
+$nameObject = new NamePrototype( SessionManager::daoName() ); // mapper
 $mName1 = $nameObject->lower();
 $mName2 = $nameObject->lowerCamel();
 $mName3 = $nameObject->upperCamel();

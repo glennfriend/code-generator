@@ -14,10 +14,13 @@ if (!sessionCheck()) {
     exit;
 }
 
-$projectKey = $_SESSION['projectKey'];
-$objectName = $_SESSION['useObject'];
-$daoName    = $_SESSION['useDao'];
-$table      = $_SESSION['useTable'];
+$projectKey = SessionManager::projectKey();
+$objectName = SessionManager::projectName();
+$daoName    = SessionManager::daoName();
+$table      = SessionManager::table();
+
+
+
 
 $db = getDbConnect();
 $tables = $db->MetaTables();

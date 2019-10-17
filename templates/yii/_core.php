@@ -6,7 +6,7 @@ function assingTemplate($template)
     //--------------------------------------------------------------------------------
     // variable setting
     //--------------------------------------------------------------------------------
-    $nameObject = new NamePrototype( getProjectName() ); // model object
+    $nameObject = new NamePrototype( SessionManager::projectName() ); // db object
     $oName1 = $nameObject->lower();
     $oName2 = $nameObject->lowerCamel();
     $oName3 = $nameObject->upperCamel();
@@ -16,7 +16,7 @@ function assingTemplate($template)
     $oName7 = $nameObject->upper('_');
 
     //--------------------------------------------------------------------------------
-    $nameObject = new NamePrototype( getDaoName() ); // mapper
+    $nameObject = new NamePrototype( SessionManager::daoName() ); // mapper
     $mName1 = $nameObject->lower();
     $mName2 = $nameObject->lowerCamel();
     $mName3 = $nameObject->upperCamel();
@@ -57,7 +57,7 @@ function assingTemplate($template)
     // add to templates
     //--------------------------------------------------------------------------------
     $template->assign('status',         getTableColumnsStatus()     );
-    $template->assign('daoName',        getDaoName()                );
+    $template->assign('daoName',        SessionManager::daoName()   );
     $template->assign('fieldType',      $fieldType                  );
     $template->assign('fieldMaxLength', $fieldMaxLength             );
     $template->assign('oName1',         $oName1                     );

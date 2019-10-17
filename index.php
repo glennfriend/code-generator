@@ -33,13 +33,13 @@ $lang = getLangType($menu);
 headerOutput();
 
 ob_start();
-    $template->display(getProjectKey() . '/' . $page . '.tpl');
+    $template->display(SessionManager::projectKey() . '/' . $page . '.tpl');
     $showCode = ob_get_contents();
 ob_end_clean();
 
 
 echo '<div style="float:right;"><a href="session-control.php">[change]</a></div>';
-echo $template->fetch(getProjectKey() . '/_header.tpl');
+echo $template->fetch(SessionManager::projectKey() . '/_header.tpl');
 echo "<br />\n";
 $showCode = str_replace(
     Array('<','>'),

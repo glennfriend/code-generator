@@ -7,9 +7,8 @@ error_reporting(E_ALL);
 ini_set('html_errors','On');
 ini_set('display_errors','On');
 
-$day30 = 86400 * 30;
-ini_set('session.gc_maxlifetime', $day30);
-session_start();
+include_once('SessionManager.class.php');
+SessionManager::init();
 
 require_once(__DIR__.'/../composer/vendor/autoload.php');
 include_once('Inflector.class.php');
@@ -26,47 +25,38 @@ include_once('NamePrototype.class.php');
 */
 
 
+
+
 /**
  *
  */
 function includeConfig()
 {
-    include(__DIR__.'/../config/config.inc.php');
-    return $config;
+    return include(__DIR__.'/../config/config.inc.php');
 }
 
-/**
- *  自行定義的 session name
- */
-function getProjectKey()  { return $_SESSION['projectKey']; }
-function getProjectName() { return $_SESSION['useObject'];  }
-function getDaoName()     { return $_SESSION['useDao'];     }
-function getTable()       { return $_SESSION['useTable'];   }
-function getDatabase()    { return $_SESSION['useDb'];   }
 
 /**
  *  check all basic session name
  */
 function sessionCheck()
 {
-    if ( !isset($_SESSION['projectKey']) ) {
+    if (! SessionManager::projectKey()) {
         return false;
     }
-    //if ( !isset($_SESSION['projectType']) ) {
-    //    return false;
-    //}
-    if ( !isset($_SESSION['useDb']) ) {
+    if (! SessionManager::projectName()) {
         return false;
     }
-    if ( !isset($_SESSION['useObject']) ) {
+    if (! SessionManager::daoName()) {
         return false;
     }
-    if ( !isset($_SESSION['useDao']) ) {
+    if (! SessionManager::table()) {
         return false;
     }
-    if ( !isset($_SESSION['useTable']) ) {
+    if (! SessionManager::database()) {
         return false;
     }
+
     return true;
 }
 
@@ -75,12 +65,12 @@ function sessionCheck()
 */
 function getDbConnect()
 {
-    if (!isset($_SESSION['useDb'])) {
+    if (! SessionManager::database()) {
         die('db connect error!');
     }
-    $dbName = $_SESSION['useDb'];
 
     $config = includeConfig();
+    // print_r($config); exit;
     $databases = $config['database'];
 
     //
@@ -89,7 +79,7 @@ function getDbConnect()
         $databases['server'],
         $databases['user'],
         $databases['password'],
-        $dbName
+        SessionManager::database()
     );
     return $db;
 }
@@ -100,7 +90,7 @@ function getDbConnect()
  */
 function getMenu($page)
 {
-    $menu = include('templates/'. getProjectKey() .'/_menu.php');
+    $menu = include('templates/'. SessionManager::projectKey() .'/_menu.php');
 
     if (!isset($menu[$page])) {
         return null;
@@ -113,7 +103,7 @@ function getMenu($page)
  */
 function getMenuFirstKey()
 {
-    $menu = include('templates/'. getProjectKey() .'/_menu.php');
+    $menu = include('templates/'. SessionManager::projectKey() .'/_menu.php');
     return key($menu);
 };
 
@@ -138,7 +128,7 @@ function getLangType($menu)
 function getTableColumnsStatus()
 {
     $db     = getDbConnect();
-    $table  = getTable();
+    $table  = SessionManager::table();
     $status = $db->MetaColumns($table);
     if (!$status) {
         die('無法取得所需資料表的格式, 請確定名稱是否設定錯誤!');
