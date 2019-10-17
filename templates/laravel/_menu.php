@@ -16,6 +16,11 @@ return [
         'filename'      => "{$obj->upperCamel()}Eloquent.php",
         'clear_comment' => false,
     ],
+    'json_resource' => [
+        'path'          => "app/Http/Resources/",
+        'filename'      => "{$obj->upperCamel()}.php",
+        'clear_comment' => false,
+    ],
     'model' => [
         'path'          => "app/Entities/",
         'filename'      => "{$mod->upperCamel()}.php",
@@ -32,8 +37,8 @@ return [
         'clear_comment' => false,
     ],
     'migration' => [
-        'path'          => "database/migrations/",
-        'filename'      => $today ."_000001_{$mod->lower('_')}_table.php",
+        'path'          => "app/database/migrations/",
+        'filename'      => $today ."_000001_create_{$mod->lower('_')}_table.php",
         'clear_comment' => false,
     ],
 

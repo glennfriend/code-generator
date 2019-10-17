@@ -4,9 +4,6 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-/**
- *
- */
 class Create{$mod->upperCamel()} extends Migration
 {
 
@@ -20,7 +17,7 @@ class Create{$mod->upperCamel()} extends Migration
             return;
         }
 
-        // "不是" 依照資料表的欄位, 是依照 name, type 的一般建議方式
+        // 是依照 name, type 的一般建議方式建立, "不是" 依照資料表的欄位屬性 (TODO: delete it)
         Schema::create('{$mod->lower('_')}', function (Blueprint $table) {
 {foreach from=$tab key=key item=field}
 {if $key=='id'}
@@ -67,9 +64,16 @@ class Create{$mod->upperCamel()} extends Migration
             $table->engine = 'InnoDB';
         });
 
-        Schema::create('{$mod->lower('_')}', function (Blueprint $table) {
-            
+        /*
+        // 追加欄位
+        Schema::table('{$mod->lower('_')}', function (Blueprint $table) {
+            $table->bigInteger('__the_field_name__')
+                ->unsigned()
+                ->nullable()
+                ->index()
+                ->after('id');
         });
+        */
 
         Schema::table(null, function(Blueprint $table) {
             // $sql = $this->createTableSql();
@@ -85,7 +89,13 @@ class Create{$mod->upperCamel()} extends Migration
     public function down()
     {
         // $sql = 'DROP TABLE `{$mod->lower('_')}`';
-        Schema::dropIfExists('{$mod->lower('_')}');
+        // Schema::dropIfExists('{$mod->lower('_')}');
+        // Schema::dropIfExists('{$mod->lower('_')}');
+        /*
+        Schema::table('{$mod->lower('_')}', function (Blueprint $table) {
+            $table->dropColumn('__the_field_name__');
+        });
+        */
     }
 
     /* --------------------------------------------------------------------------------

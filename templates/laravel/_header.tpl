@@ -1,6 +1,7 @@
 <div class="bar1">
     <a href="?t=value_object">Value Object</a>,
     <a href="?t=eloquent">Eloquent</a>,
+    <a href="?t=json_resource">Json Resource</a>,
     <a href="?t=model">Model</a>,
     <a href="?t=model_extend">Model Extend</a>,
     <a href="?t=search_table">Search Table</a>,
