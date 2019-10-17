@@ -1,6 +1,6 @@
 <?php
 declare(strict_types=1);
-{if $isModule}namespace Modules\{$mod->upperCamel()}\Http\Controllers;
+{if $isModule}namespace Modules\{$obj->upperCamel()}\Http\Controllers;
 {else        }namespace App\Http\Controllers;
 {/if}
 
@@ -11,9 +11,16 @@ use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Log;
 
+{if $isModule}
+use Modules\{$obj->upperCamel()}\Entities\{$mod->upperCamel()};
+use Modules\{$obj->upperCamel()}\Entities\{$obj->upperCamel()};
+use Modules\{$obj->upperCamel()}\Services\{$obj->upperCamel()}\{$obj->upperCamel()}Service;
+{else}
 use App\Entities\{$mod->upperCamel()};
 use App\Entities\{$obj->upperCamel()};
 use App\Services\{$obj->upperCamel()}\{$obj->upperCamel()}Service;
+{/if}
+
 
 /*
 $config = [
@@ -38,7 +45,7 @@ curl -X DELETE http://127.0.0.1:8000/api/{$mod->lower('-')}/100     && echo
 /**
  *
  */
-class {$mod->upperCamel()}ApiController extends Controller
+class {$obj->upperCamel()}ApiController extends Controller
 {
     /**
      *

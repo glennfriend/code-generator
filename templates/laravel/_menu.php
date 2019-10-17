@@ -47,12 +47,12 @@ return [
     // controller
     'home_controller' => [
         'path'          => "app/Http/Controllers/{$obj->upperCamel()}/",
-        'filename'      => "HomeController.php",
+        'filename'      => "{$obj->upperCamel()}Controller.php",
         'clear_comment' => false,
     ],
     'home_api_controller' => [
         'path'          => "app/Http/Controllers/{$obj->upperCamel()}/",
-        'filename'      => "HomeApiController.php",
+        'filename'      => "{$obj->upperCamel()}ApiController.php",
         'clear_comment' => false,
     ],
 

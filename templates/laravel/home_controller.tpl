@@ -1,7 +1,8 @@
 <?php
 declare(strict_types=1);
-namespace App\Http\Controllers;
-namespace Modules\{$mod->upperCamel()}\Http\Controllers;
+{if $isModule}namespace Modules\{$obj->upperCamel()}\Http\Controllers;
+{else        }namespace App\Http\Controllers;
+{/if}
 
 use Exception;
 use Illuminate\Http\Request;
@@ -9,14 +10,20 @@ use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Log;
 
+{if $isModule}
+use Modules\{$obj->upperCamel()}\Entities\{$mod->upperCamel()};
+use Modules\{$obj->upperCamel()}\Entities\{$obj->upperCamel()};
+use Modules\{$obj->upperCamel()}\Services\{$obj->upperCamel()}\{$obj->upperCamel()}Service;
+{else}
 use App\Entities\{$mod->upperCamel()};
 use App\Entities\{$obj->upperCamel()};
 use App\Services\{$obj->upperCamel()}\{$obj->upperCamel()}Service;
+{/if}
 
 /**
  *
  */
-class {$mod->upperCamel()}Controller extends Controller
+class {$obj->upperCamel()}Controller extends Controller
 {
     /**
      *
