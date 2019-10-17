@@ -4,12 +4,17 @@ $config['base'] = dirname(__DIR__);
 
 $config['list'] = [
     'key'       => ['lifetype', 'yii', 'zalora', 'gear', 'wms', 'laravel_static', 'laravel'],
-    'databases' => ['erp', 'crm', 'wms', 'shop', 'site'],
+    'databases' => ['erp', 'crm', 'wms', 'shop', 'site', 'test'],
     /**
      *  完全自訂的地方
      */
     'items' => [
         [
+            'db'        => 'test',
+            'object'    => 'user_log',
+            'dao'       => 'user_logs',
+            'table'     => 'user_logs',
+        ],[
             'db'        => 'test',
             'object'    => 'user',
             'dao'       => 'users',
@@ -18,12 +23,7 @@ $config['list'] = [
             'db'        => 'test',
             'object'    => 'article',
             'dao'       => 'articles',
-            'table'     => 'articles',
-        ],[
-            'db'        => 'test',
-            'object'    => 'article',
-            'dao'       => 'articles',
-            'table'     => 'plog'.'articles',
+            'table'     => 'plog' . 'articles',
         ],
     ],
 ];
