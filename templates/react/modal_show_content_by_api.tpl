@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { Spin } from 'antd';
-import { ActionService, Action } from '@onr/action';
+import { {{$obj->upperCamel()}}Service, {{$obj->upperCamel()}} } from '@onr/{{$obj->lower('-')}}';
 
 interface IProps {
-  currentAction: Action;
-  emailTemplateId: BigInteger;
-  emailVariables: Object;
+  current{{$obj->upperCamel()}}: {{$obj->upperCamel()}};
+  emailTemplateId: number;
+  emailVariables: object;
 }
 
 /**
@@ -16,14 +16,14 @@ interface IProps {
  * example
  *    <>
  *      <Modal
- *        title="Theme Preview"
+ *        title="Show Contents"
  *        width={800}
  *        footer={null}
  *      >
  *        <>
  *          {previewVisible && (
- *            <UseEmailTemplatePreviewSection
- *              currentAction={currentAction}
+ *            <{{$obj->upperCamel()}}ShowContentSection
+ *              current{{$obj->upperCamel()}}={current{{$obj->upperCamel()}}}
  *              emailTemplateId={current_email_template_id}
  *              emailVariables={current_email_variables_json_format}
  *            />
@@ -34,24 +34,24 @@ interface IProps {
  *
  * @param props
  */
-export const UseEmailTemplatePreviewSection: React.FC<IProps> = (props: IProps) => {
-  const action = props.currentAction;
+export const {{$obj->upperCamel()}}ShowContentSection: React.FC<IProps> = (props: IProps) => {
+  const {{$obj}} = props.current{{$obj->upperCamel()}};
   const emailTemplateId = props.emailTemplateId;
   const emailVariables = props.emailVariables;
   const [previewContent, setPreviewContent] = useState('');
 
   useEffect(() => {
-    fetchData(action.id);
-  }, [action.id]);
+    fetchData({{$obj}}.id);
+  }, [{{$obj}}.id]);
 
-  async function fetchData(actionId: number) {
-    setPreviewContent(await fetchByApi(actionId));
+  async function fetchData({{$obj}}Id: number) {
+    setPreviewContent(await fetchByApi({{$obj}}Id));
   }
 
-  async function fetchByApi(actionId: number): string {
-    const result = await ActionService.getActionRenderThemeVariables({
+  async function fetchByApi({{$obj}}Id: number): string {
+    const result = await {{$obj->upperCamel()}}Service.get______({
       params: {
-        actionId,
+        {{$obj}}Id,
       },
       data: {
         email_template_id: emailTemplateId,

@@ -21,9 +21,7 @@ export const {{$obj->upperCamel()}}Section: React.FC<IProps> = (props: IProps) =
 
 
 
-  /**
-   * assign data
-   */
+  // setting start
   (function() {
 {{foreach $tab as $key => $field}}
 {{if $key=='id'}}
@@ -39,6 +37,30 @@ export const {{$obj->upperCamel()}}Section: React.FC<IProps> = (props: IProps) =
 {{/if}}
 {{/foreach}}
   })();
+  // setting end
+
+  // setting start
+{{foreach $tab as $key => $field}}
+{{if $key=='id'}}
+{{elseif $key=='properties' || $key=='attribs'}}
+{{elseif $field.ado->name=='status'}}
+{{elseif $field.ado->type=='int'}}
+{{elseif $field.ado->type=='tinyint'}}
+{{elseif $field.ado->type=='varchar' || $field.ado->type=='char'}}
+  const {{$field.name}}FieldDecorator = getFieldDecorator('{{$obj}}.{{$field.name}}', 
+  {
+    rules: [{
+      required: true,
+      message: 'Please select one !'
+    }],
+    initialValue: current{{$obj->upperCamel()}}.{{$field.name}},
+  });
+
+{{elseif $field.ado->type=='text' || $field.ado->type=='mediumtext' || $field.ado->type=='json'}}
+{{else}}
+{{/if}}
+{{/foreach}}
+  // setting end
 
 
   return (
@@ -59,28 +81,34 @@ export const {{$obj->upperCamel()}}Section: React.FC<IProps> = (props: IProps) =
       <Form.Item label="{{$field.name->upperCamel(' ')}}" hasFeedback>
         {getFieldDecorator('{{$obj}}.{{$key}}', {
           rules: [{ required: true, message: 'Please input !' }],
-          initialValue: current{{$obj->upperCamel()}}.{{$key}},
+          initialValue: current{{$obj->upperCamel()}}!.{{$key}},
         })(<Input style={{ width: 300 }} />)}
       </Form.Item>
 
       // change to tinyint
       <Form.Item label="{{$field.name->upperCamel(' ')}}" hasFeedback>
         {getFieldDecorator('{{$obj}}.{{$key}}', {
-          initialValue: current{{$obj->upperCamel()}}.{{$key}},
+          initialValue: current{{$obj->upperCamel()}}!.{{$key}},
         })(
           <Select style={{ width: 200 }}>
-            {all{{$field.name->upperCamel(' ')}}.map(function(data) {
-              return <Select.Option key={data.id}>{data.option}</Select.Option>;
-            })}
+            {all{{$field.name->upperCamel(' ')}}.map(data => (
+              <Select.Option key={data.id}>
+                {data.option}
+              </Select.Option>
+            ))}
           </Select>,
         )}
+        {' '} [OR] {' '}
+        <{{$obj->upperCamel()}}SelectSection 
+          fieldDecorator={ {{$field.name}}FieldDecorator }
+        />
       </Form.Item>
 
 {{elseif $field.ado->type=='text' || $field.ado->type=='mediumtext' || $field.ado->type=='json'}}
       <Form.Item label="{{$field.name->upperCamel(' ')}}" hasFeedback>
         {getFieldDecorator('{{$obj}}.{{$key}}', {
           rules: [{ required: false }],
-          initialValue: current{{$obj->upperCamel()}}.{{$key}},
+          initialValue: current{{$obj->upperCamel()}}!.{{$key}},
         })(<Input.TextArea style={{ width: 400, height: 50 }} />)}
       </Form.Item>
 

@@ -13,6 +13,13 @@ return [
         //'lang_type'     => 'javascript',
     ],
 
+    // component
+    'component_select' => [
+        'path'          => "modules/{$obj->lower('-')}/compoments/",
+        'filename'      => "{$obj->upperCamel()}SelectSection.tsx",
+        'clear_comment' => false,
+    ],
+
     // api
     'modal_show_content_by_api' => [
         'path'          => "modules/{$obj->lower('-')}/compoments/",
