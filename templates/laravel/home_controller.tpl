@@ -57,7 +57,9 @@ class {$obj->upperCamel()}Controller extends Controller
 
 
     /**
-     *  input validate example
+     * !!!! 這裡暫時不更新, 請使用 HomeApi 的程式 !!!!
+     * 
+     * input validate example
      */
     public function inputValidate__Example(Request $request)
     {

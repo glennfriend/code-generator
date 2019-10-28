@@ -4,7 +4,7 @@ namespace Tests\app\Services;
 use Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Mockery;
-use GuzzleHttp\Psr7;
+use GuzzleHttp;
 use Modules\______\Services\{$obj->UpperCamel()}Service;
 use Modules\______\Repositories\{$obj->UpperCamel()}Repository;
 
@@ -36,7 +36,7 @@ final class {$obj->upperCamel()}ServiceTest extends TestCase
      * @group only
      * @test
      */
-    public function getEmailTemplate_should_work_test()
+    public function getEmailTemplate_should_work()
     {
         // the service method used object
         /*
@@ -48,8 +48,8 @@ final class {$obj->upperCamel()}ServiceTest extends TestCase
 
 
         //
-        $row = file_get_contents(__DIR__ . '/../../data/xxxxxxxx.json');
-        $this->service->shouldReceive('getUser')->andReturn($row);
+        $json = file_get_contents(__DIR__ . '/data/xxxxxxxx.json');
+        $this->service->shouldReceive('getUser')->andReturn($json);
 
         //
         $result = $this->service->getEmailTemplate();
@@ -57,7 +57,7 @@ final class {$obj->upperCamel()}ServiceTest extends TestCase
         $this->assertEquals(123, data_get('data.user.id', $result));
         $this->assertJsonCount(3, data_get('data', $result));
         $this->assertNotRegExp(
-            '/{ldelim}{ldelim}/',
+            '/{ldelim}name{rdelim}/',
             data_get('data.template.body', $result),
             'have not redner variable in template'
         );
@@ -67,14 +67,41 @@ final class {$obj->upperCamel()}ServiceTest extends TestCase
      * @group only
      * @test
      */
-    public function getApi_should_work_test()
+    public function fetchRemoteData_should_work()
     {
-        $row = file_get_contents(__DIR__ . '/../../data/xxxxxxxx.json');
-        $psrResponse = new Psr7\Response('200', [], $row);
+        $json = file_get_contents(__DIR__ . '/../../data/xxxxxxxx.json');
+        $psrResponse = new GuzzleHttp\Psr7\Response('200', [], $json);
         $this->service->shouldReceive('getPsrResponse')->andReturn($psrResponse);
 
         //
-        $result = $this->service->getRemoteData();
+        $result = $this->service->fetchRemoteData();
+    }
+
+    /**
+     * @group only
+     * @test
+     */
+    public function todo_should_work()
+    {
+        $object = new class {
+            public function body() {
+                $json = '
+{
+    "versions": [
+        {
+            "id": 123,
+            "subject": "my subject"
+        }
+    ]
+}
+';
+                return $json;
+            }
+        };
+        $this->service->shouldReceive('getObject')->andReturn($object);
+
+        //
+        $result = $this->service->todo();
     }
 
     // --------------------------------------------------------------------------------

@@ -125,7 +125,7 @@ return [
     ],
     'database_factory' => [
         'path'          => "app/database/factories/",
-        'filename'      => "{$obj->upperCamel()}Facotry.php",
+        'filename'      => "{$obj->upperCamel()}Factory.php",
         'clear_comment' => false,
     ],
   

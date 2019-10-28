@@ -10,18 +10,12 @@ use Illuminate\Database\Eloquent\Model;
 {foreach from=$tab key=key item=field}
 {if $key=='id'}
  * @property int $id
-{elseif $field.ado->type=='int'}
+{elseif $field.ado->type|in_array:['tinyint', 'int', 'smallint', 'bigint']}
  * @property int ${$field.name->lower('_')}
-{elseif $field.ado->type=='bigint'}
- * @property bigint ${$field.name->lower('_')}
-{elseif $field.ado->type=='smallint'}
- * @property smallint ${$field.name->lower('_')}
-{elseif $field.ado->type=='tinyint'}
- * @property tinyint ${$field.name->lower('_')}
-{elseif $field.ado->type=='float' || $field.ado->type=='decimal'}
+{elseif $field.ado->type|in_array:['float', 'decimal']}
  * @property float ${$field.name->lower('_')}
-{elseif $field.ado->type=='timestamp' || $field.ado->type=='datetime' || $field.ado->type=='date'}
- * @property timestamp ${$field.name->lower('_')}
+{elseif $field.ado->type|in_array:['timestamp', 'datetime', 'date']}
+ * @property DateTime ${$field.name->lower('_')}
 {else}
  * @property string ${$field.name->lower('_')}
 {/if}

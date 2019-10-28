@@ -33,9 +33,9 @@ class Create{$mod->upperCamel()} extends Migration
 {elseif $key=='properties' || $key=='attribs'}
             $table->text('{$field.ado->name}');
 {elseif $field.ado->type=='tinyint'}
-            $table->string('{$field.ado->name}')->nullable();
+            $table->tinyInteger('{$field.ado->name}')->unsigned()->index('{$field.ado->name}');
 {elseif $field.ado->type=='smallint'}
-            $table->smallInteger('{$field.ado->name}')->unsigned();
+            $table->smallInteger('{$field.ado->name}')->unsigned()->nullable();
 {elseif $field.ado->type=='int'}
             $table->integer('{$field.ado->name}')->unsigned()->nullable();
 {elseif $field.ado->type=='bigint'}
