@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Spin } from 'antd';
 import { {{$obj->upperCamel()}}Service, {{$obj->upperCamel()}} } from '@onr/{{$obj->lower('-')}}';
+import { {{$obj->upperCamel()}}ShowContentSection } from '@onr/{{$obj}}/components/{{$obj->upperCamel()}}ShowContentSection';
 
 interface IProps {
   current{{$obj->upperCamel()}}: {{$obj->upperCamel()}};
@@ -14,23 +15,23 @@ interface IProps {
  *    - preview HTML content
  *
  * example
- *    <>
- *      <Modal
- *        title="Show Contents"
- *        width={800}
- *        footer={null}
- *      >
- *        <>
- *          {previewVisible && (
- *            <{{$obj->upperCamel()}}ShowContentSection
- *              current{{$obj->upperCamel()}}={current{{$obj->upperCamel()}}}
- *              emailTemplateId={current_email_template_id}
- *              emailVariables={current_email_variables_json_format}
- *            />
- *          )}
- *        </>
- *      </Modal>
- *    </>
+      <>
+        <Modal
+          title="Show Contents"
+          width={800}
+          footer={null}
+        >
+          <>
+            {previewVisible && (
+              <{{$obj->upperCamel()}}ShowContentSection
+                current{{$obj->upperCamel()}}={current{{$obj->upperCamel()}}}
+                emailTemplateId={current_email_template_id}
+                emailVariables={current_email_variables_json_format}
+              />
+            )}
+          </>
+        </Modal>
+      </>
  *
  * @param props
  */

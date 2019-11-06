@@ -20,8 +20,13 @@ return [
         'clear_comment' => false,
     ],
 
-    // api
+    // modal
     'modal_show_content_by_api' => [
+        'path'          => "modules/{$obj->lower('-')}/compoments/",
+        'filename'      => "{$obj->upperCamel()}ShowContentSection.tsx",
+        'clear_comment' => false,
+    ],
+    'modal_show_content_use_table' => [
         'path'          => "modules/{$obj->lower('-')}/compoments/",
         'filename'      => "{$obj->upperCamel()}ShowContentSection.tsx",
         'clear_comment' => false,
