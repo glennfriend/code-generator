@@ -1,7 +1,7 @@
 <?php
 /**
  * Smarty even modifier plugin
- * ¥Øªº¬O¬°¤F±Æª©Åý source code ·PÄ±¾ã»ô
+ * ç›®çš„æ˜¯ç‚ºäº†æŽ’ç‰ˆè®“ source code æ„Ÿè¦ºæ•´é½Š
  *
  * Type:     modifier<br>
  * Name:     smarty<br>
