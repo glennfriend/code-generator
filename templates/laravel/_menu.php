@@ -41,6 +41,11 @@ return [
         'filename'      => $today ."_000001_create_{$mod->lower('_')}_table.php",
         'clear_comment' => false,
     ],
+    'migration_view' => [
+        'path'          => "app/database/migrations/",
+        'filename'      => $today ."_000001_create_{$mod->lower('_')}_view.php",
+        'clear_comment' => false,
+    ],
 
     //
     'locale' => [

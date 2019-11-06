@@ -17,6 +17,37 @@ class Create{$mod->upperCamel()} extends Migration
             return;
         }
 
+        Schema::table(null, function(Blueprint $table) {
+            $this->createTable();
+            // $this->changeTable();
+            // $this->createDataFromSql();
+        });
+    }
+
+    /**
+     * Reverse the migrations
+     */
+    public function down()
+    {
+        // $sql = 'DROP TABLE `{$mod->lower('_')}`';
+        // Schema::dropIfExists('{$mod->lower('_')}');
+        // Schema::dropIfExists('{$mod->lower('_')}');
+        /*
+        Schema::table('{$mod->lower('_')}', function (Blueprint $table) {
+            $table->dropColumn('__the_field_name__');
+        });
+        */
+    }
+
+    /* --------------------------------------------------------------------------------
+        private
+    -------------------------------------------------------------------------------- */
+
+    /**
+     *
+     */
+    private function createTable()
+    {
         // 是依照 name, type 的一般建議方式建立, "不是" 依照資料表的欄位屬性 (TODO: delete it)
         Schema::create('{$mod->lower('_')}', function (Blueprint $table) {
 {foreach from=$tab key=key item=field}
@@ -64,49 +95,9 @@ class Create{$mod->upperCamel()} extends Migration
             $table->engine = 'InnoDB';
         });
 
-        /*
-        // 追加欄位
-        Schema::table('{$mod->lower('_')}', function (Blueprint $table) {
-            $table->bigInteger('__the_field_name__')
-                ->unsigned()
-                ->nullable()
-                ->index()
-                ->after('id');
-        });
-        */
 
-        Schema::table(null, function(Blueprint $table) {
-            // $sql = $this->createTableSql();
-            // $sql = $this->changeTableSql();
-            // $sql = $this->createDataSql();
-            DB::connection()->getPdo()->exec($sql);
-        });
-    }
 
-    /**
-     * Reverse the migrations
-     */
-    public function down()
-    {
-        // $sql = 'DROP TABLE `{$mod->lower('_')}`';
-        // Schema::dropIfExists('{$mod->lower('_')}');
-        // Schema::dropIfExists('{$mod->lower('_')}');
-        /*
-        Schema::table('{$mod->lower('_')}', function (Blueprint $table) {
-            $table->dropColumn('__the_field_name__');
-        });
-        */
-    }
 
-    /* --------------------------------------------------------------------------------
-        private
-    -------------------------------------------------------------------------------- */
-
-    /**
-     *
-     */
-    protected function createTableSql()
-    {
         #
         #   請用 phpmyadmin dump
         #       - "http://localhost/phpmyadmin/tbl_export.php?single_table=true&db={SessionManager::database()}&table={$tableName->lower('_')}"
@@ -135,15 +126,26 @@ ALTER TABLE `{ldelim}$table{rdelim}`
   MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 EOD;
-
-        return $sql;
+        DB::connection()->getPdo()->exec($sql);
     }
 
     /**
      *
      */
-    protected function changeTableSql()
+    private function changeTable()
     {
+        /*
+        // 追加欄位
+        Schema::table('{$mod->lower('_')}', function (Blueprint $table) {
+            $table->bigInteger('__the_field_name__')
+                ->unsigned()
+                ->nullable()
+                ->index()
+                ->after('id');
+        });
+        */
+        
+
         /*
             變更 varchar 欄位
                 ALTER TABLE `{$mod->lower('_')}`
@@ -172,13 +174,13 @@ EOD;
             ALERT TABLE ......
 
 EOD;
-        return $sql;
+        DB::connection()->getPdo()->exec($sql);
     }
 
     /**
      *
      */
-    protected function createDataSql()
+    private function createDataFromSql()
     {
         $sql = <<<EOD
 
@@ -186,7 +188,7 @@ EOD;
             INSERT INTO `{$mod->lower('_')}` (....) VALUES (....);
 
 EOD;
-        return $sql;
+        DB::connection()->getPdo()->exec($sql);
     }
 
 }

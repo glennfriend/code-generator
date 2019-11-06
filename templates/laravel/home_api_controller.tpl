@@ -15,10 +15,12 @@ use Illuminate\Support\Facades\Log;
 use Modules\{$obj->upperCamel()}\Entities\{$mod->upperCamel()};
 use Modules\{$obj->upperCamel()}\Entities\{$obj->upperCamel()};
 use Modules\{$obj->upperCamel()}\Services\{$obj->upperCamel()}\{$obj->upperCamel()}Service;
+use Modules\{$obj->upperCamel()}\Http\Resources\{$obj->upperCamel()}Resource;
 {else}
 use App\Entities\{$mod->upperCamel()};
 use App\Entities\{$obj->upperCamel()};
 use App\Services\{$obj->upperCamel()}\{$obj->upperCamel()}Service;
+use App\Http\Resources\{$obj->upperCamel()}Resource;
 {/if}
 
 
@@ -28,9 +30,9 @@ $config = [
     'middleware' => ['api'],
 ];
 Route::group($config, function () {
-    Route::get   ('/{$mod->lower('-')}',  {$obj->lowerCamel()|space_even:26}     '{$obj->upperCamel()}Controller@index');
+    Route::get   ('/{$mod->lower('-')}',  {$obj->lowerCamel()|strlen|repeat}     '{$obj->upperCamel()}Controller@index');
     Route::get   ('/{$mod->lower('-')}/{ldelim}{$obj->lowerCamel()}Id{rdelim}',  '{$obj->upperCamel()}Controller@show');
-    Route::post  ('/{$mod->lower('-')}',  {$obj->lowerCamel()|space_even:26}     '{$obj->upperCamel()}Controller@store');
+    Route::post  ('/{$mod->lower('-')}',  {$obj->lowerCamel()|strlen|repeat}     '{$obj->upperCamel()}Controller@store');
     Route::patch ('/{$mod->lower('-')}/{ldelim}{$obj->lowerCamel()}Id{rdelim}',  '{$obj->upperCamel()}Controller@update');
     Route::delete('/{$mod->lower('-')}/{ldelim}{$obj->lowerCamel()}Id{rdelim}',  '{$obj->upperCamel()}Controller@destroy');
 });
@@ -60,9 +62,26 @@ class {$obj->upperCamel()}ApiController extends Controller
     /**
      * GET list
      */
-    public function index()
+    public function index(Request $request)
     {
         return 'index ';
+
+        /*
+        $objects = $this->{$obj}Repository->find{$mod->upperCamel()}ByAccountId($accountId);
+        $response = [
+            'data' => {$obj->upperCamel()}Resource::collection($objects),
+        ];
+
+        return response($response, 200);
+        */
+    }
+
+    /**
+     * GET show
+     */
+    public function show(Request $request, $id)
+    {
+        return 'show ' . $id;
     }
 
     /**
@@ -71,14 +90,6 @@ class {$obj->upperCamel()}ApiController extends Controller
     public function store(Request $request)
     {
         return 'store ';
-    }
-
-    /**
-     * GET show
-     */
-    public function show($id)
-    {
-        return 'show ' . $id;
     }
 
     /**

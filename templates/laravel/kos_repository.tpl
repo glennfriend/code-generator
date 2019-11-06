@@ -1,11 +1,19 @@
 <?php
 declare(strict_types=1);
-namespace App\Repositories;
+{if $isModule}namespace Modules\{$obj->upperCamel()}\Repositories;
+{else        }namespace App\Repositories;
+{/if}
 
+use Traversable;
 use Illuminate\Database\Eloquent\Model;
 use Prettus\Repository\Eloquent\BaseRepository;
-use App\Entities\{$obj->upperCamel()};
+
+{if $isModule}
 use Modules\{$obj->upperCamel()}\Entities\{$obj->upperCamel()};
+{else}
+use App\Entities\{$obj->upperCamel()};
+{/if}
+
 
 /**
  * 
@@ -86,5 +94,21 @@ class {$obj->upperCamel()}Repository extends BaseRepository
     // --------------------------------------------------------------------------------
 
     // ${$obj} = $this->find($id);
+
+    /**
+     * @param $accountId
+     * @return {$obj->upperCamel()}[]
+     */
+    public function find{$mod->upperCamel()}ByAccountId($accountId): Traversable
+    {
+        $condition = [
+            'account_id' => $accountId,
+        ];
+        $query = function ($query) {
+            return $query->orderBy('id', 'DESC');
+        };
+
+        return $this->scopeQuery($query)->findWhere($condition);
+    }
 
 }

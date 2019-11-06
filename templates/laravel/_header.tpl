@@ -6,6 +6,7 @@
     <a href="?t=model_extend">Model Extend</a>,
     <a href="?t=search_table">Search Table</a>,
     <a href="?t=migration">Migration</a>,
+    <a href="?t=migration_view">Migration view</a>,
     <a href="?t=locale">Locale</a>,
     <a href="?t=home_controller">HomeController</a>,
     <a href="?t=home_api_controller">HomeApi</a>,
