@@ -17,7 +17,7 @@ class Create{$mod->upperCamel()} extends Migration
             return;
         }
 
-        Schema::table(null, function(Blueprint $table) {
+        Schema::table('{$mod->lower('_')}', function (Blueprint $table) {
             $this->createTable();
             // $this->changeTable();
             // $this->createDataFromSql();
@@ -39,9 +39,9 @@ class Create{$mod->upperCamel()} extends Migration
         */
     }
 
-    /* --------------------------------------------------------------------------------
-        private
-    -------------------------------------------------------------------------------- */
+    // --------------------------------------------------------------------------------
+    //  private
+    // --------------------------------------------------------------------------------
 
     /**
      *

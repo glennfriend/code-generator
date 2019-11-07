@@ -15,7 +15,7 @@ use Illuminate\Database\Eloquent\Model;
 {elseif $field.ado->type|in_array:['float', 'decimal']}
  * @property float ${$field.name->lower('_')}
 {elseif $field.ado->type|in_array:['timestamp', 'datetime', 'date']}
- * @property DateTime ${$field.name->lower('_')}
+ * @property \DateTime ${$field.name->lower('_')}
 {else}
  * @property string ${$field.name->lower('_')}
 {/if}

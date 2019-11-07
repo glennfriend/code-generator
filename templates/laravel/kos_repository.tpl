@@ -14,7 +14,6 @@ use Modules\{$obj->upperCamel()}\Entities\{$obj->upperCamel()};
 use App\Entities\{$obj->upperCamel()};
 {/if}
 
-
 /**
  * 
  */

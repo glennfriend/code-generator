@@ -27,6 +27,7 @@
         <a href="?t=debug_only">D</a>
     [Kos]
         <a href="?t=kos_repository">Repository</a>
+        <a href="?t=kos_service">Service</a>
 </div>
 
 <div class="bar2">

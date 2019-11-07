@@ -140,6 +140,11 @@ return [
         'filename'      => "{$obj->upperCamel()}Repository.php",
         'clear_comment' => false,
     ],
+    'kos_service' => [
+        'path'          => "app/Services",
+        'filename'      => "{$obj->upperCamel()}Service.php",
+        'clear_comment' => false,
+    ],
 
     // for debug
     'debug_only' => [

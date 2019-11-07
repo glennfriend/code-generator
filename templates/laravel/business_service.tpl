@@ -1,12 +1,20 @@
 <?php
 declare(strict_types=1);
-namespace App\Service\{$obj->upperCamel()};
+{if $isModule}namespace Modules\{$obj->upperCamel()}\Service;
+{else        }namespace App\Service\{$obj->upperCamel()};
+{/if}
 
 use Exception;
 use DB;
 use Log;
-use App\Entities\{$obj->upperCamel()};
+
+{if $isModule}
+use Modules\{$obj->upperCamel()}\Entities\{$mod->upperCamel()};
+use Modules\{$obj->upperCamel()}\Entities\{$obj->upperCamel()};
+{else}
 use App\Entities\{$mod->upperCamel()};
+use App\Entities\{$obj->upperCamel()};
+{/if}
 
 /**
  * {$obj->upperCamel()} Service

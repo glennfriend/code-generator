@@ -18,9 +18,9 @@ use App\Entities\{$obj->upperCamel()};
 /**
  *
  */
-final class {$obj->upperCamel()}ApiTest extends TestCase
+final class {$obj->upperCamel()}ControllerTest extends TestCase
 {
-    // use RefreshDatabase;
+    use RefreshDatabase;
 
     /**
      *
@@ -29,12 +29,17 @@ final class {$obj->upperCamel()}ApiTest extends TestCase
     {
         parent::setUp();
 
-        $this->url = '/api/{$obj->lower("-")}';
+        /*
+        $this->user = factory(User::class)->create();
+        $this->{$obj} = factory({$obj->upperCamel()}::class)->create([
+            'user_id' => $this->user->id,
+        ]);
+        */
 
         /*
-        $this->{$obj} = factory(Users::class)->create();
-        $this->{$obj} = factory({$mod->upperCamel()}::class)->create([
-            'user_id' => $this->user->id,
+        $this->account = factory(Account::class)->create();
+        $this->{$obj} = factory({$obj->upperCamel()}::class)->create([
+            'account_id' => $this->account->id,
         ]);
         */
     }
@@ -43,29 +48,94 @@ final class {$obj->upperCamel()}ApiTest extends TestCase
      * @group only
      * @test
      */
-    public function index_get()
+    public function index_should_work()
     {
         factory({$obj->upperCamel()}::class)->create([
-            'user_id'    => $this->user->id,
+            'account_id' => $this->account->id,
             'created_at' => '2019-01-31',
         ]);
 
-        $this
-            ->getAuthedRequest()
-            ->json('GET', $this->url . '?' . http_build_query([
-                'start_date' => '2000-01-01',
-                'end_date'   => '2000-02-01',
-            ]))
-            ->assertStatus(200)
-            ->assertJson([
-                'data' => [
-                    [
-                        'date'  => '2019-01-31',
-                        'count' => 2,
-                    ],
-                ],
-            ]);
+        $accountId = $this->account->id;
+        $url = '/api/accounts/{ldelim}$accountId{rdelim}/{$mod->lower("-")}';
+        $url .= '?' . http_build_query([
+            'start_date' => '2000-01-01',
+            'end_date'   => '2000-02-01',
+        ];
 
+        $response = $this->getAuthedRequest()->json('GET', $url);
+
+        //
+        // dump(json_decode($response->getContent(), JSON_PRETTY_PRINT));
+        $response->assertStatus(200);
+        $response->assertJsonStructure([
+            'data' => [
+                '*' => [
+                    'id',
+                    'account_id',
+                    'config',
+                ]
+            ]
+        ]);
+        $response->assertJson([
+            'data' => [
+                [
+                    'date'  => '2019-01-31',
+                    'count' => 2,
+                ],
+            ],
+        ]);
+
+    }
+
+    /**
+     * @group only
+     * @test
+     */
+    public function store_should_work()
+    {
+        $accountId = $this->account->id;
+        $url = '/api/accounts/{ldelim}$accountId{rdelim}/{$mod->lower("-")}';
+
+        $input = $this->getTestJson('{$obj->lower('_')}_store.json');
+        $response = $this->getAuthedRequest()->json('POST', $url, $input);
+
+        //
+        // dump(json_decode($response->getContent(), JSON_PRETTY_PRINT));
+        $response->assertStatus(201);
+        $response->assertJsonStructure([
+            'id',
+            'account_id',
+            'config',
+        ]);
+        $response->assertJsonFragment([
+            'name' => '{$obj} store',
+        ]);
+    }
+
+    /**
+     * @group only
+     * @test
+     */
+    public function update_should_work()
+    {
+        $accountId = $this->account->id;
+        ${$obj}Id = $this->{$obj}->id;
+        $url = "/api/accounts/{ldelim}$accountId{rdelim}/{$mod->lower("-")}/{ldelim}${$obj}Id{rdelim}";
+
+        $input = $this->getTestJson('{$obj->lower('_')}_update.json');
+        $response = $this->getAuthedRequest()->json('PATCH', $url, $input);
+
+        //
+        // dump(json_decode($response->getContent(), JSON_PRETTY_PRINT));
+        $response->assertStatus(201);
+        $response->assertJsonStructure([
+            'id',
+            'account_id',
+            'config',
+        ]);
+        $response->assertJsonFragment([
+            'name' => '{$obj} update',
+        ]);
     }
 
     /**
@@ -74,14 +144,7 @@ final class {$obj->upperCamel()}ApiTest extends TestCase
      */
     public function create_post()
     {
-        $jsonFile = 'post-1.json';
-        $this
-            ->getAuthedRequest()
-            ->json('POST', $this->url, $this->getTestJson($jsonFile))
-            ->assertStatus(200)
-            ->assertJson([
-                'ok' => true,
-            ]);
+        $response = [];
 
         //
         ${$mod} = app({$mod->upperCamel()}::class);
@@ -97,7 +160,7 @@ final class {$obj->upperCamel()}ApiTest extends TestCase
     // ------------------------------------------------------------
 
     /*
-    protected function postHttp($jsonFile)
+    private function postHttp($jsonFile)
     {
         $url = '/api/{$obj->lower("-")}';
         $this
@@ -110,7 +173,7 @@ final class {$obj->upperCamel()}ApiTest extends TestCase
     }
     */
 
-    protected function getAuthedRequest()
+    private function getAuthedRequest()
     {
         return $this
             ->withHeaders([
@@ -120,19 +183,18 @@ final class {$obj->upperCamel()}ApiTest extends TestCase
 
     /**
      * @param string $pathFile
-     * @return mixed
+     * @return array
      */
-    protected function getTestJson($pathFile)
+    private function getTestJson(string $pathFile): array
     {
-        $jsonFile = base_path('app/Tests/Data/' . $pathFile);
-        $text = file_get_contents($jsonFile);
+{if $isModule}
+        $basePath = base_path('Modules/{$obj->upperCamel()}/Tests/Data/Controllers');
+{else}
+        $basePath = base_path('app/Tests/Data');
+{/if}
+        $text = file_get_contents($basePath . '/' . $pathFile);
         return json_decode($text, true);
     }
 
-    protected function factory{$mod->upperCamel()}()
-    {
-
-    }
-    
 }
 
