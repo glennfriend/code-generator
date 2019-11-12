@@ -6,8 +6,7 @@ declare(strict_types=1);
 
 use Exception;
 use DB;
-use Log;
-
+use Modules\Action\Repositories\AssetRepository;
 {if $isModule}
 use Modules\{$obj->upperCamel()}\Entities\{$obj->upperCamel()};
 use Modules\{$obj->upperCamel()}\Repositories\{$obj->upperCamel()}Repository;
@@ -45,13 +44,7 @@ class {$obj->upperCamel()}Service
     {
         DB::beginTransaction();
 
-        try {
-            $newObject->save();
-        }
-        catch (Exception $e) {
-            DB::rollBack();
-            throw new Exception($e->getMessage());
-        }
+        $newObject->save();
 
         DB::commit();
         return $newObject;
@@ -61,23 +54,14 @@ class {$obj->upperCamel()}Service
      * update
      *
      * @param {$mod->upperCamel()} ${$obj}
-     * @return bool
-     * @throws Exception
      */
-    public function update({$obj->upperCamel()} ${$obj}): bool
+    public function update({$obj->upperCamel()} ${$obj}): void
     {
         DB::beginTransaction();
 
-        try {
-            ${$obj}->svae();
-        }
-        catch (Exception $e) {
-            DB::rollBack();
-            throw new Exception($e->getMessage());
-        }
+        ${$obj}->save();
 
         DB::commit();
-        return true;
     }
 
     /**
@@ -89,23 +73,22 @@ class {$obj->upperCamel()}Service
      */
     public function delete($id): bool
     {
-        ${$obj} = $this->get($id);
-        if (! ${$obj}) {
+        try {
+            ${$obj} = $this->get($id);
+        }
+        catch (ModelNotFoundException $e) {
             return true;
+        }
+        catch (Exception $e) {
+            throw $e;
         }
 
         DB::beginTransaction();
 
-        try {
-            $this->delete();
-        }
-        catch (Exception $e) {
-            DB::rollBack();
-            throw new Exception($e->getMessage());
-        }
+        $result = $this->delete();
 
         DB::commit();
-        return true;
+        return $result;
     }
 
     // --------------------------------------------------------------------------------
@@ -123,12 +106,12 @@ class {$obj->upperCamel()}Service
     {
         try {
             ${$obj} = $this->{$obj}Repository->find($id);
-            if (! ${$obj}) {
-                return null;
-            }
+        }
+        catch (ModelNotFoundException $e) {
+            return null;
         }
         catch (Exception $e) {
-            throw new Exception($e->getMessage());
+            throw $e;
         }
 
         return ${$obj};
@@ -138,19 +121,12 @@ class {$obj->upperCamel()}Service
      * findByAccountId
      *
      * @param int $accountId
+     * @param int $page
      * @return {$obj->upperCamel()}[]|\Traversable
-     * @throws Exception
      */
-    public function findByAccountId(int $accountId)
+    public function findByAccountId(int $accountId, int $page)
     {
-        try {
-            ${$mod} = $this->{$obj}Repository->find{$mod->upperCamel()}ByAccountId($accountId);
-            
-        }
-        catch (Exception $e) {
-            throw new Exception($e->getMessage());
-        }
-
+        ${$mod} = $this->{$obj}Repository->find{$mod->upperCamel()}ByAccountId($accountId, $page);
         return ${$mod};
     }
 

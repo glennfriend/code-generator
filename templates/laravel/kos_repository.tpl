@@ -5,6 +5,7 @@ declare(strict_types=1);
 {/if}
 
 use Traversable;
+use Illuminate\Pagination\Paginator;
 use Illuminate\Database\Eloquent\Model;
 use Prettus\Repository\Eloquent\BaseRepository;
 
@@ -95,11 +96,22 @@ class {$obj->upperCamel()}Repository extends BaseRepository
     // ${$obj} = $this->find($id);
 
     /**
-     * @param $accountId
+     * @param int $accountId
+     * @param int $page
      * @return {$obj->upperCamel()}[]
      */
-    public function find{$mod->upperCamel()}ByAccountId($accountId): Traversable
+    public function find{$mod->upperCamel()}ByAccountId(int $accountId, int $page = 1): Traversable
     {
+        $page = (int) ($page > 1 ? $page : 1);
+        Paginator::currentPageResolver(function () use ($page) {
+            return $page;
+        });
+
+        return {$obj->upperCamel()}::where('account_id', $accountId)
+            ->orderBy('id', 'DESC')
+            ->paginate();
+
+        /*
         $condition = [
             'account_id' => $accountId,
         ];
@@ -108,6 +120,7 @@ class {$obj->upperCamel()}Repository extends BaseRepository
         };
 
         return $this->scopeQuery($query)->findWhere($condition);
+        */
     }
 
 }

@@ -10,7 +10,13 @@ use Illuminate\Http\Response;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Database\QueryException;
 
+{if $isModule}
+use Modules\Core\Services\ExceptionError;
+{else}
+use App\Services\ExceptionError;
+{/if}
 {if $isModule}
 use Modules\{$obj->upperCamel()}\Entities\{$mod->upperCamel()};
 use Modules\{$obj->upperCamel()}\Entities\{$obj->upperCamel()};
@@ -64,29 +70,24 @@ class {$obj->upperCamel()}ApiController extends Controller
         $this->{$mod} = ${$mod};
     }
 
+    // --------------------------------------------------------------------------------
+    //  basic
+    // --------------------------------------------------------------------------------
+
     /**
      * GET list
      */
     public function index(Request $request)
     {
         return 'index ';
-
-        /*
-        $objects = $this->{$obj}Repository->find{$mod->upperCamel()}ByAccountId($accountId);
-        $response = [
-            'data' => {$obj->upperCamel()}Resource::collection($objects),
-        ];
-
-        return response($response, 200);
-        */
     }
 
     /**
      * GET show
      */
-    public function show(Request $request, int $id)
+    public function show(Request $request, int ${$obj}Id)
     {
-        return 'show ' . $id;
+        return 'show ' . ${$obj}Id;
     }
 
     /**
@@ -100,31 +101,153 @@ class {$obj->upperCamel()}ApiController extends Controller
     /**
      * PATCH update
      */
-    public function update(Request $request, int $id)
+    public function update(Request $request, int ${$obj}Id)
     {
-        return 'update ' . $id;
+        return 'update ' . ${$obj}Id;
     }
 
     /**
      * DELETE delete
      */
-    public function destroy(int $id)
+    public function destroy(Request $request, int ${$obj}Id)
     {
-        return 'distory ' . $id;
+        return 'distory ' . ${$obj}Id;
     }
+
+    // --------------------------------------------------------------------------------
+    //  basic for account_id
+    // --------------------------------------------------------------------------------
+
+    /**
+     * GET list
+     */
+    public function index(Request $request, int $accountId)
+    {
+        $page = (int) $request->input('page');
+        ${$mod} = $this->{$obj}Service->findByAccountId($accountId, $page);
+
+        $response = {$obj->upperCamel()}Resource::collection(${$mod});
+        return $response;
+    }
+
+    /**
+     * GET show
+     */
+    public function show(Request $request, int $accountId, int ${$obj}Id)
+    {
+        ${$obj} = $this->{$obj}Service->get(${$obj}Id);
+        if (! ${$obj}) {
+            $this->error(null, 404);
+        }
+        if ($error = $this->accountValidate(${$obj}, $accountId)) {
+            return $this->error($error, 404);
+        }
+
+        $response = new {$obj->upperCamel()}Resource(${$obj});
+        return $response;
+    }
+
+    /**
+     * POST create
+     */
+    public function store(Request $request, int $accountId)
+    {
+        if ($error = $this->storeValidate($request, $accountId)) {
+            return $this->error($error, 400);
+        }
+
+        try {
+            $payload = $request->input('{$obj->lower('_')}');
+            $new{$mod} = new {$mod}($payload);
+            ${$obj} = $this->{$obj}Service->add($new{$mod});
+        }
+        catch (QueryException $e) {
+            if (ExceptionError::isForeignKeyConstraint($e)) {
+                $error = 'foreign key constraint error';
+            }
+            else {
+                $error = 'query error';
+            }
+            return $this->error($error, 400, $e);
+        }
+        catch (Exception $e) {
+            throw $e;
+        }
+
+        $response = new {$obj->upperCamel()}Resource(${$obj});
+        return response($response, 201);
+    }
+
+    /**
+     * PATCH update
+     */
+    public function update(Request $request, int $accountId, int ${$obj}Id)
+    {
+        if ($error = $this->storeValidate($request, $accountId)) {
+            return $this->error($error, 400);
+        }
+
+        ${$obj} = $this->{$obj}Service->get(${$obj}Id);
+        if (! ${$obj}) {
+            return $this->error(null, 404);
+        }
+        if ($error = $this->accountValidate(${$obj}, $accountId)) {
+            return $this->error($error, 404);
+        }
+
+        try {
+            $payload = $request->input('{$obj->lower('_')}');
+            ${$obj}->fill($payload);
+            $this->{$obj}Service->update(${$obj});
+        }
+        catch (QueryException $e) {
+            $error = 'query error';
+            if (ExceptionError::isForeignKeyConstraint($e)) {
+                $error = 'foreign key constraint error';
+            }
+            return $this->error($error, 404, $e);
+        }
+        catch (Exception $e) {
+            throw $e;
+        }
+
+        $response = new {$obj->upperCamel()}Resource(${$obj});
+        return response($response, 201);
+    }
+
+    /**
+     * DELETE delete
+     */
+    public function destroy(Request $request, int $accountId, int ${$obj}Id)
+    {
+        ${$obj} = $this->{$obj}Service->get(${$obj}Id);
+        if (! ${$obj}) {
+            return response(null, 204);
+        }
+        if ($error = $this->accountValidate(${$obj}, $accountId)) {
+            return $this->error($error, 404);
+        }
+
+        $this->{$obj}Service->delete(${$obj}Id);
+        return response(null, 204);
+    }
+
+    // --------------------------------------------------------------------------------
+    //  private
+    // --------------------------------------------------------------------------------
+
+
 
     // --------------------------------------------------------------------------------
     //  other
     // --------------------------------------------------------------------------------
 
     /**
-     * input validate example
-     *
      * @param Request $request
      * @param int $accountId
      * @return null|string
      */
-    public function input_validate(Request $request, int $accountId)
+    protected function storeValidate(Request $request, int $accountId): ?string
     {
         $validator = Validator::make($request->all(), [
             'required_keys'          => 'required|array|min:1',
@@ -161,6 +284,12 @@ class {$obj->upperCamel()}ApiController extends Controller
 {/foreach}
         ]);
 
+        $validator->after(function ($validator) use ($request, $accountId) {
+            if ($accountId !== $request->input('{$obj->lower('_')}.account_id')) {
+                $validator->errors()->add('account_id', 'account_id error');
+            }
+        });
+
         /*
         $validator->after(function ($validator) {
             if ($this->somethingElseIsInvalid()) {
@@ -179,17 +308,49 @@ class {$obj->upperCamel()}ApiController extends Controller
             return (string) $validator->errors()->first();
         }
         return null;
+    }
 
-
-
-
-        if ($validator->fails()) {
-            $body = [
-                'message' => $validator->errors()->first()
-            ];
-            return response()->json($body, 400);
+    /**
+     * @param {$obj->upperCamel()} ${$obj}
+     * @param int $accountId
+     * @return null|string
+     */
+    protected function accountValidate({$obj->upperCamel()} ${$obj}, int $accountId): ?string
+    {
+        if ((int) ${$obj}->account_id !== $accountId) {
+            return 'account error';
         }
 
+        return null;
+    }
+
+    /**
+     * @param string|null $message
+     * @param int $code
+     * @param Exception|null $exception
+     * @return Response
+     */
+    protected function error($message = null, int $code = 400, Exception $exception = null): Response
+    {
+        if ($exception instanceof Exception) {
+            Log::error($exception->getMessage());
+        }
+
+        if ($message) {
+            $body = [
+                'message' => $message,
+            ];
+        }
+        else {
+            $body = [];
+        }
+
+        return response($body, $code);
+    }
+
+    // 不使用, 請請用 JsonResource
+    protected function get_resource()
+    {
         $body = [
             'data' => [
 {foreach $tab as $key => $field}
@@ -222,10 +383,5 @@ class {$obj->upperCamel()}ApiController extends Controller
         ]
         return response()->json($body);
     }
-
-    // --------------------------------------------------------------------------------
-    //  private
-    // --------------------------------------------------------------------------------
-
 
 }

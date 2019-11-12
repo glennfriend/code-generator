@@ -77,18 +77,18 @@ export const {{$obj->upperCamel()}}Section: React.FC<IProps> = (props: IProps) =
 {{elseif $field.ado->type=='tinyint'}}
       // tinyint
 
-{{elseif $field.ado->type=='varchar' || $field.ado->type=='char'}}
+{{elseif in_array($field.ado->type, array('varchar', 'char'))}}
       <Form.Item label="{{$field.name->upperCamel(' ')}}" hasFeedback>
         {getFieldDecorator('{{$obj}}.{{$key}}', {
           rules: [{ required: true, message: 'Please input !' }],
-          initialValue: current{{$obj->upperCamel()}}!.{{$key}},
+          initialValue: current{{$obj->upperCamel()}}!.{{$field.name->lower('_')}},
         })(<Input style={{ width: 300 }} />)}
       </Form.Item>
 
       // change to tinyint
       <Form.Item label="{{$field.name->upperCamel(' ')}}" hasFeedback>
         {getFieldDecorator('{{$obj}}.{{$key}}', {
-          initialValue: current{{$obj->upperCamel()}}!.{{$key}},
+          initialValue: current{{$obj->upperCamel()}}!.{{$field.name->lower('_')}},
         })(
           <Select style={{ width: 200 }}>
             {all{{$field.name->upperCamel(' ')}}.map(data => (
@@ -104,15 +104,25 @@ export const {{$obj->upperCamel()}}Section: React.FC<IProps> = (props: IProps) =
         />
       </Form.Item>
 
-{{elseif $field.ado->type=='text' || $field.ado->type=='mediumtext' || $field.ado->type=='json'}}
+{{elseif in_array($field.ado->type, array('text', 'mediumtext', 'json'))}}
       <Form.Item label="{{$field.name->upperCamel(' ')}}" hasFeedback>
         {getFieldDecorator('{{$obj}}.{{$key}}', {
           rules: [{ required: false }],
-          initialValue: current{{$obj->upperCamel()}}!.{{$key}},
+          initialValue: current{{$obj->upperCamel()}}!.{{$field.name->lower('_')}},
         })(<Input.TextArea style={{ width: 400, height: 50 }} />)}
       </Form.Item>
 
+{{elseif in_array($field.ado->type, array('date', 'datetime', 'timestamp'))}}
+      <div>{{$obj}}.{{$key}}  -  {{$field.ado->type}}</div>
+
 {{else}}
+      <Form.Item label="{{$field.name->upperCamel(' ')}}" hasFeedback>
+        {getFieldDecorator('{{$obj}}.{{$key}}', {
+          rules: [{ required: true, message: 'Please input !' }], xxxx
+          initialValue: current{{$obj->upperCamel()}}!.{{$field.name->lower('_')}},
+        })(<Input style={{ width: 300 }} />)}
+      </Form.Item>
+
 {{/if}}
 {{/foreach}}
 

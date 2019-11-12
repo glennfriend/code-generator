@@ -14,7 +14,6 @@ use App\Entities\{$mod->upperCamel()};
 use App\Entities\{$obj->upperCamel()};
 {/if}
 
-
 /**
  *
  */
@@ -137,6 +136,21 @@ final class {$obj->upperCamel()}ControllerTest extends TestCase
             'name' => '{$obj} update',
         ]);
     }
+
+    /**
+     * @group only
+     * @test
+     */
+    public function delete_should_work()
+    {
+        $accountId = $this->account->id;
+        ${$obj}Id = $this->{$obj}->id;
+        $url = "/api/accounts/{ldelim}$accountId{rdelim}/{$mod->lower("-")}/{ldelim}${$obj}Id{rdelim}";
+        $response = $this->getAuthedRequest()->json('DELETE', $url);
+
+        $response->assertStatus(204);
+    }
+
 
     /**
      * @group only

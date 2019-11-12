@@ -2,6 +2,7 @@
 declare(strict_types=1);
 namespace App\Entities\Eloquent;
 
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Model;
 
 /**
@@ -23,6 +24,8 @@ use Illuminate\Database\Eloquent\Model;
  */
 class {$obj->upperCamel()}Eloquent extends Model
 {
+    // use SoftDeletes;
+
     protected $table = '{$tableName->lower("_")}';
     public $timestamps = false;
 

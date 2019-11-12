@@ -84,19 +84,18 @@ class {$obj->upperCamel()}Service
      * update
      *
      * @param {$mod->upperCamel()} ${$obj}
-     * @return bool
      * @throws Exception
      */
-    public function update({$obj->upperCamel()} ${$obj}): bool
+    public function update({$obj->upperCamel()} ${$obj}): void
     {
         if (! $this->validate(${$obj})) {
-            return false;
+            return;
         }
 
         DB::beginTransaction();
         try {
             if (! $this->{$mod}->update(${$obj})) {
-                return false;
+                return;
             }
         }
         catch (Exception $e) {
@@ -106,7 +105,6 @@ class {$obj->upperCamel()}Service
         DB::commit();
 
         $this->postHook(${$obj});
-        return true;
     }
 
     /**
