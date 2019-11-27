@@ -22,10 +22,12 @@
         <a href="?t=test_api">Api</a>
         <a href="?t=test_controller">controller</a>
         <a href="?t=test_service">service</a>
+        <a href="?t=test_data">data</a>
         <a href="?t=database_factory">database/factories</a>
     [other]
         <a href="?t=debug_only">D</a>
     [Kos]
+        <a href="?t=kos_home_controller_api">ControllerApi</a>,
         <a href="?t=kos_repository">Repository</a>
         <a href="?t=kos_service">Service</a>
 </div>

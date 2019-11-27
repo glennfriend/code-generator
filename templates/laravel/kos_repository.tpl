@@ -102,14 +102,20 @@ class {$obj->upperCamel()}Repository extends BaseRepository
      */
     public function find{$mod->upperCamel()}ByAccountId(int $accountId, int $page = 1): Traversable
     {
-        $page = (int) ($page > 1 ? $page : 1);
+        $page = ($page > 1 ? $page : 1);
         Paginator::currentPageResolver(function () use ($page) {
             return $page;
         });
 
-        return {$obj->upperCamel()}::where('account_id', $accountId)
-            ->orderBy('id', 'DESC')
-            ->paginate();
+        $builder = {$obj->upperCamel()}::where('account_id', $accountId)
+            ->orderBy('id', 'DESC');
+
+        /*
+        $filterByName = data_get($filter, 'name');
+        if ($filterByName) {
+            $builder = $builder->where('name', 'like', "%{ldelim}$filterByName{rdelim}%");
+        }
+        */
 
         /*
         $condition = [
@@ -121,6 +127,8 @@ class {$obj->upperCamel()}Repository extends BaseRepository
 
         return $this->scopeQuery($query)->findWhere($condition);
         */
+
+        return $builder->paginate();
     }
 
 }

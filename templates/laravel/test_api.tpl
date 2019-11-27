@@ -5,13 +5,17 @@ declare(strict_types=1);
 {/if}
 
 use Tests\TestCase;
+use GuzzleHttp;
+use Mockery;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 {if $isModule}
 use Modules\{$obj->upperCamel()}\Entities\{$mod->upperCamel()};
 use Modules\{$obj->upperCamel()}\Entities\{$obj->upperCamel()};
+use Modules\{$obj->upperCamel()}\Services\{$obj->upperCamel()}Service;
 {else}
 use App\Entities\{$mod->upperCamel()};
 use App\Entities\{$obj->upperCamel()};
+use App\Services\{$obj->upperCamel()}Service;
 {/if}
 
 /**
@@ -92,6 +96,8 @@ final class {$obj->upperCamel()}ControllerTest extends TestCase
      */
     public function store_should_work()
     {
+        // $this->mockService();
+
         $accountId = $this->account->id;
         $url = '/api/accounts/{ldelim}$accountId{rdelim}/{$mod->lower("-")}';
 
@@ -102,9 +108,11 @@ final class {$obj->upperCamel()}ControllerTest extends TestCase
         // dump(json_decode($response->getContent(), JSON_PRETTY_PRINT));
         $response->assertStatus(201);
         $response->assertJsonStructure([
-            'id',
-            'account_id',
-            'config',
+            'data' => [
+                'id',
+                'account_id',
+                'config',
+            ]
         ]);
         $response->assertJsonFragment([
             'name' => '{$obj} store',
@@ -128,9 +136,11 @@ final class {$obj->upperCamel()}ControllerTest extends TestCase
         // dump(json_decode($response->getContent(), JSON_PRETTY_PRINT));
         $response->assertStatus(201);
         $response->assertJsonStructure([
-            'id',
-            'account_id',
-            'config',
+            'data' => [
+                'id',
+                'account_id',
+                'config',
+            ]
         ]);
         $response->assertJsonFragment([
             'name' => '{$obj} update',
@@ -208,6 +218,34 @@ final class {$obj->upperCamel()}ControllerTest extends TestCase
 {/if}
         $text = file_get_contents($basePath . '/' . $pathFile);
         return json_decode($text, true);
+    }
+
+    /**
+     *
+     */
+    private function mockService()
+    {
+        $class = {$obj->upperCamel()}Service::class;
+        $this->instance($class, Mockery::mock($class, function ($mock) {
+            // $mock->shouldAllowMockingProtectedMethods()->makePartial();      <<---- 不應該有這個情況
+
+            $psrResponse = new GuzzleHttp\Psr7\Response('200', [], '{ldelim}id: 123{rdelim}');
+            $mock
+                ->shouldReceive('callThirdPartyApi')
+                ->andReturn($psrResponse);
+
+            $mock
+                ->shouldReceive('updateSomething');
+
+        }));
+
+        $class = {$obj->upperCamel()}TemplateService::class;
+        $this->instance($class, Mockery::mock($class, function ($mock) {
+            $mock
+                ->shouldReceive('renderTemplate')
+                ->andReturn('');
+        }));
+
     }
 
 }

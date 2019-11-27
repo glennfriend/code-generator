@@ -128,13 +128,23 @@ return [
         'filename'      => "{$obj->upperCamel()}ServiceTest.php",
         'clear_comment' => false,
     ],
+    'test_data' => [
+        'path'          => "tests/app/Data/Controllers/",
+        'filename'      => "{$obj->lower('_')}.json",
+        'clear_comment' => false,
+    ],
     'database_factory' => [
         'path'          => "app/database/factories/",
         'filename'      => "{$obj->upperCamel()}Factory.php",
         'clear_comment' => false,
     ],
-  
+
     //
+    'kos_home_controller_api' => [
+        'path'          => "app/Http/Controllers/{$obj->upperCamel()}/",
+        'filename'      => "{$obj->upperCamel()}ApiController.php",
+        'clear_comment' => false,
+    ],
     'kos_repository' => [
         'path'          => "app/Repositories",
         'filename'      => "{$obj->upperCamel()}Repository.php",
