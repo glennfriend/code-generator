@@ -72,7 +72,7 @@ export const {{$obj->upperCamel()}}SelectSection: React.FC<IProps> = ({
           notFoundContent={items ? <Spin size="small" /> : null}
           optionFilterProp="children"
           filterOption={function(input, option) {
-            // console.log(option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0);
+            // console.log(option.props.children.toString().toLowerCase().indexOf(input.toLowerCase()) >= 0);
             // console.log(option.props.children.props.title.indexOf(input) >= 0);
             return option.props.children.props.title.indexOf(input) >= 0;
           }}
