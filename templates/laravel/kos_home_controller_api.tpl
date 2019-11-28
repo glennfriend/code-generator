@@ -121,9 +121,12 @@ class {$obj->upperCamel()}ApiController extends Controller
      * 
      * @apiGroup {$obj->upperCamel()}
      * @apiName list
-     * @api {ldelim}get{rdelim} /api/accounts/:accountId/{$mod->lower('-')} list
-     * @apiSampleRequest /api/accounts/:accountId/{$mod->lower('-')}
-     * @apiParam {ldelim}int{rdelim} accountId
+     * @api {ldelim}get{rdelim} /api/accounts/:account_id/{$mod->lower('-')} list
+     * @apiSampleRequest /api/accounts/:account_id/{$mod->lower('-')}
+     * @apiParam {ldelim}int{rdelim}    account_id
+     * @apiParam {ldelim}int{rdelim}    page
+     * @apiParam {ldelim}int{rdelim}    filter[name]
+     * @apiParam {ldelim}string{rdelim} filter[blog_id]
      * 
      * @apiSuccessJson {ldelim}file=../../Tests/Data/Controllers/{$obj->lower('_')}_list_response.json{rdelim} Response: 200 OK
      * @apiSuccessExample Response: 200 OK
@@ -151,9 +154,9 @@ class {$obj->upperCamel()}ApiController extends Controller
      * 
      * @apiGroup {$obj->upperCamel()}
      * @apiName show
-     * @api {ldelim}get{rdelim} /api/accounts/:accountId/{$mod->lower('-')}/:{$obj}Id show
-     * @apiSampleRequest /api/accounts/:accountId/{$mod->lower('-')}/:{$obj}Id
-     * @apiParam {ldelim}int{rdelim} accountId
+     * @api {ldelim}get{rdelim} /api/accounts/:account_id/{$mod->lower('-')}/:{$obj}Id show
+     * @apiSampleRequest /api/accounts/:account_id/{$mod->lower('-')}/:{$obj}Id
+     * @apiParam {ldelim}int{rdelim} account_id
      * @apiParam {ldelim}int{rdelim} {$obj}Id
      *
      * @apiSuccessJson {ldelim}file=../../Tests/Data/Controllers/{$obj->lower('_')}_show_response.json{rdelim} Response: 200 OK
@@ -190,8 +193,8 @@ class {$obj->upperCamel()}ApiController extends Controller
      * 
      * @apiGroup {$obj->upperCamel()}
      * @apiName store
-     * @api {ldelim}post{rdelim} /api/accounts/:accountId/{$mod->lower('-')} store
-     * @apiParam {ldelim}int{rdelim} accountId
+     * @api {ldelim}post{rdelim} /api/accounts/:account_id/{$mod->lower('-')} store
+     * @apiParam {ldelim}int{rdelim} account_id
      *
      * @apiParamJson {ldelim}file=../../Tests/Data/Controllers/{$obj->lower('_')}_store.json{rdelim} Request
      * @apiParamExample Request
@@ -254,8 +257,8 @@ class {$obj->upperCamel()}ApiController extends Controller
      * 
      * @apiGroup {$obj->upperCamel()}
      * @apiName update
-     * @api {ldelim}patch{rdelim} /api/accounts/:accountId/{$mod->lower('-')}/{$obj}Id update
-     * @apiParam {ldelim}int{rdelim} accountId
+     * @api {ldelim}patch{rdelim} /api/accounts/:account_id/{$mod->lower('-')}/{$obj}Id update
+     * @apiParam {ldelim}int{rdelim} account_id
      * @apiParam {ldelim}int{rdelim} {$obj}Id
      *
      * @apiParamExample Request
@@ -307,8 +310,8 @@ class {$obj->upperCamel()}ApiController extends Controller
      *
      * @apiGroup {$obj->upperCamel()}
      * @apiName delete
-     * @api {ldelim}delete{rdelim} /api/accounts/:accountId/{$mod->lower('-')}/{$obj}Id delete
-     * @apiParam {ldelim}int{rdelim} accountId
+     * @api {ldelim}delete{rdelim} /api/accounts/:account_id/{$mod->lower('-')}/{$obj}Id delete
+     * @apiParam {ldelim}int{rdelim} account_id
      * @apiParam {ldelim}int{rdelim} {$obj}Id
      *
      * @apiSuccessExample Response: 204 Not Content
