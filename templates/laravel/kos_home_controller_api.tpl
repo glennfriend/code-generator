@@ -30,6 +30,9 @@ use App\Http\Resources\{$obj->upperCamel()}Resource;
 
 
 /*
+// Route::middleware('auth:apiToken')->resource('{$mod->lower('-')}', '{$obj->upperCamel()}Controller');
+Route::resource('{$mod->lower('-')}', '{$obj->upperCamel()}Controller');
+
 $config = [
     'as' => '{$mod->lower('-')}',
     'middleware' => ['api'],
@@ -41,7 +44,9 @@ Route::group($config, function () {
     Route::patch ('/{$mod->lower('-')}/{ldelim}{$obj->lowerCamel()}Id{rdelim}',  '{$obj->upperCamel()}Controller@update');
     Route::delete('/{$mod->lower('-')}/{ldelim}{$obj->lowerCamel()}Id{rdelim}',  '{$obj->upperCamel()}Controller@destroy');
 });
+*/
 
+/*
 curl -X GET    http://127.0.0.1:8000/api/{$mod->lower('-')}         && echo
 curl -X GET    http://127.0.0.1:8000/api/{$mod->lower('-')}/100     && echo
 curl -X POST   http://127.0.0.1:8000/api/{$mod->lower('-')}         && echo
@@ -119,23 +124,6 @@ class {$obj->upperCamel()}ApiController extends Controller
     /**
      * GET list
      * 
-     * @apiGroup {$obj->upperCamel()}
-     * @apiName list
-     * @api {ldelim}get{rdelim} /api/accounts/:account_id/{$mod->lower('-')} list
-     * @apiSampleRequest /api/accounts/:account_id/{$mod->lower('-')}
-     * @apiParam {ldelim}int{rdelim}    account_id
-     * @apiParam {ldelim}int{rdelim}    page
-     * @apiParam {ldelim}int{rdelim}    filter[name]
-     * @apiParam {ldelim}string{rdelim} filter[blog_id]
-     * 
-     * @apiSuccessJson {ldelim}file=../../Tests/Data/Controllers/{$obj->lower('_')}_list_response.json{rdelim} Response: 200 OK
-     * @apiSuccessExample Response: 200 OK
-     *  {
-     *      "data": []
-     *      "links": []
-     *      "meta": []
-     *  }
-     * 
      * @param Request $request
      * @param int $accountId
      * @return AnonymousResourceCollection
@@ -152,21 +140,6 @@ class {$obj->upperCamel()}ApiController extends Controller
     /**
      * GET show
      * 
-     * @apiGroup {$obj->upperCamel()}
-     * @apiName show
-     * @api {ldelim}get{rdelim} /api/accounts/:account_id/{$mod->lower('-')}/:{$obj}Id show
-     * @apiSampleRequest /api/accounts/:account_id/{$mod->lower('-')}/:{$obj}Id
-     * @apiParam {ldelim}int{rdelim} account_id
-     * @apiParam {ldelim}int{rdelim} {$obj}Id
-     *
-     * @apiSuccessJson {ldelim}file=../../Tests/Data/Controllers/{$obj->lower('_')}_show_response.json{rdelim} Response: 200 OK
-     * @apiSuccessExample Response: 200 OK
-     *  {
-     *      "data": {
-     *          "id": ""
-     *      }
-     *  }
-     *
      * @param Request $request
      * @param int $accountId
      * @param int ${$obj}Id
@@ -191,31 +164,6 @@ class {$obj->upperCamel()}ApiController extends Controller
     /**
      * POST create
      * 
-     * @apiGroup {$obj->upperCamel()}
-     * @apiName store
-     * @api {ldelim}post{rdelim} /api/accounts/:account_id/{$mod->lower('-')} store
-     * @apiParam {ldelim}int{rdelim} account_id
-     *
-     * @apiParamJson {ldelim}file=../../Tests/Data/Controllers/{$obj->lower('_')}_store.json{rdelim} Request
-     * @apiParamExample Request
-     *  {
-     *      "data": {
-     *          "name": ""
-     *      }
-     *  }
-     * @apiParamExample curl
-     *  curl \
-     *      -X POST http://127.0.0.1:3000/api/{$mod->lower('-')} \
-     *      -H "Content-Type: application/json" \
-     *      -d @"Modules/{$obj->upperCamel()}/Tests/Data/Controllers/{$mod->lower('-')}_store.json"
-     * @apiSuccessJson {ldelim}file=../../Tests/Data/Controllers/{$obj->lower('_')}_show_response.json{rdelim} Response: 201 Created
-     * @apiSuccessExample Response: 201 Created
-     *  {
-     *      "data": {
-     *          "id": ""
-     *      }
-     *  }
-     *
      * @param Request $request
      * @param int $accountId
      * @return ResponseFactory|Response
@@ -254,17 +202,6 @@ class {$obj->upperCamel()}ApiController extends Controller
 
     /**
      * PATCH update
-     * 
-     * @apiGroup {$obj->upperCamel()}
-     * @apiName update
-     * @api {ldelim}patch{rdelim} /api/accounts/:account_id/{$mod->lower('-')}/{$obj}Id update
-     * @apiParam {ldelim}int{rdelim} account_id
-     * @apiParam {ldelim}int{rdelim} {$obj}Id
-     *
-     * @apiParamExample Request
-     *  like "store"
-     * @apiSuccessExample Response: 201
-     *  like "store"
      * 
      * @param Request $request
      * @param int $accountId
@@ -308,15 +245,6 @@ class {$obj->upperCamel()}ApiController extends Controller
     /**
      * DELETE delete
      *
-     * @apiGroup {$obj->upperCamel()}
-     * @apiName delete
-     * @api {ldelim}delete{rdelim} /api/accounts/:account_id/{$mod->lower('-')}/{$obj}Id delete
-     * @apiParam {ldelim}int{rdelim} account_id
-     * @apiParam {ldelim}int{rdelim} {$obj}Id
-     *
-     * @apiSuccessExample Response: 204 Not Content
-     *  null
-     * 
      * @param Request $request
      * @param int $accountId
      * @param int ${$obj}Id
@@ -475,3 +403,90 @@ class {$obj->upperCamel()}ApiController extends Controller
     }
 
 }
+
+/**
+ * @apiGroup {$obj->upperCamel()}
+ * @apiName list
+ * @api {ldelim}get{rdelim} /api/accounts/:account_id/{$mod->lower('-')} list
+ * @apiSampleRequest /api/accounts/:account_id/{$mod->lower('-')}
+ * @apiParam {ldelim}int{rdelim}    account_id
+ * @apiParam {ldelim}int{rdelim}    page
+ * @apiParam {ldelim}int{rdelim}    filter[name]
+ * @apiParam {ldelim}string{rdelim} filter[blog_id]
+ *
+ * @apiSuccessJson {ldelim}file=../../Tests/Data/Controllers/{$obj->lower('_')}_list_response.json{rdelim} Response: 200 OK
+ * @apiSuccessExample Response: 200 OK
+ *  {
+ *      "data": []
+ *      "links": []
+ *      "meta": []
+ *  }
+ */
+
+ /**
+  * @apiGroup {$obj->upperCamel()}
+  * @apiName show
+  * @api {ldelim}get{rdelim} /api/accounts/:account_id/{$mod->lower('-')}/:{$obj}Id show
+  * @apiSampleRequest /api/accounts/:account_id/{$mod->lower('-')}/:{$obj}Id
+  * @apiParam {ldelim}int{rdelim} account_id
+  * @apiParam {ldelim}int{rdelim} {$obj}Id
+  *
+  * @apiSuccessJson {ldelim}file=../../Tests/Data/Controllers/{$obj->lower('_')}_show_response.json{rdelim} Response: 200 OK
+  * @apiSuccessExample Response: 200 OK
+  *  {
+  *      "data": {
+  *          "id": ""
+  *      }
+  *  }
+  */
+
+ /**
+  * @apiGroup {$obj->upperCamel()}
+  * @apiName store
+  * @api {ldelim}post{rdelim} /api/accounts/:account_id/{$mod->lower('-')} store
+  * @apiParam {ldelim}int{rdelim} account_id
+  *
+  * @apiParamJson {ldelim}file=../../Tests/Data/Controllers/{$obj->lower('_')}_store.json{rdelim} Request
+  * @apiParamExample Request
+  *  {
+  *      "data": {
+  *          "name": ""
+  *      }
+  *  }
+  * @apiParamExample curl
+  *  curl \
+  *      -X POST http://127.0.0.1:3000/api/{$mod->lower('-')} \
+  *      -H "Content-Type: application/json" \
+  *      -d @"Modules/{$obj->upperCamel()}/Tests/Data/Controllers/{$obj->lower('_')}_store.json"
+  * @apiSuccessJson {ldelim}file=../../Tests/Data/Controllers/{$obj->lower('_')}_show_response.json{rdelim} Response: 201 Created
+  * @apiSuccessExample Response: 201 Created
+  *  {
+  *      "data": {
+  *          "id": ""
+  *      }
+  *  }
+  */
+
+ /**
+  * @apiGroup {$obj->upperCamel()}
+  * @apiName update
+  * @api {ldelim}patch{rdelim} /api/accounts/:account_id/{$mod->lower('-')}/{$obj}Id update
+  * @apiParam {ldelim}int{rdelim} account_id
+  * @apiParam {ldelim}int{rdelim} {$obj}Id
+  *
+  * @apiParamExample Request
+  *  like "store"
+  * @apiSuccessExample Response: 201
+  *  like "store"
+  */
+
+ /**
+  * @apiGroup {$obj->upperCamel()}
+  * @apiName delete
+  * @api {ldelim}delete{rdelim} /api/accounts/:account_id/{$mod->lower('-')}/{$obj}Id delete
+  * @apiParam {ldelim}int{rdelim} account_id
+  * @apiParam {ldelim}int{rdelim} {$obj}Id
+  *
+  * @apiSuccessExample Response: 204 Not Content
+  *  null
+  */

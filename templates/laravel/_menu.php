@@ -66,6 +66,13 @@ return [
         'clear_comment' => false,
     ],
 
+    // job
+    'job' => [
+        'path'          => "app/Job/",
+        'filename'      => "{$obj->upperCamel()}Job.php",
+        'clear_comment' => false,
+    ],
+
     // business layer
     'business_service' => [
         'path'          => "app/Service/{$obj->upperCamel()}/",
@@ -123,6 +130,11 @@ return [
         'filename'      => "{$obj->upperCamel()}ControllerTest.php",
         'clear_comment' => false,
     ],
+    'test_job' => [
+        'path'          => "tests/app/Feature/jobs/",
+        'filename'      => "{$obj->upperCamel()}JobTest.php",
+        'clear_comment' => false,
+    ],
     'test_service' => [
         'path'          => "tests/app/Feature/Services/",
         'filename'      => "{$obj->upperCamel()}ServiceTest.php",
@@ -153,6 +165,11 @@ return [
     'kos_service' => [
         'path'          => "app/Services",
         'filename'      => "{$obj->upperCamel()}Service.php",
+        'clear_comment' => false,
+    ],
+    'kos_provider' => [
+        'path'          => "app/Providers",
+        'filename'      => "{$obj->upperCamel()}Provider.php",
         'clear_comment' => false,
     ],
 

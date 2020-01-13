@@ -10,6 +10,7 @@
     <a href="?t=locale">Locale</a>,
     <a href="?t=home_controller">HomeController</a>,
     <a href="?t=home_api_controller">HomeApi</a>,
+    <a href="?t=job">job</a>,
     <a href="?t=business_service">Service</a>,
     <a href="?t=business_helper">Helper</a>
     <br>
@@ -21,6 +22,7 @@
         <a href="?t=test_value_object">Value Object</a>
         <a href="?t=test_api">Api</a>
         <a href="?t=test_controller">controller</a>
+        <a href="?t=test_job">job</a>
         <a href="?t=test_service">service</a>
         <a href="?t=test_data">data</a>
         <a href="?t=database_factory">database/factories</a>
@@ -30,6 +32,7 @@
         <a href="?t=kos_home_controller_api">ControllerApi</a>,
         <a href="?t=kos_repository">Repository</a>
         <a href="?t=kos_service">Service</a>
+        <a href="?t=kos_provider">Provider</a>
 </div>
 
 <div class="bar2">

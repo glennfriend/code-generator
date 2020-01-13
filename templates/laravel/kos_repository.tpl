@@ -5,9 +5,13 @@ declare(strict_types=1);
 {/if}
 
 use Traversable;
+use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Database\Eloquent\Model;
 use Prettus\Repository\Eloquent\BaseRepository;
+// use Modules\Core\Repositories\ExtendedRepository;
+// use Modules\Core\Traits\CacheKey;
 
 {if $isModule}
 use Modules\{$obj->upperCamel()}\Entities\{$obj->upperCamel()};
@@ -20,6 +24,8 @@ use App\Entities\{$obj->upperCamel()};
  */
 class {$obj->upperCamel()}Repository extends BaseRepository
 {
+    // use CacheKey;
+
     /**
      * Specify Model class name
      *
@@ -129,6 +135,59 @@ class {$obj->upperCamel()}Repository extends BaseRepository
         */
 
         return $builder->paginate();
+    }
+
+    // --------------------------------------------------------------------------------
+    //  private
+    // --------------------------------------------------------------------------------
+
+    /**
+     * get cache data
+     *      - for laravel cache
+     *      - life time is second
+     *      - allow force update cache
+     *
+     * dependency
+     *      - Illuminate\Support\Facades\Cache
+     *      - Illuminate\Support\Collection
+     *      - Modules\Core\Traits\CacheKey
+     *
+     * Closure example
+     *      $fetch = function () use ($from, $to) {
+     *          return DB::table('users')
+     *              ->select('name')
+     *              ->whereBetween('created_at', [$from, $to])
+     *              ->distinct()
+     *              ->get()
+     *              ->pluck('name');
+     *      };
+     *
+     * NOTE: 改用 trait CacheData
+     * 
+     * @param Closure $func
+     * @param array $params
+     * @param int $lifetime
+     * @param bool $forceUpdateCache
+     * @return Collection
+     */
+    protected function readCache(Closure $func, array $params=[], int $lifetime, $forceUpdateCache=false): Collection
+    {
+        $cacheKey = $this->generateCacheKey($params);
+
+        if ($forceUpdateCache) {
+            $collection = $func();
+            Cache::put($cacheKey, $collection, $lifetime);
+        }
+
+        if ($collection = Cache::get($cacheKey)) {
+            // cache hit
+            return $collection;
+        }
+
+        $collection = $func();
+        Cache::put($cacheKey, $collection, $lifetime);
+
+        return $collection;
     }
 
 }

@@ -24,7 +24,7 @@ export const {{$obj->upperCamel()}}UpdateForm: React.FC<IProps> = ({ onSubmit, c
       data: {{$obj}},
     });
 
-    message.info(`{{$obj->upperCamel()}} ${ {{$obj}}.name } created`);
+    message.info(`{{$obj->upperCamel()}} ${ {{$obj}}.name } updated`);
     publish(subscribeUpdateKey);
 
     if (onSubmit) {
