@@ -46,6 +46,17 @@ class Create{$mod->upperCamel()} extends Migration
     /**
      *
      */
+    private function changeTable()
+    {
+        Schema::create('{$mod->lower('_')}', function (Blueprint $table) {
+            $table->index('account_id');
+            $table->dropIndex('account_id');
+        });
+    }
+
+    /**
+     *
+     */
     private function createTable()
     {
         // 是依照 name, type 的一般建議方式建立, "不是" 依照資料表的欄位屬性 (TODO: delete it)
@@ -94,9 +105,6 @@ class Create{$mod->upperCamel()} extends Migration
 
             $table->engine = 'InnoDB';
         });
-
-
-
 
         #
         #   請用 phpmyadmin dump

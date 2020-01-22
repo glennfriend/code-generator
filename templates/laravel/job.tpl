@@ -27,13 +27,19 @@ use App\Http\Resources\{$obj->upperCamel()}Resource;
 */
 
 /**
- *
+ *  幂等性: 該 job 是否可以重覆執行, 但具有相同的結果: yes/no
  */
 class {$obj->upperCamel()}Job implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable;
 
     public $tries = 1;
+
+    /**
+     * queue level
+     *      - highest, high, default, low, lowest
+     */
+    public $queue = 'default';
 
     /**
      *
