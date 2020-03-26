@@ -68,7 +68,7 @@ final class {$obj->upperCamel()}ControllerTest extends TestCase
         $response = $this->getAuthedRequest()->json('GET', $url);
 
         //
-        // dump(json_decode($response->getContent(), JSON_PRETTY_PRINT));
+        // dump(json_decode($response->getContent(), true));
         $response->assertStatus(200);
         $response->assertJsonStructure([
             'data' => [
@@ -105,7 +105,7 @@ final class {$obj->upperCamel()}ControllerTest extends TestCase
         $response = $this->getAuthedRequest()->json('POST', $url, $input);
 
         //
-        // dump(json_decode($response->getContent(), JSON_PRETTY_PRINT));
+        // dump(json_decode($response->getContent(), true));
         $response->assertStatus(201);
         $response->assertJsonStructure([
             'data' => [
@@ -133,7 +133,7 @@ final class {$obj->upperCamel()}ControllerTest extends TestCase
         $response = $this->getAuthedRequest()->json('PATCH', $url, $input);
 
         //
-        // dump(json_decode($response->getContent(), JSON_PRETTY_PRINT));
+        // dump(json_decode($response->getContent(), true));
         $response->assertStatus(201);
         $response->assertJsonStructure([
             'data' => [

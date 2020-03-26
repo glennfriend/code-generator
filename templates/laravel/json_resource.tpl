@@ -1,9 +1,11 @@
 <?php
 declare(strict_types=1);
+
 {if $isModule}namespace Modules\{$obj->upperCamel()}\Http\Resources;
 {else        }namespace App\Http\Resources;
 {/if}
 
+use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 /**
@@ -12,7 +14,7 @@ use Illuminate\Http\Resources\Json\JsonResource;
 class {$obj->upperCamel()}Resource extends JsonResource
 {
     /**
-     * @param \Illuminate\Http\Request $request
+     * @param Request $request
      * @return array
      */
     public function toArray($request)

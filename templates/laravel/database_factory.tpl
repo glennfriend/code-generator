@@ -23,6 +23,7 @@ $factory->define({$obj->upperCamel()}::class, function (Faker $faker)
 EOD;
 
     // $faker->name() . '-' . $faker->lexify('?????') . '-' . date_default_timezone_get(),
+    // $randomUniqueId = $faker->unique()->randomDigit;
     return [
 {foreach $tab as $key => $field}
 {if $key==='id'}
@@ -48,6 +49,8 @@ EOD;
         '{$field.ado->name}'{$field.ado->name|space_even} => (int) $faker->boolean(),
 {elseif $field.ado->type=='smallint' || $field.ado->type=='mediumint' || $field.ado->type=='int' || $field.ado->type=='bigint'}
         '{$field.ado->name}'{$field.ado->name|space_even} => $faker->randomDigitNotNull(),
+{elseif $field.ado->type=='double'}
+        '{$field.ado->name}'{$field.ado->name|space_even} => $faker->randomFloat($nbMaxDecimals = NULL, $min = 0, $max = NULL),
 {elseif $field.ado->type=='timestamp' || $field.ado->type=='datetime' || $field.ado->type=='date'}
         '{$field.ado->name}'{$field.ado->name|space_even} => $faker->dateTime(),
 {elseif $field.ado->type=='text' || $field.ado->type=='mediumtext' || $field.ado->type=='longtext'}

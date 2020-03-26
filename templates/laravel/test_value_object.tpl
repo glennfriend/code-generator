@@ -127,6 +127,8 @@ $this->assertFalse(1 === 2);
 // Check 'Hello' equals 'Hello'
 $this->assertEquals('Hello', 'Hello');
 
+$this->assertCount(10, $rows);
+
 // Check array has key 'language'
 $this->assertArrayHasKey('language', ['language' => 'php', 'size' => '1024']);
 

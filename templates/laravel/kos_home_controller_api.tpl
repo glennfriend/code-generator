@@ -130,6 +130,8 @@ class {$obj->upperCamel()}ApiController extends Controller
      */
     public function index(Request $request, int $accountId)
     {
+        $this->querySortValidate($request);
+
         $page = (int) $request->input('page');
         ${$obj} = $this->{$obj}Service->findByAccountId($accountId, $page);
 
@@ -280,7 +282,7 @@ class {$obj->upperCamel()}ApiController extends Controller
      * @param Request $request
      * @param {$obj->upperCamel()} ${$obj}
      * @param int $accountId
-     * @return array
+     * @return array [error message, error code]
      */
     protected function storeValidate(Request $request, int $accountId): array
     {
@@ -348,7 +350,7 @@ class {$obj->upperCamel()}ApiController extends Controller
     /**
      * @param {$obj->upperCamel()} ${$obj}
      * @param int $accountId
-     * @return array
+     * @return array [error message, error code]
      */
     protected function accountValidate({$obj->upperCamel()} ${$obj}, int $accountId): array
     {
@@ -358,6 +360,55 @@ class {$obj->upperCamel()}ApiController extends Controller
 
         return [null, null];
     }
+
+    /**
+     * validate page, order, filter
+     *      e.g.
+     *          ?page=1
+     *          &order[]='age:asc'
+     *          &order[]='created_at:desc'
+     *          &filter[name]='john'
+     *          &filter[age]='13:lt
+     * 
+     * @param Request $request
+     */
+    protected function querySortValidate(Request $request)
+    {
+        $request->validate([
+            'page'              => 'nullable|int|min:1',
+            'order'             => 'nullable|array',
+            'filter'            => 'nullable|array',
+            'filter.name'       => 'string',
+            'filter.status'     => ["regex:/^(enabled|disabled|draft)$/i"],
+            'filter.created_at' => 'date_format:Y-m-d',
+        ]);
+    }
+
+    /**
+     * custom validate
+     * 
+     * @param Request $request
+     * @return array [error message, error code]
+     */
+    /*
+    protected function customValidate(Request $request): array
+    {
+        $validator = Validator::make($request->all(), [
+            'page'              => 'nullable|int|min:1',
+            'order'             => 'nullable|array',
+            'filter'            => 'nullable|array',
+            'filter.name'       => 'string',
+            'filter.status'     => ["regex:/^(enabled|disabled|draft)$/i"],
+            'filter.created_at' => 'date_format:Y-m-d',
+        ]);
+
+        if ($validator->fails()) {
+            return [$validator->errors()->first(), 400];
+        }
+
+        return [null, null];
+    }
+    */
 
     /**
      * @param string|null $message
@@ -385,6 +436,11 @@ class {$obj->upperCamel()}ApiController extends Controller
         return response($body, $code);
     }
 
+    //
+    // 下面的程式可能不需要
+    // 試試這樣使用
+    // return response()->json($accounts, 200);
+    //
     /**
      * laravel response() 無法同時處理 JsonResource and return http status code
      *
@@ -392,6 +448,7 @@ class {$obj->upperCamel()}ApiController extends Controller
      * @param int $code
      * @return $this|Response|ResponseFactory
      */
+    /*
     protected function response($resource = null, $code = 200)
     {
         if ($resource instanceof JsonResource) {
@@ -401,6 +458,7 @@ class {$obj->upperCamel()}ApiController extends Controller
             return response($resource, $code);
         }
     }
+     */
 
 }
 

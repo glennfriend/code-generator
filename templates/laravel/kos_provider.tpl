@@ -59,6 +59,7 @@ class {$obj->upperCamel()}Provider extends ServiceProvider
         $this->offerPublishing();
         $this->registerCommands();
         $this->registerScheduler();
+        $this->singleton();
     }
 
     // --------------------------------------------------------------------------------
@@ -212,6 +213,21 @@ class {$obj->upperCamel()}Provider extends ServiceProvider
                 ->withoutOverlapping(60)
                 ->runInBackground()
             ;
+        });
+        */
+    }
+
+    /**
+     * objects init
+     */
+    public function singleton()
+    {
+        /*
+        app()->singleton(GoogleAdsClient::class, function () {
+            $config = base_path('google_ads_php.ini');
+            return (new GoogleAdsClientBuilder())->fromFile($config)
+                ->options([])
+                ->build();
         });
         */
     }

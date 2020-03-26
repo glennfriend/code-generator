@@ -40,16 +40,7 @@ class {$obj->upperCamel()}Repository extends BaseRepository
     //  chores
     // --------------------------------------------------------------------------------
 
-    /**
-     * 
-     */
-    public function of(array $attributes)
-    {
-        $model = new {$obj->upperCamel()}();
-        $model->fill($attributes);
 
-        return $model;
-    }
 
     // --------------------------------------------------------------------------------
     //  create, update, delete
@@ -135,6 +126,23 @@ class {$obj->upperCamel()}Repository extends BaseRepository
         */
 
         return $builder->paginate();
+    }
+
+    /**
+     * 請修改, 只是 example
+     */
+    public function rawQueryExample(int $attributeId, string $type, string $sort=null)
+    {
+        $sort = trim(strtoupper($sort)) === 'DESC' ? 'DESC' : 'ASC';
+
+        $target = DB::table('geo_attributes_value')
+            ->select('geo_attributes_value.*')
+            ->leftJoin('geo', 'geo_attributes_value.geo_id', '=', 'geo.id')
+            ->where('geo_attributes_value.geo_attr_id', $attributeId)
+            ->where('geo.type', $type)
+            ->orderByRaw("CAST(geo_attributes_value.value as unsigned) {$sort}")
+            ->get();
+        return $target;
     }
 
     // --------------------------------------------------------------------------------

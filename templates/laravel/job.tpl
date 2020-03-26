@@ -33,11 +33,16 @@ class {$obj->upperCamel()}Job implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable;
 
+    /**
+     * @var int 
+     */
     public $tries = 1;
 
     /**
      * queue level
      *      - highest, high, default, low, lowest
+     * 
+     * @var string
      */
     public $queue = 'default';
 
@@ -47,6 +52,8 @@ class {$obj->upperCamel()}Job implements ShouldQueue
     public function __construct(array $attributes)
     {
         $this->attributes = $attributes;
+
+        $this->jobBeforeValidate();
     }
 
     /**
@@ -57,13 +64,17 @@ class {$obj->upperCamel()}Job implements ShouldQueue
         {$obj->upperCamel()}Repository ${$obj}Repository
     )
     {
+        ini_set('memory_limit', '512M');
         $accountId = data_get($this->attributes, 'account_id');
         $email     = data_get($this->attributes, 'email');
         $this->{$obj}Service    = ${$obj}Service;
         $this->{$obj}Repository = ${$obj}Repository;
 
-        
-        $this->log('info', "start by {ldelim}$accountId{rdelim}/{ldelim}$email{rdelim}");
+
+        $this->log('info', "job start by {ldelim}$accountId{rdelim}", [
+            'account_id' => $accountId,
+            'email'      => $email,
+        ]);
         $this->perform($this->attributes);
         $this->log('info', "job end");
     }
@@ -101,6 +112,39 @@ class {$obj->upperCamel()}Job implements ShouldQueue
     }
 
     /**
+     * 這裡是對 未進入到 job 之前的檢查
+     * 所以這裡沒辦法直接使用 DI
+     * 
+     * check list
+     *      - 檢查 job 必須要的參數是否存在
+     *      - job 如果要的資料沒有先輸入, 之後再抓會有錯誤的可能, 可以考慮 query 出來先檢查
+     */
+    protected function jobBeforeValidate()
+    {
+        if (! isset($this->attributes['account_id'])) {
+            throw new Exception("error");
+        }
+
+        // $account = app(Account::class);
+    }
+
+    protected function dispatch_example()
+    {
+        /*
+        try {
+            $queueName = 'default'; // see "config/horizon.php"
+            \App\Jobs\YourJob::dispatch($options)->onQueue($queueName);
+            $request->session()->flash('success-message', 'Task was queue');
+        } catch (Exception $exception) {
+            $error = $exception->getMessage();
+            $this->log('error', $error);
+            $request->session()->flash('error-message', $error);
+            // throw $exception;
+        }
+        */
+    }
+
+    /**
      * @param string $type
      * @param string $message
      * @param array $option
@@ -119,6 +163,9 @@ class {$obj->upperCamel()}Job implements ShouldQueue
         
         $message = "[{ldelim}$name{rdelim}] {ldelim}$message{rdelim}";
         Log::$type($message, $option);
+
+        // setting "config/logging.php"
+        // Log::channel('your_channel')->$type($message, $option);
     }
 
 }
