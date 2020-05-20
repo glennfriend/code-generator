@@ -5,8 +5,9 @@ declare(strict_types=1);
 {/if}
 
 use Traversable;
-use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Collection;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Database\Eloquent\Model;
 use Prettus\Repository\Eloquent\BaseRepository;
@@ -27,13 +28,24 @@ class {$obj->upperCamel()}Repository extends BaseRepository
     // use CacheKey;
 
     /**
-     * Specify Model class name
-     *
-     * @return string
+     * 
      */
-    function model()
+    public function __construct({$obj->upperCamel()} ${$obj})
     {
-        return {$obj->upperCamel()}::class;
+        $this->{$obj} = ${$obj};
+    }
+
+    /**
+     * get eloquent model
+     * 
+     * e.g.
+     *      $this->{$obj}Repository->model()->firstOrCreate($data);
+     * 
+     * @return {$obj->upperCamel()}
+     */
+    function model(): {$obj->upperCamel()}
+    {
+        return $this->{$obj};
     }
 
     // --------------------------------------------------------------------------------
@@ -41,6 +53,115 @@ class {$obj->upperCamel()}Repository extends BaseRepository
     // --------------------------------------------------------------------------------
 
 
+
+    // --------------------------------------------------------------------------------
+    //  read, search
+    // --------------------------------------------------------------------------------
+
+    // ${$obj} = $this->find($id);
+
+    /**
+     * @param int $id
+     */
+    /*
+    public function getById(int $id)
+    {
+        return $this->????->find($id);
+        // return $this->->????->where('id', $id)->first();
+    }
+    */
+
+    public function getById(int $id, string $status)
+    {
+        // 未測試
+        return $this->geoAreaCode
+            ->where('id', '=', $id)
+            ->where('status', '=', $status)
+            ->get();
+    }
+
+    /**
+     * @param int $accountId
+     * @param int $page
+     * @return {$obj->upperCamel()}[]
+     */
+    public function find{$mod->upperCamel()}ByAccountId(int $accountId, int $page = 1): Traversable
+    {
+        $page = ($page > 1 ? $page : 1);
+        Paginator::currentPageResolver(function () use ($page) {
+            return $page;
+        });
+
+        $builder = {$obj->upperCamel()}::where('account_id', $accountId)
+            ->orderBy('id', 'DESC');
+
+        /*
+        $filterByName = data_get($filter, 'name');
+        if ($filterByName) {
+            $builder = $builder->where('name', 'like', "%{ldelim}$filterByName{rdelim}%");
+        }
+        */
+
+        /*
+        $condition = [
+            'account_id' => $accountId,
+        ];
+        $query = function ($query) {
+            return $query->orderBy('id', 'DESC');
+        };
+
+        return $this->scopeQuery($query)->findWhere($condition);
+        */
+
+        return $builder->paginate();
+    }
+
+    /**
+     * 請修改, 只是 example
+     * 
+     * @return stdclass array|\Illuminate\Support\Collection
+     */
+    public function findQueryExample(int $attributeId, string $type, string $sort=null)
+    {
+        $sort = trim(strtoupper($sort)) === 'DESC' ? 'DESC' : 'ASC';
+
+        $rows = DB::table('geo_attributes_value')
+            ->select('geo_attributes_value.*')
+            ->leftJoin('geo', 'geo_attributes_value.geo_id', '=', 'geo.id')
+            ->where('geo_attributes_value.geo_attr_id', $attributeId)
+            ->where('geo.type', $type)
+            ->orderByRaw("CAST(geo_attributes_value.value as unsigned) {ldelim}$sort{rdelim}")
+            ->get();
+        return $rows;
+    }
+
+    /**
+     * 請修改, 只是 example
+     * get 表示取得 elquenet(s)
+     * find 表示取得 raw data(s)
+     *
+     * 取得最近 7 天的 eloquent
+     *
+     * @param int $day
+     * @return ______Eloquent[] array
+     */
+    public function getQueryExample()
+    {
+        $day = 7;
+        $sql = <<<EOD
+            SELECT id
+            FROM `your_table_names` 
+            WHERE `created_at` > DATE(SUBDATE(NOW(), INTERVAL ? DAY))
+            ORDER BY `id` DESC
+EOD;
+
+        $rows = [];
+        foreach(DB::select($sql, [$day]) as $row) {
+            $rows[] = $this->joblog->find($row->id);
+        }
+
+        return $rows;
+    }
 
     // --------------------------------------------------------------------------------
     //  create, update, delete
@@ -84,65 +205,6 @@ class {$obj->upperCamel()}Repository extends BaseRepository
         $model = $this->find(${$obj}Id);
 
         return $model->delete();
-    }
-
-    // --------------------------------------------------------------------------------
-    //  read, search
-    // --------------------------------------------------------------------------------
-
-    // ${$obj} = $this->find($id);
-
-    /**
-     * @param int $accountId
-     * @param int $page
-     * @return {$obj->upperCamel()}[]
-     */
-    public function find{$mod->upperCamel()}ByAccountId(int $accountId, int $page = 1): Traversable
-    {
-        $page = ($page > 1 ? $page : 1);
-        Paginator::currentPageResolver(function () use ($page) {
-            return $page;
-        });
-
-        $builder = {$obj->upperCamel()}::where('account_id', $accountId)
-            ->orderBy('id', 'DESC');
-
-        /*
-        $filterByName = data_get($filter, 'name');
-        if ($filterByName) {
-            $builder = $builder->where('name', 'like', "%{ldelim}$filterByName{rdelim}%");
-        }
-        */
-
-        /*
-        $condition = [
-            'account_id' => $accountId,
-        ];
-        $query = function ($query) {
-            return $query->orderBy('id', 'DESC');
-        };
-
-        return $this->scopeQuery($query)->findWhere($condition);
-        */
-
-        return $builder->paginate();
-    }
-
-    /**
-     * 請修改, 只是 example
-     */
-    public function rawQueryExample(int $attributeId, string $type, string $sort=null)
-    {
-        $sort = trim(strtoupper($sort)) === 'DESC' ? 'DESC' : 'ASC';
-
-        $target = DB::table('geo_attributes_value')
-            ->select('geo_attributes_value.*')
-            ->leftJoin('geo', 'geo_attributes_value.geo_id', '=', 'geo.id')
-            ->where('geo_attributes_value.geo_attr_id', $attributeId)
-            ->where('geo.type', $type)
-            ->orderByRaw("CAST(geo_attributes_value.value as unsigned) {$sort}")
-            ->get();
-        return $target;
     }
 
     // --------------------------------------------------------------------------------

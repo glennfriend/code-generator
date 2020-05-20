@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * Class {$obj->upperCamel()}
+ * Class {$obj->upperCamel()}Eloquent
  *
 {foreach from=$tab key=key item=field}
 {if $key=='id'}
@@ -29,12 +29,16 @@ class {$obj->upperCamel()}Eloquent extends Model
     protected $table = '{$tableName->lower("_")}';
     public $timestamps = false;
 
-    /*
+    /**
+     * 批量賦值 的 白名單
+     */
     protected $fillable = [
 {foreach from=$tab key=key item=field}
+{if in_array($key, ['id', 'password', 'is_admin', 'updated_at', 'deleted_at'])}
+{else}
         '{$field.ado->name}',
+{/if}
 {/foreach}
     ];
-    */
 
 }

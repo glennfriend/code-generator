@@ -35,8 +35,30 @@ class {$obj->upperCamel()}Controller extends Controller
         $this->{$mod} = ${$mod};
     }
 
+    /**
+     * @param Request $request
+     * @param ${$obj}Id
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function index(Request $request, ${$obj}Id)
+    {
+
+
+
+        return view('admin.xxxxxx.campaigns-budget.index', [
+            '{$mod}' => [],
+        ]);
+    }
+
+
+
+
+
+
 
     /**
+     * ????????????????
+     * 
      * @param Request $request
      * @param ${$obj}Id
      * @return \Illuminate\Http\JsonResponse

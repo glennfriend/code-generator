@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class Create{$mod->upperCamel()} extends Migration
+class Create{$mod->upperCamel()}Table extends Migration
 {
 
     /**

@@ -98,18 +98,23 @@ return [
     ],
 
     // view
+    'view_index_aggrid' => [
+        'path'          => "resources/views/admin/xxxxxx/{$obj->lower('-')}/",
+        'filename'      => "index.blade.php",
+        'clear_comment' => false,
+    ],
     'view_index' => [
-        'path'          => "resourdce/views/{$obj}/views/",
+        'path'          => "resources/views/{$obj}/views/",
         'filename'      => "home.index.phtml",
         'clear_comment' => false,
     ],
     'view_create' => [
-        'path'          => "resourdce/views/{$obj}/views/",
+        'path'          => "resources/views/{$obj}/views/",
         'filename'      => "home.create.phtml",
         'clear_comment' => false,
     ],
     'view_edit' => [
-        'path'          => "resourdce/views/{$obj}/views/",
+        'path'          => "resources/views/{$obj}/views/",
         'filename'      => "home.edit.phtml",
         'clear_comment' => false,
     ],
@@ -158,7 +163,7 @@ return [
         'clear_comment' => false,
     ],
     'kos_repository' => [
-        'path'          => "app/Repositories",
+        'path'          => "app/Repositories/",
         'filename'      => "{$obj->upperCamel()}Repository.php",
         'clear_comment' => false,
     ],

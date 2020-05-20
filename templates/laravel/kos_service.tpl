@@ -1,5 +1,6 @@
 <?php
 declare(strict_types=1);
+
 {if $isModule}namespace Modules\{$obj->upperCamel()}\Service;
 {else        }namespace App\Service\{$obj->upperCamel()};
 {/if}

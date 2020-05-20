@@ -33,8 +33,8 @@ function assingTemplate($template)
     $template->assign('obj', $obj);
     $template->assign('tab', $tab);
     $template->assign('today', date("Ymd"));
-    $template->assign('isApp', false);
-    $template->assign('isModule', true);
+    $template->assign('isApp', true);
+    $template->assign('isModule', false);
     return $template;
 }
 

@@ -5,8 +5,9 @@ declare(strict_types=1);
 {/if}
 
 use Exception;
-use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\Rule;
 use Illuminate\Http\{ldelim}Request, Response{rdelim};
 use Illuminate\Http\Resources\Json\{ldelim}JsonResource, AnonymousResourceCollectionl{rdelim};
 use Illuminate\Routing\Controller;
@@ -43,7 +44,13 @@ Route::group($config, function () {
     Route::post  ('/{$mod->lower('-')}',  {$obj->lowerCamel()|strlen|repeat}     '{$obj->upperCamel()}Controller@store');
     Route::patch ('/{$mod->lower('-')}/{ldelim}{$obj->lowerCamel()}Id{rdelim}',  '{$obj->upperCamel()}Controller@update');
     Route::delete('/{$mod->lower('-')}/{ldelim}{$obj->lowerCamel()}Id{rdelim}',  '{$obj->upperCamel()}Controller@destroy');
+    // or
+    Route::resource('/{$mod->lower('-')}', '{$obj->upperCamel()}Controller@index', [
+        'only' => ['index', 'show', 'store', 'update', 'destroy'],
+        'names' => '{$obj->lower('-')}',
+    ]);
 });
+
 */
 
 /*
@@ -115,6 +122,84 @@ class {$obj->upperCamel()}ApiController extends Controller
     public function destroy(Request $request, int ${$obj}Id)
     {
         return 'distory ' . ${$obj}Id;
+    }
+
+    // --------------------------------------------------------------------------------
+    //  for ag-grid
+    // --------------------------------------------------------------------------------
+
+    /**
+     * index
+     */
+    public function index(Request $request)
+    {
+        return response()->json([
+            'data' => [
+                'columnDefs' => [
+                    [
+                        "headerName" => "#",
+                        "field"      => "id",
+                    ],
+                    [
+                        "headerName" => "name",
+                        "field"      => "name",
+                    ],
+                    [
+                        "headerName" => "status",
+                        "field"      => "status",
+                    ],
+                ],
+                'rowData' => [
+                    [
+                        'id'     => 1,
+                        'name'   => 'a',
+                        'status' => 'aa',
+                    ],
+                    [
+                        'id'     => 2,
+                        'name'   =>'b',
+                        'status' => 'bb',
+                    ],
+                    [
+                        'id'     => rand(10,99),
+                        'name'   =>'b2',
+                        'status' => 'bb',
+                    ],
+                ],
+            ],
+        ]);
+
+
+        $rowData = [];
+        ${$obj} = $this->{$obj}Service->findByAccountId($accountId, $page);
+        $resourceCollection = {$obj->upperCamel()}Resource::collection(${$obj});
+        foreach ($resourceCollection as $resource) {
+            $rowData[] = [
+                'id'     => $resource->id,
+                'name'   => $resource->name,
+                'status' => $resource->status,
+            ];
+        }
+
+        return response()->json([
+            'data' => [
+                'columnDefs' => [
+                    [
+                        "headerName" => "#",
+                        "field"      => "id",
+                    ],
+                    [
+                        "headerName" => "name",
+                        "field"      => "name",
+                    ],
+                    [
+                        "headerName" => "status",
+                        "field"      => "status",
+                    ],
+                ],
+                'rowData' => $rowData,
+            ],
+        ], 200);
     }
 
     // --------------------------------------------------------------------------------
@@ -290,6 +375,9 @@ class {$obj->upperCamel()}ApiController extends Controller
             'required_keys'          => 'required|array|min:1',
             'required_keys.*'        => ['required', 'regex:/^(processor_id|card_type|subscription_plan)$/i'],
             'my_status'              => 'exists:enabled,disabled,draft,deleted',
+            'my_status'              => Rule::in(['enabled', 'disabled', 'draft', 'deleted']),
+            'my_status'              => 'required|string|min:1',
+            'my_status_code'         => 'required|string|size:2',
         ]);
 
         $validator = Validator::make($request->input('data'), [
