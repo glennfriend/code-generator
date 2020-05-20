@@ -146,3 +146,16 @@ class NamePrototype
 }
 
 //
+/*
+Naming convention in programming:
+
+    “lowercase”
+    “UPPERCASE”
+    “PascalCase”
+    “camelCase”
+    “snake_case”
+    “SCREAMING_SNAKE_CASE”
+    “kebab-case”
+    “SCREAMING-KEBAB-CASE”
+
+*/
