@@ -67,8 +67,6 @@ final class {$obj->upperCamel()}ControllerTest extends TestCase
 
         $response = $this->getAuthedRequest()->json('GET', $url);
 
-        //
-        // dump(json_decode($response->getContent(), true));
         $response->assertStatus(200);
         $response->assertJsonStructure([
             'data' => [
@@ -79,6 +77,15 @@ final class {$obj->upperCamel()}ControllerTest extends TestCase
                 ]
             ]
         ]);
+        $response->assertJsonFragment([
+            'data' => [
+                [
+                    'id'    => 1,
+                    'date'  => '2019-01-31',
+                    'count' => 2,
+                ],
+            ],
+        ]);
         $response->assertJson([
             'data' => [
                 [
@@ -87,6 +94,10 @@ final class {$obj->upperCamel()}ControllerTest extends TestCase
                 ],
             ],
         ]);
+
+        //
+        $json = json_decode($response->getContent(), true);
+        $this->assertEquals('2', $json['data'][0]['count']);
 
     }
 

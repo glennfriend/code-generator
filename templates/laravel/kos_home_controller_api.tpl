@@ -1,5 +1,6 @@
 <?php
 declare(strict_types=1);
+
 {if $isModule}namespace Modules\{$obj->upperCamel()}\Http\Controllers;
 {else        }namespace App\Http\Controllers;
 {/if}
@@ -21,11 +22,15 @@ use App\Services\ExceptionError;
 {/if}
 {if $isModule}
 use Modules\{$obj->upperCamel()}\Entities\{$obj->upperCamel()};
+use Modules\{$obj->upperCamel()}\Http\Resources\{$obj->upperCamel()}Resource;
+use Modules\{$obj->upperCamel()}\Repositories\{$obj->upperCamel()}\{$obj->upperCamel()}Repository;
 use Modules\{$obj->upperCamel()}\Services\{$obj->upperCamel()}\{$obj->upperCamel()}Service;
 use Modules\{$obj->upperCamel()}\Http\Resources\{$obj->upperCamel()}Resource;
 {else}
 use App\Entities\{$obj->upperCamel()};
-use App\Services\{$obj->upperCamel()}\{$obj->upperCamel()}Service;
+use App\Http\Resources\{$obj->upperCamel()}Resource;
+use App\Repositories\{$obj->upperCamel()}Repository;
+use App\Services\{$obj->upperCamel()}Service;
 use App\Http\Resources\{$obj->upperCamel()}Resource;
 {/if}
 
@@ -75,8 +80,13 @@ class {$obj->upperCamel()}ApiController extends Controller
      *
      */
     public function __construct(
-        {$obj->upperCamel()}Service ${$obj}Service)
+        {$obj->upperCamel()} ${$obj},
+        {$obj->upperCamel()}Repository ${$obj}Repository,
+        {$obj->upperCamel()}Service ${$obj}Service
+    )
     {
+        $this->{$obj} = ${$obj};
+        $this->{$obj}Repository = ${$obj}Repository;
         $this->{$obj}Service = ${$obj}Service;
     }
 

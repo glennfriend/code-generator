@@ -6,8 +6,8 @@ declare(strict_types=1);
 {/if}
 
 use Exception;
-use DB;
-use Modules\Action\Repositories\AssetRepository;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 {if $isModule}
 use Modules\{$obj->upperCamel()}\Entities\{$obj->upperCamel()};
 use Modules\{$obj->upperCamel()}\Repositories\{$obj->upperCamel()}Repository;
@@ -17,7 +17,6 @@ use App\Repositories\{$obj->upperCamel()}Repository;
 {/if}
 
 /**
- * {$obj->upperCamel()} Service
  *
  */
 class {$obj->upperCamel()}Service

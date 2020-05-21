@@ -3,27 +3,11 @@ declare(strict_types=1);
 
 use Faker\Generator as Faker;
 {if $isModule}use Modules\xxxxxx\Entities\Eloquent\{$obj->upperCamel()};
-{else        }use App\Entities\Eloquent\{$mod->upperCamel()};
+{else        }use App\Entities\Eloquent\{$obj->upperCamel()};
 {/if}
 
 $factory->define({$obj->upperCamel()}::class, function (Faker $faker)
 {
-    
-    $attribs = <<<EOD
-{
-    "raw": {
-        "action_type": "attempt",
-        "email": "{ldelim}$faker->email{rdelim}",
-        "meta": {
-            "card_type": "visa",
-            "processor_id": "{ldelim}$faker->randomDigit(){rdelim}"
-        }
-    }
-}
-EOD;
-
-    // $faker->name() . '-' . $faker->lexify('?????') . '-' . date_default_timezone_get(),
-    // $randomUniqueId = $faker->unique()->randomDigit;
     return [
 {foreach $tab as $key => $field}
 {if $key==='id'}
@@ -62,6 +46,33 @@ EOD;
     ];
 });
 
+// example 2
+$factory->define({$obj->upperCamel()}::class, function (Faker $faker)
+{
+    $attribs = <<<EOD
+{
+    "raw": {
+        "action_type": "attempt",
+        "email": "{ldelim}$faker->email{rdelim}",
+        "meta": {
+            "card_type": "visa",
+            "processor_id": "{ldelim}$faker->randomDigit(){rdelim}"
+        }
+    }
+}
+EOD;
+
+    // 
+    // $faker->lexify('?????')
+    // $randomUniqueId = $faker->unique()->randomDigit;
+    return [
+        'attribs' => $attribs,
+        'name' => $faker->name(),
+        'age' => $faker->numberBetween(1, 120),
+        'status' => $faker->randomElement(['enabled', 'disabled']),
+        'timezone' => date_default_timezone_get(),
+    ];
+});
 
 // 請查 https://github.com/fzaninotto/Faker
 // 請查 https://www.cnblogs.com/love-snow/articles/7655450.html

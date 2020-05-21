@@ -36,16 +36,15 @@ class {$obj->upperCamel()}Repository extends BaseRepository
     }
 
     /**
-     * get eloquent model
-     * 
      * e.g.
-     *      $this->{$obj}Repository->model()->firstOrCreate($data);
+     *      $model = app($this->{$obj}Repository->model());
+     *      $model->firstOrCreate($data);
      * 
-     * @return {$obj->upperCamel()}
+     * @return string
      */
-    function model(): {$obj->upperCamel()}
+    function model(): string
     {
-        return $this->{$obj};
+        return {$obj->upperCamel()}::class;
     }
 
     // --------------------------------------------------------------------------------
