@@ -48,6 +48,50 @@ class {$obj->upperCamel()}Repository extends BaseRepository
     }
 
     // --------------------------------------------------------------------------------
+    //  wrap
+    // --------------------------------------------------------------------------------
+
+    /**
+     * @param array $data
+     * @return Model
+     */
+    public function firstOrCreate(array $data)
+    {
+        return $this->{$obj}->firstOrCreate($data);
+    }
+
+    /**
+     * @param array $data
+     * @return mixed
+     */
+    public function create(array $data)
+    {
+        return $this->{$obj}->create($data);
+    }
+
+    /**
+     * @param int $id
+     * @return mixed
+     */
+    public function getById(int $id): ?{$obj->upperCamel()}
+    {
+        return $this->{$obj}->find($id);
+        // return $this->->{$obj}->where('id', $id)->first();
+    }
+
+    /**
+     * 
+     */
+    public function getEnable{$obj->upperCamel()}ByIdAndStatus(int $id, string $status): ?{$obj->upperCamel()}
+    {
+        return $this->{$obj}
+            ->where('id', '=', $id)
+            ->where('status', '=', $status)
+            ->first();
+            // ->get(); // find many
+    }
+
+    // --------------------------------------------------------------------------------
     //  chores
     // --------------------------------------------------------------------------------
 
@@ -59,25 +103,7 @@ class {$obj->upperCamel()}Repository extends BaseRepository
 
     // ${$obj} = $this->find($id);
 
-    /**
-     * @param int $id
-     */
-    /*
-    public function getById(int $id)
-    {
-        return $this->????->find($id);
-        // return $this->->????->where('id', $id)->first();
-    }
-    */
 
-    public function getById(int $id, string $status)
-    {
-        // 未測試
-        return $this->geoAreaCode
-            ->where('id', '=', $id)
-            ->where('status', '=', $status)
-            ->get();
-    }
 
     /**
      * @param int $accountId
@@ -115,6 +141,27 @@ class {$obj->upperCamel()}Repository extends BaseRepository
         return $builder->paginate();
     }
 
+
+    /**
+     * 請修改, 只是 example
+     * 
+     * @return stdclass array|\Illuminate\Support\Collection
+     */
+    public function findQueryExample(int $attributeId, string $type, string $sort=null)
+    {
+        // main table 請置於最後方
+        return $this->{$obj}
+            ->select('table2.*', 'table2.value as the_value', '{$mod->lower('_')}.*')
+            ->where('attribute_id', '=', $attributeId)
+            ->join('table2 as v', function ($join) use ($type) {
+                $join
+                    ->on('v.parent_id', '=', '{$mod->lower('_')}.id')
+                    ->where('v.type', '=', $type);
+            }, null, null, 'left')
+            ->orderByRaw('id DESC')
+            ->get();
+    }
+
     /**
      * 請修改, 只是 example
      * 
@@ -125,7 +172,7 @@ class {$obj->upperCamel()}Repository extends BaseRepository
         $sort = trim(strtoupper($sort)) === 'DESC' ? 'DESC' : 'ASC';
 
         $rows = DB::table('geo_attributes_value')
-            ->select('geo_attributes_value.*')
+            ->select('geo.*', 'geo_attributes_value.*')
             ->leftJoin('geo', 'geo_attributes_value.geo_id', '=', 'geo.id')
             ->where('geo_attributes_value.geo_attr_id', $attributeId)
             ->where('geo.type', $type)

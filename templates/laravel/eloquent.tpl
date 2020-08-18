@@ -1,13 +1,14 @@
 <?php
 declare(strict_types=1);
 
-namespace App\Entities\Eloquent;
+namespace App\Entities;
 
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Model;
 
 /**
  * Class {$obj->upperCamel()}Eloquent
+ * 該 Entity 的用途為何 ??
  *
 {foreach from=$tab key=key item=field}
 {if $key=='id'}
@@ -41,5 +42,71 @@ class {$obj->upperCamel()}Eloquent extends Model
 {/if}
 {/foreach}
     ];
+
+{foreach from=$tab key=key item=field}
+{if $key=='status'}
+    // --------------------------------------------------------------------------------
+    //  status extend
+    // --------------------------------------------------------------------------------
+
+    const STATUS_ENABLED = 'enabled';
+    const STATUS_DISABLED = 'disabled';
+
+    /**
+     * e.g.
+        if (! in_array($status, {$obj->upperCamel()}Eloquent::useStatusList())) {
+            return false;
+        }
+     */
+    public static function useStatusList(): array
+    {
+        return ['available', 'used'];
+    }
+{else}
+{/if}
+{/foreach}
+
+    // --------------------------------------------------------------------------------
+    //  rewrite origin method
+    // --------------------------------------------------------------------------------
+    /*
+    public function setPhoneNumberAttribute(string $phoneNumber)
+    {
+        $this->attributes['phone_number'] = strtolower(trim($phoneNumber));
+
+        if ($areCode = $this->guessAreaCode($phoneNumber)) {
+            $this->attributes['area_code'] = $areCode;
+        }
+    }
+    */
+
+    // --------------------------------------------------------------------------------
+    //  parent & children
+    // --------------------------------------------------------------------------------
+    public function parent()
+    {
+        return $this->belongsTo({$obj->upperCamel()}Eloquent::class, 'parent_id', 'id');
+    }
+
+    /**
+     * 1 對 多
+     */
+    public function children()
+    {
+        return $this->hasMany({$obj->upperCamel()}Eloquent::class, 'parent_id', 'id');
+    }
+
+    // --------------------------------------------------------------------------------
+    //  1 對 多
+    // --------------------------------------------------------------------------------
+    /**
+     * get user of blogs
+     */
+    public function blogs(string $status = 'enabled')
+    {
+        return $this
+            ->hasMany(Blogs::class, 'user_id', 'id')
+            ->where('status', $status);
+    }
 
 }

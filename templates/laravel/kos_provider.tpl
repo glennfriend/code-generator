@@ -38,7 +38,8 @@ class {$obj->upperCamel()}Provider extends ServiceProvider
         $this->registerResources();
         $this->registerRoutes();
         $this->registerContainer();
-
+        $this->registerLogging();
+        
         // append middleware
         // $router = $this->app['router'];
         // $router->pushMiddlewareToGroup('xxxxxx.auth',  UserLoginAuth::class);
@@ -124,6 +125,16 @@ class {$obj->upperCamel()}Provider extends ServiceProvider
             return $aws;
         });
         */
+    }
+
+    protected function registerLogging()
+    {
+        $this->app->make('config')->set('logging.channels.{$obj->lower('_')}', [
+            'driver' => 'single',
+            'path'   => storage_path('logs/{$obj->lower('_')}.log'),
+            'level'  => 'debug',
+            'days'   => 90,
+        ]);
     }
 
     /**

@@ -6,34 +6,14 @@ $today = date("Y_m_d");
 
 return [
 
-    'value_object' => [
-        'path'          => "app/Entities/",
-        'filename'      => "{$obj->upperCamel()}.php",
-        'clear_comment' => false,
-    ],
     'eloquent' => [
-        'path'          => "app/Entities/Eloquent/",
+        'path'          => "app/Entities/",
         'filename'      => "{$obj->upperCamel()}Eloquent.php",
         'clear_comment' => false,
     ],
     'json_resource' => [
         'path'          => "app/Http/Resources/",
         'filename'      => "{$obj->upperCamel()}.php",
-        'clear_comment' => false,
-    ],
-    'model' => [
-        'path'          => "app/Entities/",
-        'filename'      => "{$mod->upperCamel()}.php",
-        'clear_comment' => false,
-    ],
-    'model_extend' => [
-        'path'          => "app/Entities/",
-        'filename'      => "{$mod->upperCamel()}.php",
-        'clear_comment' => false,
-    ],
-    'search_table' => [
-        'path'          => "app/Entities/SearchTable/",
-        'filename'      => "{$mod->upperCamel()}.php",
         'clear_comment' => false,
     ],
     'migration' => [
@@ -44,6 +24,26 @@ return [
     'migration_view' => [
         'path'          => "app/database/migrations/",
         'filename'      => $today ."_000001_create_{$mod->lower('_')}_view.php",
+        'clear_comment' => false,
+    ],
+    'value_object' => [
+        'path'          => "app/Molds/",
+        'filename'      => "{$obj->upperCamel()}.php",
+        'clear_comment' => false,
+    ],
+    'model' => [
+        'path'          => "app/Molds/",
+        'filename'      => "{$mod->upperCamel()}.php",
+        'clear_comment' => false,
+    ],
+    'model_extend' => [
+        'path'          => "app/Molds/",
+        'filename'      => "{$mod->upperCamel()}.php",
+        'clear_comment' => false,
+    ],
+    'search_table' => [
+        'path'          => "app/Molds/SearchTable/",
+        'filename'      => "{$mod->upperCamel()}.php",
         'clear_comment' => false,
     ],
 
@@ -151,7 +151,7 @@ return [
         'clear_comment' => false,
     ],
     'database_factory' => [
-        'path'          => "app/database/factories/",
+        'path'          => "database/factories/",
         'filename'      => "{$obj->upperCamel()}Factory.php",
         'clear_comment' => false,
     ],

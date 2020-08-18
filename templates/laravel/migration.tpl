@@ -13,15 +13,13 @@ class Create{$mod->upperCamel()}Table extends Migration
     public function up()
     {
         if (Schema::hasTable('{$mod->lower('_')}')) {
-            // exists
-            return;
+            return; // exists
         }
 
-        Schema::table('{$mod->lower('_')}', function (Blueprint $table) {
-            $this->createTable();
-            // $this->changeTable();
-            // $this->createDataFromSql();
-        });
+        $this->createTable();
+        // $this->changeTable();
+        // $this->createDataFromSql();
+
     }
 
     /**
@@ -29,9 +27,9 @@ class Create{$mod->upperCamel()}Table extends Migration
      */
     public function down()
     {
+        // Schema::dropIfExists('{$mod->lower('_')}');
+
         // $sql = 'DROP TABLE `{$mod->lower('_')}`';
-        // Schema::dropIfExists('{$mod->lower('_')}');
-        // Schema::dropIfExists('{$mod->lower('_')}');
         /*
         Schema::table('{$mod->lower('_')}', function (Blueprint $table) {
             $table->dropColumn('__the_field_name__');
@@ -46,18 +44,7 @@ class Create{$mod->upperCamel()}Table extends Migration
     /**
      *
      */
-    private function changeTable()
-    {
-        Schema::create('{$mod->lower('_')}', function (Blueprint $table) {
-            $table->index('account_id');
-            $table->dropIndex('account_id');
-        });
-    }
-
-    /**
-     *
-     */
-    private function createTable()
+    protected function createTable()
     {
         // 是依照 name, type 的一般建議方式建立, "不是" 依照資料表的欄位屬性 (TODO: delete it)
         Schema::create('{$mod->lower('_')}', function (Blueprint $table) {
@@ -69,7 +56,7 @@ class Create{$mod->upperCamel()}Table extends Migration
 {elseif $key=='status'}
             $table->string('{$field.ado->name}')->unsigned()->index('{$field.ado->name}');
 {elseif $key=='createdAt'}
-            $table->timestamp('{$field.ado->name}');
+            $table->timestamp('{$field.ado->name}')->nullable();
 {elseif $key=='updatedAt' || $key=='deletedAt'}
             $table->timestamp('{$field.ado->name}')->nullable();
 {elseif $key=='properties' || $key=='attribs'}
@@ -103,9 +90,20 @@ class Create{$mod->upperCamel()}Table extends Migration
 {/if}
 {/foreach}
 
+            // 復合式索引
+            // $table->index(['category_name', 'parent_id']);   // categories, 顯示最上層的分類
+            // $table->index(['status', 'created_at']);         // articles, 最新 可顯示 的文章
+
             $table->engine = 'InnoDB';
         });
 
+    }
+
+    /**
+     *
+     */
+    protected function createTable()
+    {
         #
         #   請用 phpmyadmin dump
         #       - "http://localhost/phpmyadmin/tbl_export.php?single_table=true&db={SessionManager::database()}&table={$tableName->lower('_')}"
@@ -116,7 +114,7 @@ class Create{$mod->upperCamel()}Table extends Migration
         #       - AUTO_INCREMENT 無序號
         #
 
-        $table = '{$mod->lowerCamel('_')}';
+        $table = '{$mod->lower('_')}';
         $sql =<<<EOD
 CREATE TABLE IF NOT EXISTS `{ldelim}$table{rdelim}` (
   `id` int(10) UNSIGNED NOT NULL,
@@ -140,7 +138,18 @@ EOD;
     /**
      *
      */
-    private function changeTable()
+    protected function changeTable()
+    {
+        Schema::table('{$mod->lower('_')}', function (Blueprint $table) {
+            $table->index('account_id');
+            $table->dropIndex('account_id');
+        });
+    }
+
+    /**
+     *
+     */
+    protected function changeTable()
     {
         /*
         // 追加欄位
@@ -188,7 +197,7 @@ EOD;
     /**
      *
      */
-    private function createDataFromSql()
+    protected function createDataFromSql()
     {
         $sql = <<<EOD
 

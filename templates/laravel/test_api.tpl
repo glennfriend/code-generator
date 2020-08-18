@@ -128,6 +128,14 @@ final class {$obj->upperCamel()}ControllerTest extends TestCase
         $response->assertJsonFragment([
             'name' => '{$obj} store',
         ]);
+
+        /*
+            // 可以嘗試看看這個方法
+            $this->assertDatabaseHas('{$obj->lower('_')}', [
+                'title' => 'Skyfall',
+                'release_date' => '2012-10-27'
+            ]);
+        */
     }
 
     /**

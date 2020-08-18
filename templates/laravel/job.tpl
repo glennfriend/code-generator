@@ -27,7 +27,7 @@ use App\Http\Resources\{$obj->upperCamel()}Resource;
 */
 
 /**
- *  幂等性: 該 job 是否可以重覆執行, 但具有相同的結果: yes/no
+ * 幂等性: 該 job 是否可以重覆執行, 並且有相同的結果: yes/no
  */
 class {$obj->upperCamel()}Job implements ShouldQueue
 {
@@ -39,21 +39,22 @@ class {$obj->upperCamel()}Job implements ShouldQueue
     public $tries = 1;
 
     /**
-     * queue level
-     *      - highest, high, default, low, lowest
-     * 
-     * @var string
+     * @var array
      */
-    public $queue = 'default';
+    protected $attributes;
 
     /**
      *
      */
     public function __construct(array $attributes)
     {
+        /**
+         * @var string $queue, queue level see "config/horizon.php"
+         */
+        $this->queue = 'default';
         $this->attributes = $attributes;
 
-        $this->jobBeforeValidate();
+        $this->dispatchBeforeValidate();
     }
 
     /**
@@ -65,7 +66,9 @@ class {$obj->upperCamel()}Job implements ShouldQueue
     )
     {
         ini_set('memory_limit', '512M');
-        $accountId = data_get($this->attributes, 'account_id');
+
+        //
+        $accountId = $this->attributes['account_id'];
         $email     = data_get($this->attributes, 'email');
         $this->{$obj}Service    = ${$obj}Service;
         $this->{$obj}Repository = ${$obj}Repository;
@@ -119,7 +122,7 @@ class {$obj->upperCamel()}Job implements ShouldQueue
      *      - 檢查 job 必須要的參數是否存在
      *      - job 如果要的資料沒有先輸入, 之後再抓會有錯誤的可能, 可以考慮 query 出來先檢查
      */
-    protected function jobBeforeValidate()
+    protected function dispatchBeforeValidate()
     {
         if (! isset($this->attributes['account_id'])) {
             throw new Exception("error");
@@ -131,13 +134,19 @@ class {$obj->upperCamel()}Job implements ShouldQueue
     protected function dispatch_example()
     {
         /*
+        $attributes = [
+            'account_id' => '',
+        ];
+
         try {
-            $queueName = 'default'; // see "config/horizon.php"
-            \App\Jobs\YourJob::dispatch($options)->onQueue($queueName);
+            // $queueName = 'default'; // see "config/horizon.php"
+            // \App\Jobs\YourJob::dispatch($attributes)->onQueue($queueName);
+
+            \App\Jobs\YourJob::dispatch($attributes);
             $request->session()->flash('success-message', 'Task was queue');
         } catch (Exception $exception) {
             $error = $exception->getMessage();
-            $this->log('error', $error);
+            Log::error($error, $attributes);
             $request->session()->flash('error-message', $error);
             // throw $exception;
         }

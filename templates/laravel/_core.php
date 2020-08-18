@@ -34,7 +34,7 @@ function assingTemplate($template)
     $template->assign('tab', $tab);
     $template->assign('today', date("Ymd"));
     $template->assign('isApp', true);
-    $template->assign('isModule', false);
+    $template->assign('isModule', true);
     return $template;
 }
 
