@@ -32,7 +32,7 @@ $lang = getLangType($menu);
 headerOutput();
 
 ob_start();
-    $template->display(getProjectKey() . '/' . $page . '.tpl');
+    $template->display(SessionManager::projectKey() . '/' . $page . '.tpl');
     $showCode = ob_get_contents();
 ob_end_clean();
 //echo $showCode;
