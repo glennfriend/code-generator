@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
-{if $isModule}namespace Modules\{$obj->upperCamel()}\Http\Controllers;
-{else        }namespace App\Http\Controllers;
+{if $isModule}namespace Modules\{$obj->upperCamel()}\Http\Api\Controllers;
+{else        }namespace App\Http\Api\Controllers;
 {/if}
 
 use Exception;

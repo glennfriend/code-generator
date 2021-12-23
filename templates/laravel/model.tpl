@@ -1,15 +1,23 @@
 <?php
 declare(strict_types=1);
-namespace App\Entities;
 
-use Cor\Model\BaseModel;
-use Cor\Model\ModelExtendCurd;
-use Cor\Model\ModelExtendGenAll;
-use App\Entities\Eloquent\{$obj->upperCamel()}Eloquent;
-use App\Entities\{$obj->upperCamel()};
+{if $isModule}namespace Modules\{$obj->upperCamel()}\Molds;
+{else        }namespace App\Molds;
+{/if}
+
+use Cor\Mold\BaseModel;
+use Cor\Mold\ModelExtendCurd;
+use Cor\Mold\ModelExtendGenAll;
+use Exception;
+
+{if $isModule}use Modules\{$obj->upperCamel()}\Entities\{$obj->upperCamel()}Eloquent;
+{else        }use App\Entities\{$obj->upperCamel()}Eloquent;
+{/if}
+
 {foreach from=$tab key=key item=field}
 {if $key=='userId'}
-use App\Entities\User;
+// use App\Entities\User;
+use Modules\{$obj->upperCamel()}\Entities\User;
 {/if}
 {/foreach}
 
@@ -21,7 +29,7 @@ use App\Entities\User;
  * @method {$obj->upperCamel()}   update({$obj->upperCamel()} ${$obj->lowerCamel()})
  * @method {$obj->upperCamel()}   delete(int ${$obj->lowerCamel()}Id)
  * @method {$obj->upperCamel()}   get(int ${$obj->lowerCamel()}Id)
- * @method {$obj->upperCamel()}[] getMany(string $fieldName, $value, string $orderBy, int $limit)
+ * @method {$obj->upperCamel()}[] getMany(string $fieldName, $value, array $options)
  * @method {$obj->upperCamel()}   genAll(string $orderBy)
  */
 class {$mod->upperCamel()} extends BaseModel
@@ -48,30 +56,43 @@ class {$mod->upperCamel()} extends BaseModel
 
 
 
-    /* ================================================================================
-        find UserLogs and get count
-        多欄、針對性的搜尋, 主要在後台方便使用, 使用 and 搜尋方式
-    ================================================================================ */
 
+    // --------------------------------------------------------------------------------
+    //  extends
+    // --------------------------------------------------------------------------------
 
-    /* ================================================================================
-        extends
-    ================================================================================ */
+    /**
+     * get {$obj->upperCamel()}
+     *
+     * @param string $email
+     * @return {$obj->upperCamel()}|null
+     * @throws Exception
+     */
+    public function get{$obj->upperCamel()}ByEmail(string $email): ?{$obj->upperCamel()}
+    {
+        return $this->_get('email', $email);
+    }
 
 {foreach from=$tab key=key item=field}
 {if $key=='userId'}
     /**
      * get {$mod}
      *
-     * @param $userId
+     * @param int $userId
      * @return array
      */
-    public static function get{$mod->upperCamel()}ByUserId($userId): array
+    public function get{$mod->upperCamel()}ByUserId(int $userId): array
     {
         return $this->getMany('user_id', $userId);
     }
 {/if}
 {/foreach}
+
+
+    // --------------------------------------------------------------------------------
+    //  find UserLogs and get count
+    //  多欄、針對性的搜尋, 主要在後台方便使用, 使用 and 搜尋方式
+    // --------------------------------------------------------------------------------
 
 
 }

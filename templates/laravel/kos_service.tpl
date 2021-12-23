@@ -29,8 +29,36 @@ class {$obj->upperCamel()}Service
         $this->{$obj}Repository = ${$obj}Repository;
     }
 
+
     // --------------------------------------------------------------------------------
-    //  write
+    //  write by array
+    // --------------------------------------------------------------------------------
+
+    /**
+     * @param array $data
+     * @return {$obj->upperCamel()}|null
+     * @throws Exception
+     */
+    public function add(array $data): ?{$obj->upperCamel()}
+    {
+        DB::beginTransaction();
+
+        $data += [
+            'started_at' => now(),
+            'status'     => null,
+        ];
+        ${$obj} = $this->{$obj}Repository->create($data);
+
+        ${$obj}->setNumTotal($data['num_total'] ?? null);
+        ${$obj}->save();
+
+        DB::commit();
+        return ${$obj};
+    }
+
+
+    // --------------------------------------------------------------------------------
+    //  write by object
     // --------------------------------------------------------------------------------
 
     /**
@@ -53,7 +81,7 @@ class {$obj->upperCamel()}Service
     /**
      * update
      *
-     * @param {$mod->upperCamel()} ${$obj}
+     * @param {$obj->upperCamel()} ${$obj}
      */
     public function update({$obj->upperCamel()} ${$obj}): void
     {

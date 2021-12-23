@@ -26,16 +26,29 @@ use App\Repositories\{$obj->upperCamel()}Repository;
  */
 class {$obj->upperCamel()}Provider extends ServiceProvider
 {
-    /**
-     * Bootstrap any application services.
-     *
-     * @return void
-     */
+
+    public function register()
+    {
+        /*
+        if (! defined('{$obj->upper('_')}_PATH')) {
+            define('{$obj->upper('_')}_PATH', dirname(__DIR__));
+        }
+        */
+
+        $this->registerConfig();
+        $this->registerCommands();
+        $this->registerMiddlewares();
+        $this->registerFactories();
+        $this->registerScheduler();
+        $this->singleton();
+    }
+
     public function boot()
     {
         $this->registerMigrations();
         $this->registerSeeds();
         $this->registerResources();
+        $this->offerPublishing();
         $this->registerRoutes();
         $this->registerContainer();
         $this->registerLogging();
@@ -45,122 +58,25 @@ class {$obj->upperCamel()}Provider extends ServiceProvider
         // $router->pushMiddlewareToGroup('xxxxxx.auth',  UserLoginAuth::class);
     }
 
-    /**
-     * Register any application services.
-     *
-     * @return void
-     */
-    public function register()
-    {
-        if (! defined('{$obj->upper('_')}_PATH')) {
-            define('{$obj->upper('_')}_PATH', dirname(__DIR__));
-        }
-
-        $this->configure();
-        $this->offerPublishing();
-        $this->registerCommands();
-        $this->registerScheduler();
-        $this->singleton();
-    }
-
     // --------------------------------------------------------------------------------
-    //  private
+    //  register
     // --------------------------------------------------------------------------------
-
-
-    /**
-     * Register the migrations
-     *
-     * @return void
-     */
-    protected function registerMigrations()
-    {
-        $this->loadMigrationsFrom({$obj->upper('_')}_PATH . '/database/migrations');
-    }
-
-    /**
-     * 目前使用的 laravel 5.8 沒有提供 seed for packages
-     * 請撰寫 console command 的方式來執行 seeds
-     */
-    protected function registerSeeds()
-    {
-    }
-
-    /**
-     * Register the resources
-     *
-     * @return void
-     */
-    protected function registerResources()
-    {
-        $this->loadViewsFrom({$obj->upper('_')}_PATH . '/resources/views', '{$obj->lower('_')}');
-    }
-
-    /**
-     * Register the routes
-     *
-     * @return void
-     */
-    protected function registerRoutes()
-    {
-        Route::group([
-            //'prefix'     => config('{$obj->lower('_')}.uri', '{$obj->lower('_')}'),
-            'namespace'    => '{$obj->upperCamel()}\Http\Controllers',
-            //'middleware' => '{$obj->lower('_')}.auth',
-        ], function () {
-            $this->loadRoutesFrom({$obj->upper('_')}_PATH . '/routes/web.php');
-        });
-    }
-    
-    protected function registerContainer()
-    {
-        /*
-        $this->app->singleton(Aws::class, function ($app) {
-            $aws = new Aws();
-            $profile = env('AWS_PROFILE');
-            $ownerId = env('AWS_OWNER_ID');
-
-            $aws->setOwnerId($ownerId);
-            $aws->setProfile($profile);
-            return $aws;
-        });
-        */
-    }
-
-    protected function registerLogging()
-    {
-        $this->app->make('config')->set('logging.channels.{$obj->lower('_')}', [
-            'driver' => 'single',
-            'path'   => storage_path('logs/{$obj->lower('_')}.log'),
-            'level'  => 'debug',
-            'days'   => 90,
-        ]);
-    }
 
     /**
      * Setup the configuration
+     * NOTE: file name 與 key 請設定成同名
      *
      * @return void
      */
-    protected function configure()
+    protected function registerConfig()
     {
-        $this->mergeConfigFrom({$obj->upper('_')}_PATH . '/config/{$obj->lower('_')}.php',      '{$obj->lower('_')}');
-        $this->mergeConfigFrom({$obj->upper('_')}_PATH . '/config/{$obj->lower('_')}_menu.php', '{$obj->lower('_')}_menu');
-    }
+        // 舊的
+        // $this->mergeConfigFrom(dirname(__DIR__) . '/config/{$obj->lower('_')}.php',      '{$obj->lower('_')}');
+        // $this->mergeConfigFrom(dirname(__DIR__) . '/config/{$obj->lower('_')}_menu.php', '{$obj->lower('_')}_menu');
 
-    /**
-     * 發佈資源檔
-     *      - config/
-     *
-     * @return void
-     */
-    protected function offerPublishing()
-    {
-        if ($this->app->runningInConsole()) {
-            $this->publishes([
-                {$obj->upper('_')}_PATH . '/config/{$obj->lower('_')}.php' => config_path('{$obj->lower('_')}.php'),
-            ], '{$obj->lower('_')}-config');
-        }
+        // 請改成用 - 符號連接
+        $this->mergeConfigFrom(dirname(__DIR__) . '/config/{$obj->lower('-')}.php',      '{$obj->lower('-')}');
+        $this->mergeConfigFrom(dirname(__DIR__) . '/config/{$obj->lower('-')}-menu.php', '{$obj->lower('-')}-menu');
     }
 
     /**
@@ -183,6 +99,26 @@ class {$obj->upperCamel()}Provider extends ServiceProvider
             Console\TestApiCommands\TestGoogleSheet::class,
             Console\OneTimeCommands\DataMigration_2000_01_01::class,
         ]);
+    }
+
+    protected function registerMiddlewares()
+    {
+        // $router = $this->app['router'];
+        // $router->pushMiddlewareToGroup('auth:jwtOrAccountApiKey', \Modules\Auth\Http\Middleware\AuthByJwtOrAccountApiKey::class);
+
+        // how to use
+        /*
+        Route::middleware('auth:jwtOrAccountApiKey')->group(function() {
+            Route::get('agents', 'AgentController@index');
+        })
+        */
+    }
+
+    protected function registerFactories()
+    {
+        $this->app
+            ->make('Illuminate\Database\Eloquent\Factory')
+            ->load(__DIR__ . '/../database/factories');
     }
 
     /**
@@ -242,5 +178,118 @@ class {$obj->upperCamel()}Provider extends ServiceProvider
         });
         */
     }
+
+    // --------------------------------------------------------------------------------
+    //  boot
+    // --------------------------------------------------------------------------------
+
+    /**
+     * Register the migrations
+     *
+     * @return void
+     */
+    protected function registerMigrations()
+    {
+        $this->loadMigrationsFrom(dirname(__DIR__) . '/database/migrations');
+    }
+
+    /**
+     * 目前使用的 laravel 5.8 沒有提供 seed for packages
+     * 請撰寫 console command 的方式來執行 seeds
+     */
+    protected function registerSeeds()
+    {
+    }
+
+    /**
+     * Register the resources
+     *
+     * @return void
+     */
+    protected function registerResources()
+    {
+        $this->loadViewsFrom(dirname(__DIR__) . '/resources/views', '{$obj->lower('_')}');
+    }
+
+    /**
+     * 發佈資源檔
+     *      如果要覆蓋, 後面要加上 --force
+     * 
+     * php artisan vendor:publish  --tag=my-publish-name
+     *      - config/
+     *      - public/vendor/[package-name]/
+     */
+    protected function offerPublishing()
+    {
+        if (! $this->app->runningInConsole()) {
+            return;
+        }
+
+        $myPublishName = '{$obj->lower('-')}';
+
+        //
+        $this->publishes([
+            dirname(__DIR__) . '/config/' . '{$obj->lower('-')}.php' => config_path('{$obj->lower('-')}.php'),
+        ], $myPublishName);
+
+        $this->publishes([
+            dirname(__DIR__) . '/resources/js' => public_path('vendor/{$obj->lower('-')}/js'),
+        ], $myPublishName);
+    }
+
+    /**
+     * Register the routes
+     *
+     * @return void
+     */
+    protected function registerRoutes()
+    {
+        Route::group([
+            //'prefix'     => config('{$obj->lower('_')}.uri', '{$obj->lower('_')}'),
+            'namespace'    => '{$obj->upperCamel()}\Http\Controllers',
+            //'middleware' => '{$obj->lower('_')}.auth',
+        ], function () {
+            $this->loadRoutesFrom(dirname(__DIR__) . '/routes/web.php');
+        });
+
+        Route::group([
+            'prefix'    => '/api/{$obj->lower('-')}',
+            'namespace' => '{$obj->upperCamel()}\Http\Controllers',
+        ], function () {
+            $this->loadRoutesFrom(dirname(__DIR__) . '/routes/api.php');
+        });
+    }
+    
+    protected function registerContainer()
+    {
+        /*
+        $this->app->singleton(Aws::class, function ($app) {
+            $aws = new Aws();
+            $profile = env('AWS_PROFILE');
+            $ownerId = env('AWS_OWNER_ID');
+
+            $aws->setOwnerId($ownerId);
+            $aws->setProfile($profile);
+            return $aws;
+        });
+        */
+    }
+
+    /**
+     * $message = '';
+     * $option = [];
+     * Log::channel('{$obj->lower('_')}')->debug($message, $option);
+     */
+    protected function registerLogging()
+    {
+        $this->app->make('config')->set('logging.channels.{$obj->lower('_')}', [
+            'driver' => 'single',
+            'path'   => storage_path('logs/{$obj->lower('_')}.log'),
+            'level'  => 'debug',
+            'days'   => 90,
+        ]);
+    }
+
+
 
 }

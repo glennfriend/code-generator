@@ -47,4 +47,17 @@ class {$obj->upperCamel()}Resource extends JsonResource
         ];
     }
 
+    /**
+     * @param Request $request
+     * @return array
+     */
+    public function toArray($request)
+    {
+        return [
+{foreach from=$tab key=key item=field}
+            '{$field.ado->name}' {$field.ado->name|space_even} => $this->get{$field.name}(),
+{/foreach}
+        ];
+    }
+
 }

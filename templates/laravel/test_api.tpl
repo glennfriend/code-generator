@@ -59,11 +59,12 @@ final class {$obj->upperCamel()}ControllerTest extends TestCase
         ]);
 
         $accountId = $this->account->id;
-        $url = '/api/accounts/{ldelim}$accountId{rdelim}/{$mod->lower("-")}';
-        $url .= '?' . http_build_query([
+        $payload = [
             'start_date' => '2000-01-01',
             'end_date'   => '2000-02-01',
         ];
+        $url = "/api/accounts/{ldelim}$accountId{rdelim}/{$mod->lower('-')}";
+        $url .= '?' . http_build_query($payload);
 
         $response = $this->getAuthedRequest()->json('GET', $url);
 
@@ -110,7 +111,7 @@ final class {$obj->upperCamel()}ControllerTest extends TestCase
         // $this->mockService();
 
         $accountId = $this->account->id;
-        $url = '/api/accounts/{ldelim}$accountId{rdelim}/{$mod->lower("-")}';
+        $url = "/api/accounts/{ldelim}$accountId{rdelim}/{$mod->lower('-')}";
 
         $input = $this->getTestJson('{$obj->lower('_')}_store.json');
         $response = $this->getAuthedRequest()->json('POST', $url, $input);

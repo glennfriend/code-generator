@@ -1,19 +1,21 @@
 <?php
 declare(strict_types=1);
-{if $isModule}namespace Modules\{$obj->upperCamel()}\Service;
+
+{if $isModule}namespace Modules\{$obj->upperCamel()}\Services;
 {else        }namespace App\Service\{$obj->upperCamel()};
 {/if}
 
 use Exception;
-use DB;
-use Log;
+use Throwable;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 {if $isModule}
-use Modules\{$obj->upperCamel()}\Entities\{$mod->upperCamel()};
-use Modules\{$obj->upperCamel()}\Entities\{$obj->upperCamel()};
+use Modules\{$obj->upperCamel()}\Molds\{$mod->upperCamel()};
+use Modules\{$obj->upperCamel()}\Molds\{$obj->upperCamel()};
 {else}
-use App\Entities\{$mod->upperCamel()};
-use App\Entities\{$obj->upperCamel()};
+use App\Molds\{$mod->upperCamel()};
+use App\Molds\{$obj->upperCamel()};
 {/if}
 
 /**
@@ -22,40 +24,41 @@ use App\Entities\{$obj->upperCamel()};
  */
 class {$obj->upperCamel()}Service
 {
+    private {$mod->upperCamel()} ${$mod};
 
     public function __construct({$mod->upperCamel()} ${$mod})
     {
         $this->{$mod} = ${$mod};
     }
 
+    // --------------------------------------------------------------------------------
+    //  read, search
+    // --------------------------------------------------------------------------------
+
     /**
-     * get
-     *
      * @param int ${$obj->lowerCamel()}Id
      * @return {$obj->upperCamel()}|null
-     * @throws Exception
      */
+    /*
     public function get(int ${$obj->lowerCamel()}Id): ?{$obj->upperCamel()}
     {
-        try {
-            ${$obj} = $this->{$mod}->get(${$obj->lowerCamel()}Id);
-            if (! ${$obj}) {
-                return null;
-            }
-        }
-        catch (Exception $e) {
-            throw new Exception($e->getMessage());
+        ${$obj} = $this->{$mod}->get(${$obj->lowerCamel()}Id);
+        if (! ${$obj}) {
+            return null;
         }
 
         return ${$obj};
     }
+    */
+
+    // --------------------------------------------------------------------------------
+    //  create, update, delete
+    // --------------------------------------------------------------------------------
 
     /**
-     * add
-     *
      * @param {$obj->upperCamel()} $newObject
      * @return {$obj->upperCamel()}|null
-     * @throws Exception
+     * @throws Throwable
      */
     public function add({$obj->upperCamel()} $newObject): ?{$obj->upperCamel()}
     {
@@ -70,9 +73,9 @@ class {$obj->upperCamel()}Service
                 return null;
             }
         }
-        catch (Exception $e) {
+        catch (Throwable $e) {
             DB::rollBack();
-            throw new Exception($e->getMessage());
+            throw $e;
         }
         DB::commit();
 
@@ -81,10 +84,8 @@ class {$obj->upperCamel()}Service
     }
 
     /**
-     * update
-     *
-     * @param {$mod->upperCamel()} ${$obj}
-     * @throws Exception
+     * @param {$obj->upperCamel()} ${$obj}
+     * @throws Throwable
      */
     public function update({$obj->upperCamel()} ${$obj}): void
     {
@@ -98,9 +99,9 @@ class {$obj->upperCamel()}Service
                 return;
             }
         }
-        catch (Exception $e) {
+        catch (Throwable $e) {
             DB::rollBack();
-            throw new Exception($e->getMessage());
+            throw $e;
         }
         DB::commit();
 
@@ -108,10 +109,9 @@ class {$obj->upperCamel()}Service
     }
 
     /**
-     * delete
-     *
      * @param int $id
      * @return bool
+     * @throws Throwable
      */
     public function delete($id): bool
     {
@@ -126,9 +126,9 @@ class {$obj->upperCamel()}Service
                 return false;
             }
         }
-        catch (Exception $e) {
+        catch (Throwable $e) {
             DB::rollBack();
-            throw new Exception($e->getMessage());
+            throw $e;
         }
         DB::commit();
 
@@ -144,7 +144,7 @@ class {$obj->upperCamel()}Service
      * 通常用於檢查有沒有資格 寫入/修改/刪除 資料
      * 可能會影響 add, update, delete
      *
-     * @param {$obj->upperCamel()} $object
+     * @param {$obj->upperCamel()} ${$obj}
      * @return bool
      */
     protected function validate({$obj->upperCamel()} ${$obj}): bool
@@ -155,28 +155,25 @@ class {$obj->upperCamel()}Service
     /**
      * 因為自身修改的影響, 必須連動的程式, 修改其它資料
      * 可能會影響 add, update, delete
-     * hook 不應該出現錯誤, 必須是容許錯誤的程式
+     * hook 的邏輯理論上必須是完全容錯, 應該要讓 exception 通過, 但是必須留下 log
+     * hook 裡面如果是容許錯誤的部份, 可以考慮設計 event 來處理
+     * 
      *
-     * @param {$obj->upperCamel()} $object
+     * @param {$obj->upperCamel()} ${$obj}
      */
     protected function postHook({$obj->upperCamel()} ${$obj})
     {
-        try {
-            /*
-                例如 add article comment , 則 article of num_comments field 要做更新
+        /*
+            例如 add article comment , 則 article of num_comments field 要做更新
 
-                $article = $object->getArticle();
-                $article->setNumComments( $this->getNumArticleComments( $article->getId() ) );
-                $articles = new Articles();
-                $articles->updateArticle($article);
-
-                $this->updateSearchTable();
-            */
-        }
-        catch (Exception $e) {
-            // hook allow error
-            Log::warning('hook exception: ' . $e->getMessage());
-        }
+            $article = $object->getArticle();
+            $article->setNumComments( $this->getNumArticleComments( $article->getId() ) );
+            $articles = new Articles();
+            $articles->updateArticle($article);
+        */
+        /*
+            $this->updateSearchTable();
+        */
     }
 
     /**
@@ -185,7 +182,7 @@ class {$obj->upperCamel()}Service
     /*
     protected function updateSearchTable({$obj->upperCamel()} ${$obj})
     {
-        $this->search______->rebuild(${$obj}->getId());
+        $this->______SearchTable->rebuild(${$obj}->getId());
     }
     */
 

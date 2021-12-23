@@ -26,6 +26,15 @@ final class {$obj->upperCamel()}ServiceTest extends TestCase
             ->shouldAllowMockingProtectedMethods()
             ->makePartial();
 
+        $this->service
+            ->shouldReceive('methodNameByArray')
+            ->with(['status' => 1], $parameter2)
+            ->once()
+            // andThrow( new Execption('xxx') )
+            ->andReturn(
+                json_decode(file_get_contents(__DIR__ . '/your.json'), true)
+            );
+
         // the service used injection class
         $this->service->{$obj}Repository        = $this->app->make({$obj->UpperCamel()}Repository::class);
         $this->service->apiService              = $this->app->make(ApiService::class);

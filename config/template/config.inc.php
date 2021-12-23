@@ -1,9 +1,7 @@
 <?php
-
 $config['base'] = dirname(__DIR__);
-
 $config['list'] = [
-    'key'       => ['lifetype', 'yii', 'zalora', 'gear', 'wms', 'laravel_static', 'laravel'],
+    'key'       => ['lifetype', 'yii', 'zalora', 'gear', 'wms', 'laravel_static', 'react', 'laravel'],
     'databases' => ['erp', 'crm', 'wms', 'shop', 'site', 'test'],
     /**
      *  完全自訂的地方
@@ -38,3 +36,14 @@ $config['database'] = Array(
     'user'      => 'root',
     'password'  => '',
 );
+/*
+// for docker
+$config['database'] = Array(
+    'type'      => 'mysqli',
+    'server'    => '127.0.0.1:8800',
+    'user'      => 'root',
+    'password'  => 'root',
+);
+*/
+
+return $config;

@@ -1,8 +1,7 @@
 <?php
 declare(strict_types=1);
-
-{if $isModule}namespace Modules\{$obj->upperCamel()}\Http\Controllers;
-{else        }namespace App\Http\Controllers;
+{if $isModule}namespace Modules\{$obj->upperCamel()}\Http\Api\Controllers;
+{else        }namespace App\Http\Api\Controllers;
 {/if}
 
 use Exception;
@@ -23,8 +22,8 @@ use App\Services\ExceptionError;
 {if $isModule}
 use Modules\{$obj->upperCamel()}\Entities\{$obj->upperCamel()};
 use Modules\{$obj->upperCamel()}\Http\Resources\{$obj->upperCamel()}Resource;
-use Modules\{$obj->upperCamel()}\Repositories\{$obj->upperCamel()}\{$obj->upperCamel()}Repository;
-use Modules\{$obj->upperCamel()}\Services\{$obj->upperCamel()}\{$obj->upperCamel()}Service;
+use Modules\{$obj->upperCamel()}\Repositories\{$obj->upperCamel()}Repository;
+use Modules\{$obj->upperCamel()}\Services\{$obj->upperCamel()}Service;
 use Modules\{$obj->upperCamel()}\Http\Resources\{$obj->upperCamel()}Resource;
 {else}
 use App\Entities\{$obj->upperCamel()};
@@ -34,21 +33,30 @@ use App\Services\{$obj->upperCamel()}Service;
 use App\Http\Resources\{$obj->upperCamel()}Resource;
 {/if}
 
+/*
+// Kos global route
+Route::get('/accounts/{ldelim}accountId{rdelim}/{$obj->lower('-')}', '{$obj->upperCamel()}Controller')
+    ->name('account.{$obj->lower('-')}');
+*/
+
 
 /*
 // Route::middleware('auth:apiToken')->resource('{$mod->lower('-')}', '{$obj->upperCamel()}Controller');
 Route::resource('{$mod->lower('-')}', '{$obj->upperCamel()}Controller');
 
+// API reoute
 $config = [
-    'as' => '{$mod->lower('-')}',
-    'middleware' => ['api'],
+    // 'prefix' => '{$mod->lower('-')}/{ldelim}{$obj->lower('-')}Id{rdelim}',
+       'prefix' => '{$mod->lower('-')}',
+       'as' => '{$mod->lower('-')}',
+       'middleware' => ['api'],
 ];
 Route::group($config, function () {
-    Route::get   ('/{$mod->lower('-')}',  {$obj->lowerCamel()|strlen|repeat}     '{$obj->upperCamel()}Controller@index');
-    Route::get   ('/{$mod->lower('-')}/{ldelim}{$obj->lowerCamel()}Id{rdelim}',  '{$obj->upperCamel()}Controller@show');
-    Route::post  ('/{$mod->lower('-')}',  {$obj->lowerCamel()|strlen|repeat}     '{$obj->upperCamel()}Controller@store');
-    Route::patch ('/{$mod->lower('-')}/{ldelim}{$obj->lowerCamel()}Id{rdelim}',  '{$obj->upperCamel()}Controller@update');
-    Route::delete('/{$mod->lower('-')}/{ldelim}{$obj->lowerCamel()}Id{rdelim}',  '{$obj->upperCamel()}Controller@destroy');
+    Route::get   ('/{$mod->lower('-')}',  {$obj->lowerCamel()|strlen|repeat}     'Api\\{$obj->upperCamel()}Controller@index');
+    Route::get   ('/{$mod->lower('-')}/{ldelim}{$obj->lowerCamel()}Id{rdelim}',  'Api\\{$obj->upperCamel()}Controller@show');
+    Route::post  ('/{$mod->lower('-')}',  {$obj->lowerCamel()|strlen|repeat}     'Api\\{$obj->upperCamel()}Controller@store');
+    Route::patch ('/{$mod->lower('-')}/{ldelim}{$obj->lowerCamel()}Id{rdelim}',  'Api\\{$obj->upperCamel()}Controller@update');
+    Route::delete('/{$mod->lower('-')}/{ldelim}{$obj->lowerCamel()}Id{rdelim}',  'Api\\{$obj->upperCamel()}Controller@destroy');
     // or
     Route::resource('/{$mod->lower('-')}', '{$obj->upperCamel()}Controller@index', [
         'only' => ['index', 'show', 'store', 'update', 'destroy'],
@@ -225,6 +233,11 @@ class {$obj->upperCamel()}ApiController extends Controller
      */
     public function index(Request $request, int $accountId)
     {
+        /*
+        if ($response = $this->customValidate($request)) {
+            return $response;
+        }
+        */
         $this->querySortValidate($request);
 
         $page = (int) $request->input('page');
@@ -240,7 +253,7 @@ class {$obj->upperCamel()}ApiController extends Controller
      * @param Request $request
      * @param int $accountId
      * @param int ${$obj}Id
-     * @return Response|AssetResource
+     * @return Response|{$obj->upperCamel()}Resource
      */
     public function show(Request $request, int $accountId, int ${$obj}Id)
     {
@@ -316,7 +329,7 @@ class {$obj->upperCamel()}ApiController extends Controller
         $payload = $request->input('data');
         ${$obj}->fill($payload);
 
-        list($error, $code) = $this->storeValidate($request, $asset, $accountId);
+        list($error, $code) = $this->storeValidate($request, ${$obj}, $accountId);
         if ($error) {
             return $this->error($error, $code);
         }
@@ -386,6 +399,7 @@ class {$obj->upperCamel()}ApiController extends Controller
             'required_keys.*'        => ['required', 'regex:/^(processor_id|card_type|subscription_plan)$/i'],
             'my_status'              => 'exists:enabled,disabled,draft,deleted',
             'my_status'              => Rule::in(['enabled', 'disabled', 'draft', 'deleted']),
+            'my_status'              => new \Modules\YourNamespace\Http\Rules\MyRule,
             'my_status'              => 'required|string|min:1',
             'my_status_code'         => 'required|string|size:2',
         ]);
@@ -480,6 +494,29 @@ class {$obj->upperCamel()}ApiController extends Controller
             'filter.status'     => ["regex:/^(enabled|disabled|draft)$/i"],
             'filter.created_at' => 'date_format:Y-m-d',
         ]);
+    }
+
+    /**
+     * @param Request $request
+     * @return JsonResponse|null
+     */
+    protected function customValidate(Request $request): ?JsonResponse
+    {
+        $validator = Validator::make($request->all(), [
+            'name' => 'string',
+            'type' => ["regex:/^(city|zip)$/i"],
+        ]);
+
+        $validator->after(function ($validator) use ($request) {
+            if (false) {
+                $validator->errors()->add('type', 'type is error');
+            }
+        });
+
+        if ($validator->fails()) {
+            return response()->json($validator->messages(), 400);
+        }
+        return null;
     }
 
     /**

@@ -1,10 +1,16 @@
 <?php
 declare(strict_types=1);
 
-namespace App\Entities;
+{if $isModule}namespace Modules\{$obj->upperCamel()}\Entities;
+{else        }namespace App\Entities;
+{/if}
 
-use Illuminate\Database\Eloquent\SoftDeletes;
+use DateTime
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Support\Carbon;
 
 /**
  * Class {$obj->upperCamel()}Eloquent
@@ -18,11 +24,12 @@ use Illuminate\Database\Eloquent\Model;
 {elseif $field.ado->type|in_array:['float', 'decimal']}
  * @property float ${$field.name->lower('_')}
 {elseif $field.ado->type|in_array:['timestamp', 'datetime', 'date']}
- * @property \DateTime ${$field.name->lower('_')}
+ * @property DateTime|Carbon|null ${$field.name->lower('_')}
 {else}
  * @property string ${$field.name->lower('_')}
 {/if}
 {/foreach}
+ * @mixin Builder
  */
 class {$obj->upperCamel()}Eloquent extends Model
 {
@@ -81,19 +88,25 @@ class {$obj->upperCamel()}Eloquent extends Model
     */
 
     // --------------------------------------------------------------------------------
-    //  parent & children
+    //  parent/反相關連/one-to-one association
     // --------------------------------------------------------------------------------
-    public function parent()
+    public function parent(): BelongsTo
     {
-        return $this->belongsTo({$obj->upperCamel()}Eloquent::class, 'parent_id', 'id');
+        return $this->belongsTo(ParentEloquent::class, 'parent_id', $localKey = 'id');
     }
 
-    /**
-     * 1 對 多
-     */
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(UserEloquent::class, 'user_id', $localKey = 'id');
+    }
+
+    // --------------------------------------------------------------------------------
+    //  以自己 (1) {$obj->upperCamel()}::class 為主要
+    //  1 對 多
+    // --------------------------------------------------------------------------------
     public function children()
     {
-        return $this->hasMany({$obj->upperCamel()}Eloquent::class, 'parent_id', 'id');
+        return $this->hasMany(ChildEloquent::class, 'parent_id', $localKey = 'id');
     }
 
     // --------------------------------------------------------------------------------
@@ -107,6 +120,20 @@ class {$obj->upperCamel()}Eloquent extends Model
         return $this
             ->hasMany(Blogs::class, 'user_id', 'id')
             ->where('status', $status);
+    }
+
+    // --------------------------------------------------------------------------------
+    //  extend
+    // --------------------------------------------------------------------------------
+
+    public function getNumTotal(): ?int
+    {
+        return $this->getCustom('mapping.num_total');
+    }
+
+    public function setNumTotal(int $value=null)
+    {
+        $this->setCustom('mapping.num_total', $value);
     }
 
 }

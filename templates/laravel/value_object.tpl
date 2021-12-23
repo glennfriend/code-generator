@@ -1,20 +1,20 @@
 <?php
 declare(strict_types=1);
 
-{if $isModule}namespace Modules\{$obj->upperCamel()}\Entities;
-{else        }namespace App\Entities;
+{if $isModule}namespace Modules\{$obj->upperCamel()}\Molds;
+{else        }namespace App\Molds;
 {/if}
 
 
 use vvh;
-use Cor\Model\{ldelim}BaseObject, ValueObjectExtendFetch{rdelim};
+use Cor\Mold\{ldelim}BaseObject, ValueObjectExtendFetch{rdelim};
 {foreach from=$tab key=key item=field}
 {if $key=='attribs'}
-use Cor\Model\ValueObjectExtendAttribs;
+use Cor\Mold\ValueObjectExtendAttribs;
 {elseif $key=='properties'}
-use Cor\Model\ValueObjectExtendProperties;
+use Cor\Mold\ValueObjectExtendProperties;
 {elseif $key=='updatedAt'}
-use Cor\Model\ValueObjectExtendTouch;
+use Cor\Mold\ValueObjectExtendTouch;
 {elseif $key=='userId'}
 use App\Entities\User;
 {/if}
@@ -30,7 +30,7 @@ use App\Entities\User;
  * @method array  getProperties()
  * @method void   setProperties(array $data)
 {elseif $key=='attribs'}
- * @method        getAttrib($key, $defaultValue)
+ * @method mixed  getAttrib($key, $defaultValue = null)
  * @method void   setAttrib($key, $value)
  * @method array  getAttribs()
  * @method void   setAttribs(array $data)
@@ -108,7 +108,7 @@ class {$obj->upperCamel()} extends BaseObject
                 'filter'   => 'timestamp_or_null',
                 'validate' => 'timestamp',
                 'type'     => 'timestamp',
-                'value'    => microtime(true),   // tmie(), microtime(true),
+                'value'    => microtime(true),   // time(), microtime(true),
 {elseif $key=='updatedAt' || $key=='deletedAt'}
                 'filter'   => 'timestamp_or_null',
                 'type'     => 'timestamp',
@@ -202,7 +202,7 @@ class {$obj->upperCamel()} extends BaseObject
     /**
      * fetch User
      *
-     * @param bool isCacheBuffer , is storage in the object
+     * @param bool $isCacheBuffer , is storage in the object
      * @return User|null
      */
     public function fetchUser(bool $isCacheBuffer=true): ?User

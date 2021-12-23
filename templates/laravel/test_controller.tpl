@@ -28,7 +28,7 @@ final class {$obj->upperCamel()}ApiTest extends TestCase
     /**
      * @test
      */
-    public function getAll_api_should_work()
+    public function get_index_api_should_work()
     {
         factory({$obj->upperCamel()}::class, 3)->create([
 {foreach $tab as $key => $field}
@@ -36,8 +36,16 @@ final class {$obj->upperCamel()}ApiTest extends TestCase
 {/foreach}
         ]);
 
-        $url = '/api/{$obj->lower("-")}';
-        $response = $this->json('GET', $url);
+        $payload = [];
+        $this->get______ServiceMock
+            ->shouldReceive('perform')
+            ->once()
+            ->with($payload)
+            ->andReturn(collect([]));
+
+
+        $url = '/api/{$obj->lower("-")}/index';
+        $response = $this->json('GET', $url, $payload);
 
         $response->assertStatus(200);
         $response->assertJsonCount(3, 'data');

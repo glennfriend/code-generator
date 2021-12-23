@@ -13,7 +13,7 @@ return [
     ],
     'json_resource' => [
         'path'          => "app/Http/Resources/",
-        'filename'      => "{$obj->upperCamel()}.php",
+        'filename'      => "{$obj->upperCamel()}Resource.php",
         'clear_comment' => false,
     ],
     'migration' => [
@@ -61,15 +61,25 @@ return [
         'clear_comment' => false,
     ],
     'home_api_controller' => [
-        'path'          => "app/Http/Controllers/{$obj->upperCamel()}/",
+        'path'          => "app/Http/Controllers/Api/{$obj->upperCamel()}/",
         'filename'      => "{$obj->upperCamel()}ApiController.php",
         'clear_comment' => false,
     ],
 
     // job
-    'job' => [
-        'path'          => "app/Job/",
+    'job_job' => [
+        'path'          => "app/Jobs/",
         'filename'      => "{$obj->upperCamel()}Job.php",
+        'clear_comment' => false,
+    ],
+    'job_param' => [
+        'path'          => "app/DataTransferObjects/Works/",
+        'filename'      => "{$obj->upperCamel()}Param.php",
+        'clear_comment' => false,
+    ],
+    'job_work' => [
+        'path'          => "app/Services/Works/",
+        'filename'      => "{$obj->upperCamel()}Work.php",
         'clear_comment' => false,
     ],
 
@@ -158,7 +168,7 @@ return [
 
     //
     'kos_home_controller_api' => [
-        'path'          => "app/Http/Controllers/{$obj->upperCamel()}/",
+        'path'          => "app/Http/Controllers/Api/{$obj->upperCamel()}/",
         'filename'      => "{$obj->upperCamel()}ApiController.php",
         'clear_comment' => false,
     ],
@@ -175,6 +185,18 @@ return [
     'kos_provider' => [
         'path'          => "app/Providers",
         'filename'      => "{$obj->upperCamel()}Provider.php",
+        'clear_comment' => false,
+    ],
+    'kos_console' => [
+        'path'          => "app/Console",
+        'filename'      => "{$obj->upperCamel()}Console.php",
+        'clear_comment' => false,
+    ],
+
+    // readme
+    'readme' => [
+        'path'          => "app/",
+        'filename'      => "README.md",
         'clear_comment' => false,
     ],
 

@@ -1,9 +1,17 @@
 <?php
 
-
-
 class {$mod->upperCamel()}
 {
+    /*
+        // 測試中
+        get     一筆資料
+        find    多筆資料
+        search  不規則欄位
+
+        // sql_mode
+        config()->set('database.connections.mysql.strict', false);
+    */
+
 
     /* ================================================================================
         extends
@@ -110,31 +118,222 @@ EOD;
      */
     public function findByScope(int $fromId, int $toId): array
     {
-        $flight = $this->getModel()
+        $collection = $this->getModel()
             ->where('id', '>=', $fromId)
             ->where('id', '<=', $toId)
             ->orderBy('id', 'asc')
             ->get();
 
-        if (0 === count($flight)) {
+        if (0 === count($collection)) {
             return [];
         }
 
         ${$mod} = [];
-        foreach ($flight as $model) {
+        foreach ($collection as $model) {
             ${$mod}[] = $this->get($model->id);
         }
 
         return ${$mod};
     }
 
+    /**
+     * @param string $city
+     * @param string $stateCode
+     * @param int $page
+     * @param int $limit
+     * @return array
+     * @throws Exception
+     */
+    public function findByScope(string $city, string $stateCode, int $page=1, int $limit=15): array
+    {
+        $limitCondition = SqlGrammar::limit($page, $limit);
+
+        $sql = <<<EOD
+            SELECT  `id`
+            FROM    `your_table`
+            WHERE   `city` = ?
+            AND     `state_code` = ?
+            ORDER BY id ASC
+            {ldelim}$limitCondition{rdelim}
+EOD;
+
+        $ids = [];
+        $objects = DB::select($sql, [$city, $stateCode]);
+        if (! $objects) {
+            return [];
+        }
+        foreach ($objects as $obj) {
+            $ids[] = $obj->id;
+        }
+
+        return static::getIds($ids);  // getByIds ??
+    }
+
+
+    /**
+     * @param array $options
+     * @return {$mod->upperCamel()}[]|Generator
+     * @throws Exception
+     */
+    public function generator(array $options = []): Generator
+    {
+        $options += [
+            'startId'      => 0,
+            'itemsPerPage' => 1000,
+            'numberOfMax'  => null,     // 欲取得總數
+        ];
+        $isLastQuery = false;
+        $numberOfGetTotal = 0;
+        $startId = (int)$options['startId'];
+        $limit = (int)$options['itemsPerPage'];
+
+        do {
+            if ($options['numberOfMax'] && ($numberOfGetTotal + $options['itemsPerPage']) > $options['numberOfMax']) {
+                $isLastQuery = true;
+                $limit = $options['numberOfMax'] - $numberOfGetTotal;
+            }
+
+            $collection = $this->getModel()
+                ->select('id')
+                ->where('id', '>=', $startId)
+                ->orderBy('id', 'ASC')
+                ->limit($limit)
+                ->get();
+
+            if ($collection->count() <= 0) {
+                break;
+            }
+
+            $ids = [];
+            foreach ($collection as $model) {
+                $ids[] = $model->id;
+            }
+            foreach ($this->getByIds($ids) as $obj) {
+                yield $obj;
+            }
+
+            if ($isLastQuery) {
+                break;
+            }
+            if (count($ids) < $limit) {
+                break;  // 如果不足 $limit 數量, 表示已取完
+            }
+
+            $numberOfGetTotal += count($ids);
+            $startId = 1 + (int)array_pop($ids);
+        } while (true);
+
+    }
+
+    /**
+     * @param string $category
+     * @param array $options
+     * @return Generator
+     * @throws Exception
+     */
+    public function generatorByCategory(string $category, array $options=[]): Generator
+    {
+        $options += [
+            'startId' => 0,
+            'limit'   => 40,
+        ];
+        $startId = (int) $options['startId'];
+        $limit   = (int) $options['limit'];
+
+        do {
+            $sql = <<<EOD
+            SELECT  `id`
+            FROM    `{$mod->lower('_')}`
+            WHERE   `id` >= ?
+            AND     `category` = ?
+            ORDER BY `id` ASC
+            LIMIT   {ldelim}$limit{rdelim}
+EOD;
+
+            $objects = DB::select($sql, [$startId, $category]);
+            if (!$objects) {
+                break;
+            }
+            $ids = [];
+            foreach ($objects as $obj) {
+                $ids[] = $obj->id;
+            }
+            foreach (static::getIds($ids) as $obj) {    // getByIds ??
+                yield $obj;
+            }
+
+            // 如果不足 $limit 數量, 表示已取完
+            if (count($ids) < $limit) {
+                break;
+            }
+
+            //
+            $startId = 1 + (int)array_pop($ids);
+        } while (true);
+    }
+
+    /**
+     * count by query
+     * 
+     * @param string $category
+     * @param array $options
+     * @return int|null
+     */
+    public function countByCategory(string $category, array $options=[]): ?int
+    {
+        $sql = <<<EOD
+            SELECT  count(`id`) AS total
+            FROM    `{$mod->lower('_')}`
+            ...
+            ...
+            not group by 
+            not limit
+EOD;
+
+        $objects = DB::select($sql, [$country, $country]);
+        if (!$objects || !is_array($objects)) {
+            return null;
+        }
+
+        return (int)$objects[0]->total;
+    }
+
+
+    public function customExecute()
+    {
+        die('stop it');
+
+        // step 1
+        // 幂等性: no
+        $step1 = <<<EOD
+            INSERT INTO `name_full_names`
+                      (`full_name`,`first_name`,`last_name`,`rank`,`gender_male_percent`)
+                SELECT `full_name`,`first_name`,`last_name`,`rank`,`gender_male_percent`
+                FROM `name_full_1`
+                ORDER BY rank ASC
+EOD;
+
+        // step 2
+        // 幂等性: yes
+        $step2 = <<<EOD
+            SET  interactive_timeout        = 600;
+            SET  wait_timeout               = 600;
+            SET  innodb_lock_wait_timeout   = 600;
+
+            UPDATE `name_full_names` SET rank = id
+            WHERE rank IS NULL
+            ORDER BY id ASC
+            LIMIT 5000000;
+EOD;
+
+        //
+        $sql = $step2;
+        DB::unprepared($sql);
+    }
 
 
 
-
-
-
-
+    
     /* ================================================================================
         search {$mod->upperCamel()} and get count
         用於混合的 search, frontend 或是 客製化針對性 的使用

@@ -6,13 +6,14 @@ use Illuminate\Database\Migrations\Migration;
 
 class Create{$mod->upperCamel()}Table extends Migration
 {
+    private string $table = '{$mod->lower('_')}';
 
     /**
      * Run the migrations
      */
     public function up()
     {
-        if (Schema::hasTable('{$mod->lower('_')}')) {
+        if (Schema::hasTable($this->table)) {
             return; // exists
         }
 
@@ -27,11 +28,11 @@ class Create{$mod->upperCamel()}Table extends Migration
      */
     public function down()
     {
-        // Schema::dropIfExists('{$mod->lower('_')}');
+        // Schema::dropIfExists($this->table);
 
         // $sql = 'DROP TABLE `{$mod->lower('_')}`';
         /*
-        Schema::table('{$mod->lower('_')}', function (Blueprint $table) {
+        Schema::table($this->table, function (Blueprint $table) {
             $table->dropColumn('__the_field_name__');
         });
         */
@@ -47,7 +48,7 @@ class Create{$mod->upperCamel()}Table extends Migration
     protected function createTable()
     {
         // 是依照 name, type 的一般建議方式建立, "不是" 依照資料表的欄位屬性 (TODO: delete it)
-        Schema::create('{$mod->lower('_')}', function (Blueprint $table) {
+        Schema::create($this->table, function (Blueprint $table) {
 {foreach from=$tab key=key item=field}
 {if $key=='id'}
             $table->bigIncrements('id');
@@ -60,7 +61,7 @@ class Create{$mod->upperCamel()}Table extends Migration
 {elseif $key=='updatedAt' || $key=='deletedAt'}
             $table->timestamp('{$field.ado->name}')->nullable();
 {elseif $key=='properties' || $key=='attribs'}
-            $table->text('{$field.ado->name}');
+            $table->mediumText('{$field.ado->name}');
 {elseif $field.ado->type=='tinyint'}
             $table->tinyInteger('{$field.ado->name}')->unsigned()->index('{$field.ado->name}');
 {elseif $field.ado->type=='smallint'}
@@ -93,6 +94,21 @@ class Create{$mod->upperCamel()}Table extends Migration
             // 復合式索引
             // $table->index(['category_name', 'parent_id']);   // categories, 顯示最上層的分類
             // $table->index(['status', 'created_at']);         // articles, 最新 可顯示 的文章
+            // $table->index(['state_code', 'city']);           // 美國城市的索引, 如果只搜尋 state_code, 也吃的到索引
+
+            // references
+            // $table->foreign('要建關聯的欄位')->references('另一張表要建關聯的欄位')->on('table name');
+
+            // enum
+            // 如果永遠都是這些, 就適合用 enum, 如果未來會增減, 那麼建議使用 int
+
+            /*
+            // json
+            $table
+                ->integer('num_total')
+                ->virtualAs("JSON_UNQUOTE(JSON_EXTRACT(`custom`,'$.mapping.num_total'))")
+                ->index();
+            */
 
             $table->engine = 'InnoDB';
         });
@@ -114,7 +130,7 @@ class Create{$mod->upperCamel()}Table extends Migration
         #       - AUTO_INCREMENT 無序號
         #
 
-        $table = '{$mod->lower('_')}';
+        $table = $this->table;
         $sql =<<<EOD
 CREATE TABLE IF NOT EXISTS `{ldelim}$table{rdelim}` (
   `id` int(10) UNSIGNED NOT NULL,
@@ -140,7 +156,10 @@ EOD;
      */
     protected function changeTable()
     {
-        Schema::table('{$mod->lower('_')}', function (Blueprint $table) {
+        Schema::table($this->table, function (Blueprint $table) {
+            //
+            $table->dropColumn('description');
+            //
             $table->index('account_id');
             $table->dropIndex('account_id');
         });
@@ -153,7 +172,7 @@ EOD;
     {
         /*
         // 追加欄位
-        Schema::table('{$mod->lower('_')}', function (Blueprint $table) {
+        Schema::table($this->table, function (Blueprint $table) {
             $table->bigInteger('__the_field_name__')
                 ->unsigned()
                 ->nullable()
@@ -162,6 +181,16 @@ EOD;
         });
         */
         
+        /*
+            json field
+                ALTER TABLE `{ldelim}$this->table{rdelim}`
+                    ADD COLUMN description TEXT GENERATED ALWAYS
+                    AS (json_unquote(json_extract(`custom`,'$.row.description'))) VIRTUAL;
+                
+                ALTER TABLE `{ldelim}$this->table{rdelim}`
+                    ADD COLUMN num_total INT UNSIGNED GENERATED ALWAYS
+                    AS (json_unquote(json_extract(`custom`,'$.row.num_total'))) VIRTUAL;
+        */
 
         /*
             變更 varchar 欄位
@@ -188,7 +217,7 @@ EOD;
         */
         $sql = <<<EOD
 
-            ALERT TABLE ......
+            ALTER TABLE ......
 
 EOD;
         DB::connection()->getPdo()->exec($sql);

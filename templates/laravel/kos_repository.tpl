@@ -1,5 +1,6 @@
 <?php
 declare(strict_types=1);
+
 {if $isModule}namespace Modules\{$obj->upperCamel()}\Repositories;
 {else        }namespace App\Repositories;
 {/if}
@@ -9,6 +10,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Collection;
 use Illuminate\Pagination\Paginator;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Prettus\Repository\Eloquent\BaseRepository;
 // use Modules\Core\Repositories\ExtendedRepository;
@@ -21,11 +23,16 @@ use App\Entities\{$obj->upperCamel()};
 {/if}
 
 /**
- * 
+ *
  */
 class {$obj->upperCamel()}Repository extends BaseRepository
 {
     // use CacheKey;
+
+    /**
+     * @var {$obj->upperCamel()}
+     */
+    private ${$obj};
 
     /**
      * 
@@ -46,6 +53,10 @@ class {$obj->upperCamel()}Repository extends BaseRepository
     {
         return {$obj->upperCamel()}::class;
     }
+    function getModel(): {$obj->upperCamel()}
+    {
+        return app($this->model());
+    }
 
     // --------------------------------------------------------------------------------
     //  wrap
@@ -61,17 +72,8 @@ class {$obj->upperCamel()}Repository extends BaseRepository
     }
 
     /**
-     * @param array $data
-     * @return mixed
-     */
-    public function create(array $data)
-    {
-        return $this->{$obj}->create($data);
-    }
-
-    /**
      * @param int $id
-     * @return mixed
+     * @return {$obj->upperCamel()}|null
      */
     public function getById(int $id): ?{$obj->upperCamel()}
     {
@@ -80,15 +82,46 @@ class {$obj->upperCamel()}Repository extends BaseRepository
     }
 
     /**
-     * 
+     * @param array $ids
+     * @return {$obj->upperCamel()}[]|Collection
+     */
+    public function getByIds(array $ids): Collection
+    {
+        return $this->{$obj}
+            ->whereIn('id', $ids)
+            ->get();
+    }
+
+    /**
+     *
      */
     public function getEnable{$obj->upperCamel()}ByIdAndStatus(int $id, string $status): ?{$obj->upperCamel()}
     {
+        return $this->findWhere([
+            'id'        => $id,
+            'status'    => $status,
+        ])->first();
+        
         return $this->{$obj}
             ->where('id', '=', $id)
             ->where('status', '=', $status)
             ->first();
-            // ->get(); // find many
+    }
+
+    /**
+     * @return {$obj->upperCamel()}[]|Collection
+     */
+    public function getMany_____()
+    {
+        return $this->findWhere([
+            'id'        => $id,
+            'status'    => $status,
+        ])->get();
+        
+        return $this->{$obj}
+            ->where('id', '=', $id)
+            ->where('status', '=', $status)
+            ->get();    // find many
     }
 
     // --------------------------------------------------------------------------------
@@ -141,7 +174,6 @@ class {$obj->upperCamel()}Repository extends BaseRepository
         return $builder->paginate();
     }
 
-
     /**
      * 請修改, 只是 example
      * 
@@ -159,6 +191,24 @@ class {$obj->upperCamel()}Repository extends BaseRepository
                     ->where('v.type', '=', $type);
             }, null, null, 'left')
             ->orderByRaw('id DESC')
+            ->get();
+    }
+
+    /**
+     * 請修改, 只是 example
+     */
+    public function findQueryExample_2(string $type)
+    {
+        $table = '{$mod->lower('_')}';
+        return $this->stateGroupsMapping
+            ->select("{ldelim}$table{rdelim}.*")
+            ->where('type', $type)
+            ->join('user', function ($join) {
+                $join
+                    ->on('user.id', '=', "{ldelim}$table{rdelim}.user_id")
+                    ->where('user.status', '=', User::STATUS_ENABLE);
+            })
+            ->orderBy('id', 'ASC')
             ->get();
     }
 
@@ -214,17 +264,16 @@ EOD;
     // --------------------------------------------------------------------------------
 
     /**
-     * @param array $attributes
+     * create() 的內容會受到 $fillable 影響
+     * 
+     * @param array $data
      * @return {$obj->upperCamel()}|null
      */
-    public function create(array $attributes): ?{$obj->upperCamel()}
+    public function create(array $data): ?{$obj->upperCamel()}
     {
-        $model = $this->of($attributes);
-        $model->created_at = now();
-        $model->updated_at = null;
-
-        $model->save();
-        return $model;
+        // $data['created_at'] = now(); <-- 這裡不放置商業邏輯
+        // $data['updated_at'] = null;
+        return $this->{$obj}->create($data);
     }
 
     /**
@@ -243,14 +292,25 @@ EOD;
     }
 
     /**
-     * @param ${$obj}Id
+     * @param int ${$obj}Id
      * @return bool
      */
-    public function delete(${$obj}Id)
+    public function delete(int ${$obj}Id)
     {
         $model = $this->find(${$obj}Id);
 
         return $model->delete();
+    }
+
+    /**
+     * @param string $email
+     * @return int, number of affected data
+     */
+    public function deleteByEmail(string $email): int
+    {
+        return $this->{$obj}
+            ->where('email', '=', $email)
+            ->delete();
     }
 
     // --------------------------------------------------------------------------------

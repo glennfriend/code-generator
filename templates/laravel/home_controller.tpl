@@ -5,8 +5,11 @@ declare(strict_types=1);
 {/if}
 
 use Exception;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Routing\Controller;
+use Illuminate\Routing\Redirector;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Log;
 
@@ -38,19 +41,38 @@ class {$obj->upperCamel()}Controller extends Controller
     /**
      * @param Request $request
      * @param ${$obj}Id
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
     public function index(Request $request, ${$obj}Id)
     {
+        return response()->view('admin.{$obj->lower("-")}.index');
 
-
-
-        return view('admin.xxxxxx.campaigns-budget.index', [
+        /*
+        return view('admin.{$obj->lower("-")}.campaigns-budget.index', [
             '{$mod}' => [],
         ]);
+        */
     }
 
+    /**
+     * @param string|null ${$obj}Id
+     * @return Response|Redirector|RedirectResponse
+     */
+    public function redirectExample(string ${$obj}Id = null)
+    {
+        if (!${$obj}Id) {
+            ${$obj} = $this->repository->find($defaultId = 100);
+            if (!${$obj}) {
+                return abort(404);
+            }
+            $redirectUrl = "/accounts/{ldelim}${$obj}->id{rdelim}/{$obj->lower("-")}/index";
+            echo $redirectUrl; exit;
+            return redirect($redirectUrl);
+        }
+        $account = $this->repository->find(${$obj}Id);
 
+        return response()->view('...');
+    }
 
 
 
@@ -61,7 +83,7 @@ class {$obj->upperCamel()}Controller extends Controller
      * 
      * @param Request $request
      * @param ${$obj}Id
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
     public function index(Request $request, ${$obj}Id)
     {
