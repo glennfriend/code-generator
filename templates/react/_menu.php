@@ -12,6 +12,11 @@ return [
         'filename'      => "{$obj->upperCamel()}Page.tsx",
         'clear_comment' => false,
     ],
+    'my_board' => [
+        'path'          => "modules/{$obj->lower('-')}/compoments/",
+        'filename'      => "{$obj->upperCamel()}Board.tsx",
+        'clear_comment' => false,
+    ],
     'my_list' => [
         'path'          => "modules/{$obj->lower('-')}/compoments/",
         'filename'      => "{$obj->upperCamel()}List.tsx",
@@ -60,10 +65,32 @@ return [
         'clear_comment' => false,
     ],
 
-    // component
-    'component_select' => [
+    // logic component
+    'logic_select' => [
         'path'          => "modules/{$obj->lower('-')}/compoments/",
         'filename'      => "{$obj->upperCamel()}SelectSection.tsx",
+        'clear_comment' => false,
+    ],
+
+    // dirty component
+    'dirty_select' => [
+        'path'          => "modules/{$obj->lower('-')}/compoments/______/",
+        'filename'      => "{$obj->upperCamel()}Select.tsx",
+        'clear_comment' => false,
+    ],
+    'dirty_radio' => [
+        'path'          => "modules/{$obj->lower('-')}/compoments/______/",
+        'filename'      => "{$obj->upperCamel()}Radio.tsx",
+        'clear_comment' => false,
+    ],
+    'dirty_table' => [
+        'path'          => "modules/{$obj->lower('-')}/compoments/______/",
+        'filename'      => "{$obj->upperCamel()}Table.tsx",
+        'clear_comment' => false,
+    ],
+    'dirty_aggrid' => [
+        'path'          => "modules/{$obj->lower('-')}/compoments/______/",
+        'filename'      => "{$obj->upperCamel()}Aggrid.tsx",
         'clear_comment' => false,
     ],
 
