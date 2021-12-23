@@ -1,0 +1,41 @@
+<?php return array(
+    'root' => array(
+        'pretty_version' => 'dev-master',
+        'version' => 'dev-master',
+        'type' => 'library',
+        'install_path' => __DIR__ . '/../../',
+        'aliases' => array(),
+        'reference' => '74bbff51935889855f6f72c00f793a5b3fa15be0',
+        'name' => '__root__',
+        'dev' => true,
+    ),
+    'versions' => array(
+        '__root__' => array(
+            'pretty_version' => 'dev-master',
+            'version' => 'dev-master',
+            'type' => 'library',
+            'install_path' => __DIR__ . '/../../',
+            'aliases' => array(),
+            'reference' => '74bbff51935889855f6f72c00f793a5b3fa15be0',
+            'dev_requirement' => false,
+        ),
+        'adodb/adodb-php' => array(
+            'pretty_version' => 'v5.20.20',
+            'version' => '5.20.20.0',
+            'type' => 'library',
+            'install_path' => __DIR__ . '/../adodb/adodb-php',
+            'aliases' => array(),
+            'reference' => '66fb9e5300c2b3b84beab1d9d7793ff961c171a8',
+            'dev_requirement' => false,
+        ),
+        'smarty/smarty' => array(
+            'pretty_version' => 'v3.1.40',
+            'version' => '3.1.40.0',
+            'type' => 'library',
+            'install_path' => __DIR__ . '/../smarty/smarty',
+            'aliases' => array(),
+            'reference' => '9d4f8309ed49702e0d7152f9983c3a9c4b98eb9d',
+            'dev_requirement' => false,
+        ),
+    ),
+);

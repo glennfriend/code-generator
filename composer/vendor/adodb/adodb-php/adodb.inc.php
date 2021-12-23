@@ -14,7 +14,7 @@
 /**
 	\mainpage
 
-	@version   v5.20.14  06-Jan-2019
+	@version   v5.20.20  01-Feb-2021
 	@copyright (c) 2000-2013 John Lim (jlim#natsoft.com). All rights reserved.
 	@copyright (c) 2014      Damien Regad, Mark Newnham and the ADOdb community
 
@@ -221,15 +221,10 @@ if (!defined('_ADODB_LAYER')) {
 			}
 		}
 
-
-		// Initialize random number generator for randomizing cache flushes
-		// -- note Since PHP 4.2.0, the seed  becomes optional and defaults to a random value if omitted.
-		srand(((double)microtime())*1000000);
-
 		/**
 		 * ADODB version as a string.
 		 */
-		$ADODB_vers = 'v5.20.14  06-Jan-2019';
+		$ADODB_vers = 'v5.20.20  01-Feb-2021';
 
 		/**
 		 * Determines whether recordset->RecordCount() is used.
@@ -307,8 +302,8 @@ if (!defined('_ADODB_LAYER')) {
 		//print "Errorno ($fn errno=$errno m=$errmsg) ";
 		$thisConnection->_transOK = false;
 		if ($thisConnection->_oldRaiseFn) {
-			$fn = $thisConnection->_oldRaiseFn;
-			$fn($dbms, $fn, $errno, $errmsg, $p1, $p2,$thisConnection);
+			$errfn = $thisConnection->_oldRaiseFn;
+			$errfn($dbms, $fn, $errno, $errmsg, $p1, $p2,$thisConnection);
 		}
 	}
 
@@ -462,7 +457,11 @@ if (!defined('_ADODB_LAYER')) {
 	var $hasTransactions = true;	/// has transactions
 	//--
 	var $genID = 0;					/// sequence id used by GenID();
-	var $raiseErrorFn = false;		/// error function to call
+
+	/**
+	 * @var string|false Error function to call
+	 */
+	var $raiseErrorFn = false;
 	var $isoDates = false;			/// accepts dates in ISO format
 	var $cacheSecs = 3600;			/// cache for 1 hour
 
@@ -488,8 +487,16 @@ if (!defined('_ADODB_LAYER')) {
 	var $autoRollback = false; // autoRollback on PConnect().
 	var $poorAffectedRows = false; // affectedRows not working or unreliable
 
+	/**
+	 * @var string|false Execute function to call
+	 */
 	var $fnExecute = false;
+
+	/**
+	 * @var string|false Cache execution function to call
+	 */
 	var $fnCacheExecute = false;
+
 	var $blobEncodeType = false; // false=not required, 'I'=encode to integer, 'C'=encode to char
 	var $rsPrefix = "ADORecordSet_";
 
@@ -865,9 +872,16 @@ if (!defined('_ADODB_LAYER')) {
 
 	/**
 	 * Requested by "Karsten Dambekalns" <k.dambekalns@fishfarm.de>
+	 * @deprecated 5.20.20
 	 */
 	function QMagic($s) {
-		return $this->qstr($s,get_magic_quotes_gpc());
+		// magic quotes
+		// PHP7.4 spits deprecated notice, PHP8 removed magic_* stuff
+		$magic_quotes = version_compare(PHP_VERSION, '7.4.0', '<')
+			&& function_exists('get_magic_quotes_gpc')
+			&& get_magic_quotes_gpc();
+
+		return $this->qstr($s, $magic_quotes);
 	}
 
 	function q(&$s) {
@@ -1605,7 +1619,8 @@ if (!defined('_ADODB_LAYER')) {
 	*/
 	function &_rs2rs(&$rs,$nrows=-1,$offset=-1,$close=true) {
 		if (! $rs) {
-			return false;
+			$ret = false;
+			return $ret;
 		}
 		$dbtype = $rs->databaseType;
 		if (!$dbtype) {
@@ -2069,7 +2084,12 @@ if (!defined('_ADODB_LAYER')) {
 		if (!$rs) {
 		// no cached rs found
 			if ($this->debug) {
-				if (get_magic_quotes_runtime() && !$this->memCache) {
+				// PHP7.4 spits deprecated notice, PHP8 removed magic_* stuff
+				if (!$this->memCache
+					&& version_compare(PHP_VERSION, '7.4.0', '<')
+					&& function_exists('get_magic_quotes_runtime')
+					&& get_magic_quotes_runtime()
+				) {
 					ADOConnection::outp("Please disable magic_quotes_runtime - it corrupts cache files :(");
 				}
 				if ($this->debug !== -1) {
@@ -3391,62 +3411,118 @@ http://www.stanford.edu/dept/itss/docs/oracle/10g/server.101/b10759/statements_1
 
 
 	/**
-	 * Generate a SELECT tag string from a recordset, and return the string.
-	 * If the recordset has 2 cols, we treat the 1st col as the containing
-	 * the text to display to the user, and 2nd col as the return value. Default
-	 * strings are compared with the FIRST column.
+	 * Generate a SELECT tag from a recordset, and return the HTML markup.
 	 *
-	 * @param name			name of SELECT tag
-	 * @param [defstr]		the value to hilite. Use an array for multiple hilites for listbox.
-	 * @param [blank1stItem]	true to leave the 1st item in list empty
-	 * @param [multiple]		true for listbox, false for popup
-	 * @param [size]		#rows to show for listbox. not used by popup
-	 * @param [selectAttr]		additional attributes to defined for SELECT tag.
-	 *				useful for holding javascript onChange='...' handlers.
-	 & @param [compareFields0]	when we have 2 cols in recordset, we compare the defstr with
-	 *				column 0 (1st col) if this is true. This is not documented.
+	 * If the recordset has 2 columns, we treat the first one as the text to
+	 * display to the user, and the second as the return value. Extra columns
+	 * are discarded.
 	 *
-	 * @return HTML
+	 * @param string       $name            Name of SELECT tag
+	 * @param string|array $defstr          The value to highlight. Use an array for multiple highlight values.
+	 * @param bool|string $blank1stItem     True to create an empty item (default), False not to add one;
+	 *                                      'string' to set its label and 'value:string' to assign a value to it.
+	 * @param bool         $multiple        True for multi-select list
+	 * @param int          $size            Number of rows to show (applies to multi-select box only)
+	 * @param string       $selectAttr      Additional attributes to defined for SELECT tag,
+	 *                                      useful for holding javascript onChange='...' handlers, CSS class, etc.
+	 * @param bool         $compareFirstCol When true (default), $defstr is compared against the value (column 2),
+	 *                                      while false will compare against the description (column 1).
 	 *
-	 * changes by glen.davies@cce.ac.nz to support multiple hilited items
+	 * @return string HTML
 	 */
-	function GetMenu($name,$defstr='',$blank1stItem=true,$multiple=false,
-			$size=0, $selectAttr='',$compareFields0=true)
+	function getMenu($name, $defstr = '', $blank1stItem = true, $multiple = false,
+					 $size = 0, $selectAttr = '', $compareFirstCol = true)
 	{
 		global $ADODB_INCLUDED_LIB;
 		if (empty($ADODB_INCLUDED_LIB)) {
 			include(ADODB_DIR.'/adodb-lib.inc.php');
 		}
-		return _adodb_getmenu($this, $name,$defstr,$blank1stItem,$multiple,
-			$size, $selectAttr,$compareFields0);
+		return _adodb_getmenu($this, $name, $defstr, $blank1stItem, $multiple,
+			$size, $selectAttr, $compareFirstCol);
 	}
-
-
 
 	/**
-	 * Generate a SELECT tag string from a recordset, and return the string.
-	 * If the recordset has 2 cols, we treat the 1st col as the containing
-	 * the text to display to the user, and 2nd col as the return value. Default
-	 * strings are compared with the SECOND column.
+	 * Generate a SELECT tag with groups from a recordset, and return the HTML markup.
 	 *
+	 * The recordset must have 3 columns and be ordered by the 3rd column. The
+	 * first column contains the text to display to the user, the second is the
+	 * return value and the third is the option group. Extra columns are discarded.
+	 * Default strings are compared with the SECOND column.
+	 *
+	 * @param string       $name            Name of SELECT tag
+	 * @param string|array $defstr          The value to highlight. Use an array for multiple highlight values.
+	 * @param bool|string $blank1stItem     True to create an empty item (default), False not to add one;
+	 *                                      'string' to set its label and 'value:string' to assign a value to it.
+	 * @param bool         $multiple        True for multi-select list
+	 * @param int          $size            Number of rows to show (applies to multi-select box only)
+	 * @param string       $selectAttr      Additional attributes to defined for SELECT tag,
+	 *                                      useful for holding javascript onChange='...' handlers, CSS class, etc.
+	 * @param bool         $compareFirstCol When true (default), $defstr is compared against the value (column 2),
+	 *                                      while false will compare against the description (column 1).
+	 *
+	 * @return string HTML
 	 */
-	function GetMenu2($name,$defstr='',$blank1stItem=true,$multiple=false,$size=0, $selectAttr='') {
-		return $this->GetMenu($name,$defstr,$blank1stItem,$multiple,
-			$size, $selectAttr,false);
-	}
-
-	/*
-		Grouped Menu
-	*/
-	function GetMenu3($name,$defstr='',$blank1stItem=true,$multiple=false,
-			$size=0, $selectAttr='')
+	function getMenuGrouped($name, $defstr = '', $blank1stItem = true, $multiple = false,
+							$size = 0, $selectAttr = '', $compareFirstCol = true)
 	{
 		global $ADODB_INCLUDED_LIB;
 		if (empty($ADODB_INCLUDED_LIB)) {
 			include(ADODB_DIR.'/adodb-lib.inc.php');
 		}
-		return _adodb_getmenu_gp($this, $name,$defstr,$blank1stItem,$multiple,
+		return _adodb_getmenu_gp($this, $name, $defstr, $blank1stItem, $multiple,
+			$size, $selectAttr, $compareFirstCol);
+	}
+
+	/**
+	 * Generate a SELECT tag from a recordset, and return the HTML markup.
+	 *
+	 * Same as GetMenu(), except that default strings are compared with the
+	 * FIRST column (the description).
+	 *
+	 * @param string       $name            Name of SELECT tag
+	 * @param string|array $defstr          The value to highlight. Use an array for multiple highlight values.
+	 * @param bool|string $blank1stItem     True to create an empty item (default), False not to add one;
+	 *                                      'string' to set its label and 'value:string' to assign a value to it.
+	 * @param bool         $multiple        True for multi-select list
+	 * @param int          $size            Number of rows to show (applies to multi-select box only)
+	 * @param string       $selectAttr      Additional attributes to defined for SELECT tag,
+	 *                                      useful for holding javascript onChange='...' handlers, CSS class, etc.
+	 *
+	 * @return string HTML
+	 *
+	 * @deprecated 5.21.0 Use getMenu() with $compareFirstCol = false instead.
+	 */
+	function getMenu2($name, $defstr = '', $blank1stItem = true, $multiple = false,
+					  $size = 0, $selectAttr = '')
+	{
+		return $this->getMenu($name, $defstr, $blank1stItem, $multiple,
 			$size, $selectAttr,false);
+	}
+
+	/**
+	 * Generate a SELECT tag with groups from a recordset, and return the HTML markup.
+	 *
+	 * Same as GetMenuGrouped(), except that default strings are compared with the
+	 * FIRST column (the description).
+	 *
+	 * @param string       $name            Name of SELECT tag
+	 * @param string|array $defstr          The value to highlight. Use an array for multiple highlight values.
+	 * @param bool|string $blank1stItem     True to create an empty item (default), False not to add one;
+	 *                                      'string' to set its label and 'value:string' to assign a value to it.
+	 * @param bool         $multiple        True for multi-select list
+	 * @param int          $size            Number of rows to show (applies to multi-select box only)
+	 * @param string       $selectAttr      Additional attributes to defined for SELECT tag,
+	 *                                      useful for holding javascript onChange='...' handlers, CSS class, etc.
+	 *
+	 * @return string HTML
+	 *
+	 * @deprecated 5.21.0 Use getMenuGrouped() with $compareFirstCol = false instead.
+	 */
+	function getMenu3($name, $defstr = '', $blank1stItem = true, $multiple = false,
+					  $size = 0, $selectAttr = '')
+	{
+		return $this->getMenuGrouped($name, $defstr, $blank1stItem, $multiple,
+			$size, $selectAttr, false);
 	}
 
 	/**
@@ -4732,6 +4808,13 @@ http://www.stanford.edu/dept/itss/docs/oracle/10g/server.101/b10759/statements_1
 		if (!defined('ADODB_ASSOC_CASE')) {
 			define('ADODB_ASSOC_CASE', ADODB_ASSOC_CASE_NATIVE);
 		}
+		
+		/*
+		* Are there special characters in the dsn password
+		* that disrupt parse_url
+		*/
+		$needsSpecialCharacterHandling = false;
+		
 		$errorfn = (defined('ADODB_ERROR_HANDLER')) ? ADODB_ERROR_HANDLER : false;
 		if (($at = strpos($db,'://')) !== FALSE) {
 			$origdsn = $db;
@@ -4753,9 +4836,28 @@ http://www.stanford.edu/dept/itss/docs/oracle/10g/server.101/b10759/statements_1
 					$path = substr($path,0,$qmark);
 				}
 				$dsna['path'] = '/' . urlencode($path);
-			} else
-				$dsna = @parse_url($fakedsn);
-
+			} else {
+			    /*
+				* Stop # character breaking parse_url
+				*/
+				$cFakedsn = str_replace('#','\035',$fakedsn);
+				if (strcmp($fakedsn,$cFakedsn) != 0) 
+				{
+					/*
+					* There is a # in the string
+					*/
+					$needsSpecialCharacterHandling = true;
+					
+					/*
+					* This allows us to successfully parse the url
+					*/
+					$fakedsn = $cFakedsn;
+					
+				}
+				
+				$dsna = parse_url($fakedsn);
+			}
+			
 			if (!$dsna) {
 				return false;
 			}
@@ -4781,10 +4883,19 @@ http://www.stanford.edu/dept/itss/docs/oracle/10g/server.101/b10759/statements_1
 			if (!$db) {
 				return false;
 			}
+			
 			$dsna['host'] = isset($dsna['host']) ? rawurldecode($dsna['host']) : '';
 			$dsna['user'] = isset($dsna['user']) ? rawurldecode($dsna['user']) : '';
 			$dsna['pass'] = isset($dsna['pass']) ? rawurldecode($dsna['pass']) : '';
 			$dsna['path'] = isset($dsna['path']) ? rawurldecode(substr($dsna['path'],1)) : ''; # strip off initial /
+
+			if ($needsSpecialCharacterHandling) 
+			{
+				/*
+				* Revert back to the original string
+				*/
+				$dsna = str_replace('\035','#',$dsna);
+			}
 
 			if (isset($dsna['query'])) {
 				$opt1 = explode('&',$dsna['query']);
@@ -4795,6 +4906,7 @@ http://www.stanford.edu/dept/itss/docs/oracle/10g/server.101/b10759/statements_1
 			} else {
 				$opt = array();
 			}
+
 		}
 	/*
 	 *  phptype: Database backend used in PHP (mysql, odbc etc.)
