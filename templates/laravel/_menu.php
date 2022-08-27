@@ -73,8 +73,8 @@ return [
         'clear_comment' => false,
     ],
     'job_param' => [
-        'path'          => "app/DataTransferObjects/Works/",
-        'filename'      => "{$obj->upperCamel()}Param.php",
+        'path'          => "app/DataTransferObjects/",
+        'filename'      => "{$obj->upperCamel()}Params.php",
         'clear_comment' => false,
     ],
     'job_work' => [
@@ -170,6 +170,11 @@ return [
     'kos_home_controller_api' => [
         'path'          => "app/Http/Controllers/Api/{$obj->upperCamel()}/",
         'filename'      => "{$obj->upperCamel()}ApiController.php",
+        'clear_comment' => false,
+    ],
+    'kos_request' => [
+        'path'          => "app/Http/Requests/{$obj->upperCamel()}/",
+        'filename'      => "{$obj->upperCamel()}Request.php",
         'clear_comment' => false,
     ],
     'kos_repository' => [

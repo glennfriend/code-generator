@@ -5,7 +5,8 @@ declare(strict_types=1);
 {else        }namespace App\Entities;
 {/if}
 
-use DateTime
+use DateTime;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -38,6 +39,13 @@ class {$obj->upperCamel()}Eloquent extends Model
     protected $table = '{$tableName->lower("_")}';
     public $timestamps = false;
 
+    protected array $hidden = ['password', 'properties'];
+
+    /**
+     *
+     */
+    array protected $guarded = ['id'];
+
     /**
      * 批量賦值 的 白名單
      */
@@ -49,6 +57,14 @@ class {$obj->upperCamel()}Eloquent extends Model
 {/if}
 {/foreach}
     ];
+
+    // laravel 8 database factory
+    use HasFactory;
+    public static function newFactory(): {$obj->upperCamel()}Factory
+    {
+        return {$obj->upperCamel()}Factory::new();
+    }
+
 
 {foreach from=$tab key=key item=field}
 {if $key=='status'}
@@ -88,7 +104,7 @@ class {$obj->upperCamel()}Eloquent extends Model
     */
 
     // --------------------------------------------------------------------------------
-    //  parent/反相關連/one-to-one association
+    //  向上關連/反相關連/parent/one-to-one association
     // --------------------------------------------------------------------------------
     public function parent(): BelongsTo
     {

@@ -113,8 +113,8 @@ final class {$obj->upperCamel()}ControllerTest extends TestCase
         $accountId = $this->account->id;
         $url = "/api/accounts/{ldelim}$accountId{rdelim}/{$mod->lower('-')}";
 
-        $input = $this->getTestJson('{$obj->lower('_')}_store.json');
-        $response = $this->getAuthedRequest()->json('POST', $url, $input);
+        $payload = $this->getTestJson('{$obj->lower('_')}_store.json');
+        $response = $this->getAuthedRequest()->json('POST', $url, $payload);
 
         //
         // dump(json_decode($response->getContent(), true));
@@ -149,8 +149,8 @@ final class {$obj->upperCamel()}ControllerTest extends TestCase
         ${$obj}Id = $this->{$obj}->id;
         $url = "/api/accounts/{ldelim}$accountId{rdelim}/{$mod->lower("-")}/{ldelim}${$obj}Id{rdelim}";
 
-        $input = $this->getTestJson('{$obj->lower('_')}_update.json');
-        $response = $this->getAuthedRequest()->json('PATCH', $url, $input);
+        $payload = $this->getTestJson('{$obj->lower('_')}_update.json');
+        $response = $this->getAuthedRequest()->json('PATCH', $url, $payload);
 
         //
         // dump(json_decode($response->getContent(), true));
@@ -219,9 +219,12 @@ final class {$obj->upperCamel()}ControllerTest extends TestCase
 
     private function getAuthedRequest()
     {
+        Event::fake();
+        $user = factory(User::class)->create();
+        $apiToken = auth('api')->login($user);
         return $this
             ->withHeaders([
-                'Authorization' => "Bearer {ldelim}$this->apiToken{rdelim}",
+                'Authorization' => "Bearer {ldelim}$apiToken{rdelim}",
             ]);
     }
 
@@ -231,6 +234,18 @@ final class {$obj->upperCamel()}ControllerTest extends TestCase
      */
     private function getTestJson(string $pathFile): array
     {
+        $json = <<<EOD
+{
+    "customerId": "111-222-3333",
+    "language": "US",
+    "type": "geo",
+    "campaignIds": [
+        "11111"
+    ]
+}
+EOD;
+        return json_decode($json, true);
+
 {if $isModule}
         $basePath = base_path('Modules/{$obj->upperCamel()}/Tests/Data/Controllers');
 {else}

@@ -5,11 +5,16 @@
     "name": "ydin/oooo-xxxx",
     "require": {
         "laravel/framework": ">=7.0",
-        "php": ">=7.2"
+        "php": "^7.4 || ^8.0 || ^8.1"
     },
     "autoload": {
         "psr-4": {
             "OoooXxxx\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "OoooXxxx\\Tests\\": "tests/"
         }
     },
     "extra": {
@@ -23,7 +28,8 @@
         }
     },
     "config": {
-        "sort-packages": true
+        "sort-packages": true,
+        "preferred-install": "dist"
     },
     "license": "MIT",
     "prefer-stable": true,

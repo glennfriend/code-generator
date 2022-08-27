@@ -17,10 +17,10 @@ use Illuminate\Queue\SerializesModels;
 use Modules\{$obj->upperCamel()}\Utility\Log\Concerns\ChannelLog;
 
 {if $isModule}
-use Modules\{$obj->upperCamel()}\DataTransferObjects\Works\{$obj->upperCamel()}Param;
+use Modules\{$obj->upperCamel()}\DataTransferObjects\{$obj->upperCamel()}Params;
 use Modules\{$obj->upperCamel()}\Jobs\{$obj->upperCamel()}Job;
 {else}
-use App\DataTransferObjects\Works\{$obj->upperCamel()}Param;
+use App\DataTransferObjects\Works\{$obj->upperCamel()}Params;
 use App\Jobs\{$obj->upperCamel()}Job;
 {/if}
 
@@ -48,7 +48,7 @@ use App\Http\Resources\{$obj->upperCamel()}Resource;
  */
 class {$obj->upperCamel()}Work
 {
-    use ChannelLog;
+    protected {$obj->upperCamel()}Params $params;
 
     /**
      * @var {$obj->upperCamel()}|null {$obj}
@@ -70,77 +70,58 @@ class {$obj->upperCamel()}Work
         $this->{$obj}Repository = ${$obj}Repository;
     }
 
-    /**
-     * @param {$obj->upperCamel()}Param $param
-     * @param {$obj->upperCamel()}Job|null $job
-     * @throws Exception
-     */
-    public function perform({$obj->upperCamel()}Param $param, {$obj->upperCamel()}Job $job = null)
+    public function perform({$obj->upperCamel()}Params $params): void
     {
-        $this->param = $param;
-        $this->job = $job;
-        $this->joblogger = $this->buildTheJoblogger();
+        $this->params = $params;
 
         try {
-            $this->validate();
             $this->init();
+            $this->validate();
             $this->main();
         } catch (RuntimeException $exception) {
         } catch (Exception | Throwable $exception) {
         } finally {
             if (isset($exception)) {
-                $message =  get_class($exception) . ": {ldelim}$exception->getMessage(){rdelim}";
-                $this->log()->error($message);
-                $this->joblogger->saveException($exception);
+                Log::error($exception->getMessage(), [
+                    'category'  => '{$obj->upperCamel()}Work',
+                    'exception' => get_class($exception),
+                    'jobId'     => $this->params->jobId,
+                ]);
                 throw $exception;
             }
         }
-
-        $this->joblogger->complete();
     }
 
-    /**
-     * feature
-     *      - 檢查必要的參數
-     *      - 如果必要的參數有問題, 抓取會發生錯誤, query 出來先檢查
-     *      - assign variable
-     *
-     * @throws Exception
-     */
-    private function init()
+    protected function main(): void
     {
-        $accountId = this->param->accountId;
-
+        $accountId = this->params->accountId;
+ 
         $this->{$obj} = $this->{$obj}Repository->getById($accountId);
         if (!$this->{$obj}) {
             throw new Exception("{$obj} not found");
         }
-
+ 
         $message = "job start accountId={ldelim}$accountId{rdelim}";
         $this->log()->debug($message, [
             'account_id' => $accountId,
         ]);
+ 
 
-        $this->joblogger->appendLog($message);
-        $this->joblogger->saveJoblog();
-    }
+        
 
-    private function main()
-    {
-        if ($this->isFinished()) {
-            $this->finished();
-        } elseif ($this->isExpired()) {
+        if ($this->isExpired()) {
             $this->timeout();
+        } elseif ($this->processing()) {
+            $this->finished();
         } else {
-            $this->continues();
+            $this->retry();
         }
     }
 
     // --------------------------------------------------------------------------------
-    //  check
+    //  flow
     // --------------------------------------------------------------------------------
-
-    private function isFinished(): bool
+    protected function processing(): bool
     {
         if ($this->{$obj}->status === 'finished') {
             return true;
@@ -156,10 +137,17 @@ class {$obj->upperCamel()}Work
         return false;
     }
 
+    protected function finished(): void
+    {
+        $this->{$obj}->updated_at = now();
+        $this->{$obj}->status = 'finished';
+        $this->{$obj}->update();
+    }
+
     /**
      * 計算 work/job 開始一直到限定時間, 以決定是否過期
      */
-    private function isExpired(): bool
+    protected function isExpired(): bool
     {
         $workStartedTime = strtotime($this->{$obj}->started_at);
         $limitTime = $workStartedTime + $this->timeoutSeconds;
@@ -173,40 +161,53 @@ class {$obj->upperCamel()}Work
         return false;
     }
 
-    // --------------------------------------------------------------------------------
-    //  flow
-    // --------------------------------------------------------------------------------
-
-    private function finished()
+    protected function timeout(): void
     {
         $this->{$obj}->updated_at = now();
-        $this->{$obj}->status = 'finished';
+        $this->{$obj}->status = 'timeout';
         $this->{$obj}->update();
     }
 
-    private function continues()
+    protected function retry(): void
     {
         $counter = $this->{$obj}->getCustom('counter') ?? 0;
         $counter++;
         $this->{$obj}->setCustom('counter', $counter);
         $this->{$obj}->save();
 
-        if (App::environment(['local', 'geo-local'])) {
-            die(__CLASS__ . ' continues to Stop for localhost');
-        } else {
-            {$obj->upperCamel()}Job::dispatch($this->param)
-            ->onQueue('check_job')
+        // if (App::environment(['local', 'geo-local'])) {
+        //     die(__CLASS__ . ' localhost retry to Stop for debug only');
+        // }
+
+        // 延遲執行會在 QUEUE_DRIVER=redis 的情況下會生效
+        {$obj->upperCamel()}Job::dispatch($this->params)
+            ->onQueue('default')  // highest, high, default, low, lowest
             ->delay(
                 now()->addMinutes($this->waitMinutes)
             );
-        }
     }
 
-    private function timeout()
+    /**
+     * feature
+     *      - 檢查必要的參數
+     *      - 如果必要的參數有問題, 抓取會發生錯誤, query 出來先檢查
+     *      - assign variable
+     *
+     * @throws Exception
+     */
+    protected function init(): void
     {
-        $this->{$obj}->updated_at = now();
-        $this->{$obj}->status = 'timeout';
-        $this->{$obj}->update();
+        $accountId = this->param->accountId;
+
+        $this->{$obj} = $this->{$obj}Repository->getById($accountId);
+        if (!$this->{$obj}) {
+            throw new Exception("{$obj} not found");
+        }
+
+        $message = "job start accountId={ldelim}$accountId{rdelim}";
+        $this->log()->debug($message, [
+            'account_id' => $accountId,
+        ]);
     }
 
     // --------------------------------------------------------------------------------
@@ -214,25 +215,11 @@ class {$obj->upperCamel()}Work
     // --------------------------------------------------------------------------------
 
     /**
-     * @return Joblogger
-     */
-    private function buildTheJoblogger(): Joblogger
-    {
-        $joblogger = $this->buildJoblogger('請自行定義一個名稱');
-        $joblogger->saveJob($this->job);
-        $joblogger->execute();
-
-        return $joblogger;
-    }
-
-    /**
      * @throws Exception
      */
-    private function validate()
+    protected function validate(): void
     {
-        $this->param->validate();
-
-        if (! $this->param->accountId) {
+        if (! $this->params->accountId) {
             throw new Exception('accountId not found');
         }
     }

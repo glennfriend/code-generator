@@ -13,6 +13,7 @@ use Illuminate\Http\Resources\Json\{ldelim}JsonResource, AnonymousResourceCollec
 use Illuminate\Routing\Controller;
 use Illuminate\Database\QueryException;
 use Illuminate\Contracts\Routing\ResponseFactory;
+use Symfony\Component\HttpFoundation\Response;
 
 {if $isModule}
 use Modules\Core\Services\ExceptionError;
@@ -34,22 +35,17 @@ use App\Http\Resources\{$obj->upperCamel()}Resource;
 {/if}
 
 /*
-// Kos global route
-Route::get('/accounts/{ldelim}accountId{rdelim}/{$obj->lower('-')}', '{$obj->upperCamel()}Controller')
-    ->name('account.{$obj->lower('-')}');
-*/
+use Illuminate\Support\Facades\Route;
 
-
-/*
-// Route::middleware('auth:apiToken')->resource('{$mod->lower('-')}', '{$obj->upperCamel()}Controller');
-Route::resource('{$mod->lower('-')}', '{$obj->upperCamel()}Controller');
 
 // API reoute
 $config = [
+    // 'prefix' => 'accounts/{ldelim}accountId{rdelim}'
     // 'prefix' => '{$mod->lower('-')}/{ldelim}{$obj->lower('-')}Id{rdelim}',
        'prefix' => '{$mod->lower('-')}',
        'as' => '{$mod->lower('-')}',
        'middleware' => ['api'],
+    // 'middleware' => ['auth:api'],
 ];
 Route::group($config, function () {
     Route::get   ('/{$mod->lower('-')}',  {$obj->lowerCamel()|strlen|repeat}     'Api\\{$obj->upperCamel()}Controller@index');
@@ -58,13 +54,24 @@ Route::group($config, function () {
     Route::patch ('/{$mod->lower('-')}/{ldelim}{$obj->lowerCamel()}Id{rdelim}',  'Api\\{$obj->upperCamel()}Controller@update');
     Route::delete('/{$mod->lower('-')}/{ldelim}{$obj->lowerCamel()}Id{rdelim}',  'Api\\{$obj->upperCamel()}Controller@destroy');
     // or
-    Route::resource('/{$mod->lower('-')}', '{$obj->upperCamel()}Controller@index', [
+    Route::resource('{$mod->lower('-')}', '{$obj->upperCamel()}Controller');
+    // or
+    Route::resource('/{$mod->lower('-')}', '{$obj->upperCamel()}Controller', [
         'only' => ['index', 'show', 'store', 'update', 'destroy'],
         'names' => '{$obj->lower('-')}',
     ]);
-});
+    //
+    Route::resource('/accounts/{ldelim}accountId{rdelim}/{$mod->lower('-')}', '{$obj->upperCamel()}Controller', [
+        'only' => ['index', 'show', 'store'],
+        'names' => [
+            'index' => '{$mod->lower('-')}.index',
+            'store' => '{$mod->lower('-')}.store',
+        ],
+    ]);
 
+});
 */
+
 
 /*
 curl -X GET    http://127.0.0.1:8000/api/{$mod->lower('-')}         && echo
@@ -217,7 +224,7 @@ class {$obj->upperCamel()}ApiController extends Controller
                 ],
                 'rowData' => $rowData,
             ],
-        ], 200);
+        ], Response::HTTP_OK);
     }
 
     // --------------------------------------------------------------------------------
@@ -600,7 +607,7 @@ class {$obj->upperCamel()}ApiController extends Controller
 /**
  * @apiGroup {$obj->upperCamel()}
  * @apiName list
- * @api {ldelim}get{rdelim} /api/accounts/:account_id/{$mod->lower('-')} list
+ * @api {ldelim}get{rdelim} /api/accounts/:account_id/{$mod->lower('-')}  list(具體說明)
  * @apiSampleRequest /api/accounts/:account_id/{$mod->lower('-')}
  * @apiParam {ldelim}int{rdelim}    account_id
  * @apiParam {ldelim}int{rdelim}    page
@@ -619,7 +626,7 @@ class {$obj->upperCamel()}ApiController extends Controller
  /**
   * @apiGroup {$obj->upperCamel()}
   * @apiName show
-  * @api {ldelim}get{rdelim} /api/accounts/:account_id/{$mod->lower('-')}/:{$obj}Id show
+  * @api {ldelim}get{rdelim} /api/accounts/:account_id/{$mod->lower('-')}/:{$obj}Id  show
   * @apiSampleRequest /api/accounts/:account_id/{$mod->lower('-')}/:{$obj}Id
   * @apiParam {ldelim}int{rdelim} account_id
   * @apiParam {ldelim}int{rdelim} {$obj}Id
@@ -636,7 +643,7 @@ class {$obj->upperCamel()}ApiController extends Controller
  /**
   * @apiGroup {$obj->upperCamel()}
   * @apiName store
-  * @api {ldelim}post{rdelim} /api/accounts/:account_id/{$mod->lower('-')} store
+  * @api {ldelim}post{rdelim} /api/accounts/:account_id/{$mod->lower('-')}  store(具體說明)
   * @apiParam {ldelim}int{rdelim} account_id
   *
   * @apiParamJson {ldelim}file=../../Tests/Data/Controllers/{$obj->lower('_')}_store.json{rdelim} Request
@@ -663,7 +670,7 @@ class {$obj->upperCamel()}ApiController extends Controller
  /**
   * @apiGroup {$obj->upperCamel()}
   * @apiName update
-  * @api {ldelim}patch{rdelim} /api/accounts/:account_id/{$mod->lower('-')}/{$obj}Id update
+  * @api {ldelim}patch{rdelim} /api/accounts/:account_id/{$mod->lower('-')}/{$obj}Id  update
   * @apiParam {ldelim}int{rdelim} account_id
   * @apiParam {ldelim}int{rdelim} {$obj}Id
   *
@@ -676,7 +683,7 @@ class {$obj->upperCamel()}ApiController extends Controller
  /**
   * @apiGroup {$obj->upperCamel()}
   * @apiName delete
-  * @api {ldelim}delete{rdelim} /api/accounts/:account_id/{$mod->lower('-')}/{$obj}Id delete
+  * @api {ldelim}delete{rdelim} /api/accounts/:account_id/{$mod->lower('-')}/{$obj}Id  delete
   * @apiParam {ldelim}int{rdelim} account_id
   * @apiParam {ldelim}int{rdelim} {$obj}Id
   *

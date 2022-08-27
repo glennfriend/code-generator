@@ -1,6 +1,38 @@
 <?php
 declare(strict_types=1);
 
+// 測試的時候改用 Factory (其它目錄) 才成功, 以下目前沒有成功
+namespace Modules\{$obj->upperCamel()}\Database\Factories;
+
+
+use App\Models\User;
+use Illuminate\Database\Eloquent\Factories\Factory;
+use Illuminate\Support\Str;
+
+class {$obj->upperCamel()}Factory extends Factory
+{
+    protected $model = {$obj->upperCamel()}::class;
+
+    public function definition()
+    {
+        return [
+            'name' => $this->faker->name,
+            'email' => $this->faker->unique()->safeEmail,
+            'email_verified_at' => now(),
+            'password' => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi',  // password
+            'remember_token' => Str::random(10),
+        ];
+    }
+}
+
+
+
+
+
+
+
+
+// laravel 7.x 以下
 use Faker\Generator as Faker;
 {if $isModule}use Modules\xxxxxx\Entities\Eloquent\{$obj->upperCamel()};
 {else        }use App\Entities\Eloquent\{$obj->upperCamel()};
@@ -20,7 +52,7 @@ $factory->define({$obj->upperCamel()}::class, function (Faker $faker)
 {elseif $key==='deletedAt'}
         '{$field.ado->name}'{$field.ado->name|space_even} => null,
 {elseif $key==='name'}
-        '{$field.ado->name}'{$field.ado->name|space_even} => $faker->name(),
+        '{$field.ado->name}'{$field.ado->name|space_even} => $faker->name(),    // $faker->word()
 {elseif $key==='firstName'}
         '{$field.ado->name}'{$field.ado->name|space_even} => $faker->firstName(),
 {elseif $key==='lastName'}

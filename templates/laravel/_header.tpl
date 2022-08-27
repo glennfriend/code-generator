@@ -37,6 +37,7 @@
         <a href="?t=readme">readme</a>
     [normal]
         <a href="?t=kos_home_controller_api">ControllerApi</a>,
+        <a href="?t=kos_request">FormRequest</a>,
         <a href="?t=kos_repository">Repository</a>
         <a href="?t=kos_service">Service</a>
         <a href="?t=kos_provider">Provider</a>

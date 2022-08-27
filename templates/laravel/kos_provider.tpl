@@ -176,6 +176,13 @@ class {$obj->upperCamel()}Provider extends ServiceProvider
                 ->options([])
                 ->build();
         });
+
+        app()->singleton(GoogleAdsClient::class, function () {
+            return new HelloFactory(
+                app()->make(Happy::class), 
+                new AdWordsServices()
+            );
+        });
         */
     }
 

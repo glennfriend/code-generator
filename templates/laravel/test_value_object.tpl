@@ -3,9 +3,7 @@ namespace Tests\app\Entities;
 
 use Tests\TestCase;
 use Illuminate\Foundation\Testing\{ldelim}RefreshDatabase, DatabaseTransactions{rdelim};
-use App\Entities\{$mod->upperCamel()};
 use App\Entities\{$obj->upperCamel()};
-use App\Entities\Eloquent\{$obj->upperCamel()}Eloquent;
 // use Modules\______\Entities\{$mod->upperCamel()};
 // use Modules\______\Entities\{$obj->upperCamel()};
 // use Modules\______\Entities\Eloquent\{$obj->upperCamel()}Eloquent;
@@ -63,7 +61,8 @@ final class {$obj->upperCamel()}Test extends TestCase
 
     protected function initBuild()
     {
-        $this->{$obj}Eloquent_1 = factory({$obj->upperCamel()}Eloquent::class)->create();
+        $this->{$obj}Eloquent_1 = factory({$obj->upperCamel()}Eloquent::class)->create();   // laravel 7 before
+        $this->{$obj}Eloquent_1 = {$obj->upperCamel()}EloquentFactory::factory()->create();   // laravel 8
 
         //
         $this->{$mod->lowerCamel()} = $this->app->make({$mod->upperCamel()}::class);

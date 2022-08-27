@@ -15,10 +15,10 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 
 {if $isModule}
-use Modules\{$obj->upperCamel()}\DataTransferObjects\Works\{$obj->upperCamel()}Param;
+use Modules\{$obj->upperCamel()}\DataTransferObjects\{$obj->upperCamel()}Params;
 use Modules\{$obj->upperCamel()}\Jobs\{$obj->upperCamel()}Job;
 {else}
-use App\DataTransferObjects\Works\{$obj->upperCamel()}Param;
+use App\DataTransferObjects\{$obj->upperCamel()}Params;
 use App\Jobs\{$obj->upperCamel()}Job;
 {/if}
 
@@ -27,33 +27,29 @@ use App\Jobs\{$obj->upperCamel()}Job;
  * 重試:  該程式在工作未完成/被中斷 之後, 是否可以重試 : yes/no
  * 
  * ShouldQueue: 宣告後, 該 job 會進到 queue 之中, 以非同步來執行
+ * use SerializesModels: 讓 Eloquent 模型在處理任務的時候可以被優雅地序列化和反序列化
  */
 class {$obj->upperCamel()}Job implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable;
-    use SerializesModels;   // 讓 Eloquent 模型在處理任務的時候可以被優雅地序列化和反序列化
+    use SerializesModels;
 
     /**
-     * At least 1
-     * @var int 
+     * At least $tries
      */
-    public $tries = 1;
+    public int $tries = 1;
+    private {$obj->upperCamel()}Params $params;
 
     /**
-     * @var {$obj->upperCamel()}Param
+     * @param {$obj->upperCamel()}Param $params
      */
-    private $param;
-
-    /**
-     * @param {$obj->upperCamel()}Param $param
-     */
-    public function __construct({$obj->upperCamel()}Param $param)
+    public function __construct({$obj->upperCamel()}Params $params)
     {
         /**
          * @var string $queue, queue level see "config/horizon.php"
          */
         $this->queue = 'default';
-        $this->param = $param;
+        $this->param = $params;
 
         $this->dispatchBeforeValidate();
     }
@@ -66,12 +62,14 @@ class {$obj->upperCamel()}Job implements ShouldQueue
     {
         // ini_set('memory_limit', '512M');
 
-        $work->perform($this->param, $this);
+        $this->params->jobId = $this->job->getJobId();
+        $work->perform($this->params);
+        // $work->perform($this->params, $this);
     }
 
-    static public function factoryParam(array $data): {$obj->upperCamel()}Param
+    static public function factoryParam(array $data): {$obj->upperCamel()}Params
     {
-        return new {$obj->upperCamel()}Param($data);
+        return new {$obj->upperCamel()}Params($data);
     }
 
     // --------------------------------------------------------------------------------
@@ -82,28 +80,28 @@ class {$obj->upperCamel()}Job implements ShouldQueue
     {
         return;
 
-        $param = new {$obj->upperCamel()}Param([
+        $params = new {$obj->upperCamel()}Params([
             'accountId' => (int) 1,
             'articleId' => (int) 1,
         ]);
-        $param = {$obj->upperCamel()}Job::factoryParam([
+        $params = {$obj->upperCamel()}Job::factoryParams([
             'accountId' => (int) 1,
             'articleId' => (int) 1,
         ]);
 
         if (App::environment(['local'])) {
-            {$obj->upperCamel()}Job::dispatchNow($param);
+            {$obj->upperCamel()}Job::dispatchNow($params);
         } else {
-            {$obj->upperCamel()}Job::dispatch($param);
+            {$obj->upperCamel()}Job::dispatch($params);
         }
 
 
         // trigger job
         if (App::environment(['local', 'geo-local'])) {
-            {$obj->upperCamel()}Job::dispatchNow($param);  // try for localhost
+            {$obj->upperCamel()}Job::dispatchNow($params);  // try for localhost
         } else {
             $queueName = 'default'; // see "config/horizon.php"
-            {$obj->upperCamel()}Job::dispatch($param);
+            {$obj->upperCamel()}Job::dispatch($params);
                 ->onQueue($queueName);
                 ->delay(now()->addSecond(20));
         }
@@ -121,7 +119,7 @@ class {$obj->upperCamel()}Job implements ShouldQueue
      */
     protected function dispatchBeforeValidate()
     {
-        if (! this->param->accountId) {
+        if (! this->params->accountId) {
             throw new Exception("accountId not found");
         }
     }
