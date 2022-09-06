@@ -1,7 +1,8 @@
 <?php
 declare(strict_types=1);
 
-// 測試的時候改用 Factory (其它目錄) 才成功, 以下目前沒有成功
+// 測試的時候改用 其它目錄 才成功, 同一個目錄沒有成功
+//        Modules\{$obj->upperCamel()}\Database\NewFactories;
 namespace Modules\{$obj->upperCamel()}\Database\Factories;
 
 
@@ -13,7 +14,7 @@ class {$obj->upperCamel()}Factory extends Factory
 {
     protected $model = {$obj->upperCamel()}::class;
 
-    public function definition()
+    public function definition(): array
     {
         return [
             'name' => $this->faker->name,

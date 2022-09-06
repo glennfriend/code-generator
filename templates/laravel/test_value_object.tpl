@@ -62,7 +62,7 @@ final class {$obj->upperCamel()}Test extends TestCase
     protected function initBuild()
     {
         $this->{$obj}Eloquent_1 = factory({$obj->upperCamel()}Eloquent::class)->create();   // laravel 7 before
-        $this->{$obj}Eloquent_1 = {$obj->upperCamel()}EloquentFactory::factory()->create();   // laravel 8
+        $this->{$obj}Eloquent_1 = {$obj->upperCamel()}::factory()->create();                // laravel 8
 
         //
         $this->{$mod->lowerCamel()} = $this->app->make({$mod->upperCamel()}::class);

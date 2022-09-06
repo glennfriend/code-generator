@@ -58,7 +58,7 @@ class {$obj->upperCamel()}Job implements ShouldQueue
      * @param {$obj->upperCamel()}Work $work
      * @throws Exception
      */
-    public function handle({$obj->upperCamel()}Work $work)
+    public function handle({$obj->upperCamel()}Work $work): void
     {
         // ini_set('memory_limit', '512M');
 
@@ -117,7 +117,7 @@ class {$obj->upperCamel()}Job implements ShouldQueue
      *      - 檢查 job 必須要的參數是否存在
      *      - job 如果要的資料沒有先輸入, 之後再抓會有錯誤的可能, 可以考慮 query 出來先檢查
      */
-    protected function dispatchBeforeValidate()
+    protected function dispatchBeforeValidate(): void
     {
         if (! this->params->accountId) {
             throw new Exception("accountId not found");

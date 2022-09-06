@@ -19,6 +19,7 @@ final class {$obj->upperCamel()}Job extends TestCase
     public function setUp(): void
     {
         parent::setUp();
+        Bus::fake();    // Job dispatch() 會進到 construct, 但是不會呼叫 handle
         Event::fake();
     }
 
