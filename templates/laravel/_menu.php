@@ -5,12 +5,24 @@ $mod = new NamePrototype(SessionManager::daoName());
 $today = date("Y_m_d");
 
 return [
-
+    
     'eloquent' => [
         'path'          => "app/Entities/",
         'filename'      => "{$obj->upperCamel()}Eloquent.php",
         'clear_comment' => false,
     ],
+    'eloquent_test' => [
+        'path'          => "tests/app/Unit/Entities/",
+        'filename'      => "{$obj->upperCamel()}Test.php",
+        'clear_comment' => false,
+    ],
+
+    'factories' => [
+        'path'          => "database/factories/",
+        'filename'      => "{$obj->upperCamel()}Factory.php",
+        'clear_comment' => false,
+    ],
+    
     'json_resource' => [
         'path'          => "app/Http/Resources/",
         'filename'      => "{$obj->upperCamel()}Resource.php",
@@ -60,6 +72,12 @@ return [
         'filename'      => "{$obj->upperCamel()}Controller.php",
         'clear_comment' => false,
     ],
+    'home_controller_test' => [
+        'path'          => "tests/app/Feature/Http/Controllers/",
+        'filename'      => "{$obj->upperCamel()}ControllerTest.php",
+        'clear_comment' => false,
+    ],
+    
     'home_api_controller' => [
         'path'          => "app/Http/Controllers/Api/{$obj->upperCamel()}/",
         'filename'      => "{$obj->upperCamel()}ApiController.php",
@@ -72,6 +90,12 @@ return [
         'filename'      => "{$obj->upperCamel()}Job.php",
         'clear_comment' => false,
     ],
+    'job_job_test' => [
+        'path'          => "tests/app/Feature/jobs/",
+        'filename'      => "{$obj->upperCamel()}JobTest.php",
+        'clear_comment' => false,
+    ],
+    
     'job_param' => [
         'path'          => "app/DataTransferObjects/",
         'filename'      => "{$obj->upperCamel()}Params.php",
@@ -130,48 +154,25 @@ return [
     ],
 
     // test
-    'test_value_object' => [
-        'path'          => "tests/app/Unit/Entities/",
-        'filename'      => "{$obj->upperCamel()}Test.php",
-        'clear_comment' => false,
-    ],
-    'test_api' => [
-        'path'          => "tests/app/Feature/Api/",
-        'filename'      => "{$obj->upperCamel()}ApiTest.php",
-        'clear_comment' => false,
-    ],
-    'test_controller' => [
-        'path'          => "tests/app/Feature/Http/Controllers/",
-        'filename'      => "{$obj->upperCamel()}ControllerTest.php",
-        'clear_comment' => false,
-    ],
-    'test_job' => [
-        'path'          => "tests/app/Feature/jobs/",
-        'filename'      => "{$obj->upperCamel()}JobTest.php",
-        'clear_comment' => false,
-    ],
-    'test_service' => [
-        'path'          => "tests/app/Feature/Services/",
-        'filename'      => "{$obj->upperCamel()}ServiceTest.php",
-        'clear_comment' => false,
-    ],
     'test_data' => [
         'path'          => "tests/app/Data/Controllers/",
         'filename'      => "{$obj->lower('_')}.json",
         'clear_comment' => false,
     ],
-    'database_factory' => [
-        'path'          => "database/factories/",
-        'filename'      => "{$obj->upperCamel()}Factory.php",
-        'clear_comment' => false,
-    ],
 
-    //
-    'kos_home_controller_api' => [
+    // kos flow
+    'kos_controller_api' => [
         'path'          => "app/Http/Controllers/Api/{$obj->upperCamel()}/",
         'filename'      => "{$obj->upperCamel()}ApiController.php",
         'clear_comment' => false,
     ],
+    'kos_controller_api_test' => [
+        'path'          => "tests/app/Feature/Api/",
+        'filename'      => "{$obj->upperCamel()}ApiTest.php",
+        'clear_comment' => false,
+    ],
+    
+
     'kos_request' => [
         'path'          => "app/Http/Requests/{$obj->upperCamel()}/",
         'filename'      => "{$obj->upperCamel()}Request.php",
@@ -182,11 +183,18 @@ return [
         'filename'      => "{$obj->upperCamel()}Repository.php",
         'clear_comment' => false,
     ],
+
     'kos_service' => [
         'path'          => "app/Services",
         'filename'      => "{$obj->upperCamel()}Service.php",
         'clear_comment' => false,
     ],
+    'kos_service_test' => [
+        'path'          => "tests/app/Feature/Services/",
+        'filename'      => "{$obj->upperCamel()}ServiceTest.php",
+        'clear_comment' => false,
+    ],
+    
     'kos_provider' => [
         'path'          => "app/Providers",
         'filename'      => "{$obj->upperCamel()}Provider.php",
