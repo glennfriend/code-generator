@@ -3,7 +3,7 @@
 date_default_timezone_set('Asia/Taipei');
 ini_set( 'date.timezone', 'Asia/Taipei');
 
-error_reporting(E_ALL);
+error_reporting(E_ALL & ~E_NOTICE);
 ini_set('html_errors','On');
 ini_set('display_errors','On');
 
