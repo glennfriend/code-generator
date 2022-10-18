@@ -52,10 +52,7 @@ class {$obj->upperCamel()}Provider extends ServiceProvider
         $this->registerRoutes();
         $this->registerContainer();
         $this->registerLogging();
-        
-        // append middleware
-        // $router = $this->app['router'];
-        // $router->pushMiddlewareToGroup('xxxxxx.auth',  UserLoginAuth::class);
+    
     }
 
     // --------------------------------------------------------------------------------
@@ -101,10 +98,18 @@ class {$obj->upperCamel()}Provider extends ServiceProvider
         ]);
     }
 
+    /**
+     * @see app/Http/Kernel.php
+     */
     protected function registerMiddlewares()
     {
+        /**
+         * @var Router $router
+         */
         // $router = $this->app['router'];
         // $router->pushMiddlewareToGroup('auth:jwtOrAccountApiKey', \Modules\Auth\Http\Middleware\AuthByJwtOrAccountApiKey::class);
+        // $router->pushMiddlewareToGroup('auth.token',              \Modules\Auth\Http\Middleware\TokenAuthorization::class);
+        // $router->pushMiddlewareToGroup('xxxxx.auth',              UserLoginAuth::class);
 
         // how to use
         /*

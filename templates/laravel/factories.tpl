@@ -17,6 +17,44 @@ class {$obj->upperCamel()}Factory extends Factory
     public function definition(): array
     {
         return [
+{foreach $tab as $key => $field}
+{if $key==='id'}
+{elseif $key==='attribs'}
+            '{$field.ado->name}'{$field.ado->name|space_even} => $attribs,
+{elseif $key==='createdAt'}
+            '{$field.ado->name}'{$field.ado->name|space_even} => this->faker->dateTime('now', date_default_timezone_get()),  // {$field.ado->name} 可能沒有做用
+{elseif $key==='updatedAt'}
+            '{$field.ado->name}'{$field.ado->name|space_even} => this->faker->dateTime(),  // {$field.ado->name} 可能沒有做用
+{elseif $key==='deletedAt'}
+            '{$field.ado->name}'{$field.ado->name|space_even} => null,
+{elseif $key==='name'}
+            '{$field.ado->name}'{$field.ado->name|space_even} => this->faker->name(),    // this->faker->word()
+{elseif $key==='firstName'}
+            '{$field.ado->name}'{$field.ado->name|space_even} => this->faker->firstName(),
+{elseif $key==='lastName'}
+            '{$field.ado->name}'{$field.ado->name|space_even} => this->faker->lastName(),
+{elseif $key==='uuid'}
+            '{$field.ado->name}'{$field.ado->name|space_even} => this->faker->unique()->uuid(),
+{elseif $key==='email'}
+            '{$field.ado->name}'{$field.ado->name|space_even} => this->faker->safeEmail(),
+{elseif $field.ado->type=='enum'}
+            '{$field.ado->name}'{$field.ado->name|space_even} => this->faker->randomElement({$obj->upperCamel()}Type->getValues()),     // enum
+{elseif $field.ado->type=='tinyint'}
+            '{$field.ado->name}'{$field.ado->name|space_even} => (int) this->faker->boolean(),
+{elseif $field.ado->type=='smallint' || $field.ado->type=='mediumint' || $field.ado->type=='int' || $field.ado->type=='bigint'}
+            '{$field.ado->name}'{$field.ado->name|space_even} => this->faker->randomDigitNotNull(),
+{elseif $field.ado->type=='double'}
+            '{$field.ado->name}'{$field.ado->name|space_even} => this->faker->randomFloat($nbMaxDecimals = NULL, $min = 0, $max = NULL),
+{elseif $field.ado->type=='timestamp' || $field.ado->type=='datetime' || $field.ado->type=='date'}
+            '{$field.ado->name}'{$field.ado->name|space_even} => this->faker->dateTime(),
+{elseif $field.ado->type=='text' || $field.ado->type=='mediumtext' || $field.ado->type=='longtext'}
+            '{$field.ado->name}'{$field.ado->name|space_even} => this->faker->lexify('?????? {$field.ado->name}') . ' ' . this->faker->emoji(),
+{else}
+            '{$field.ado->name}'{$field.ado->name|space_even} => this->faker->lexify('?????? {$field.ado->name}'),
+{/if}
+{/foreach}
+        ];
+        return [
             'name' => $this->faker->name,
             'email' => $this->faker->unique()->safeEmail,
             'email_verified_at' => now(),
@@ -100,9 +138,10 @@ EOD;
     // $randomUniqueId = $faker->unique()->randomDigit;
     return [
         'attribs' => $attribs,
-        'name' => $faker->name(),
-        'age' => $faker->numberBetween(1, 120),
-        'status' => $faker->randomElement(['enabled', 'disabled']),
+        'name'     => $faker->name(),
+        'age'      => $faker->numberBetween(1, 120),
+        'status'   => $faker->randomElement(['enabled', 'disabled']),
+        'type'     => $faker->randomElement({$obj->upperCamel()}Type->getValues()),     // enum
         'timezone' => date_default_timezone_get(),
     ];
 });

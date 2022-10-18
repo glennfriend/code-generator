@@ -76,8 +76,8 @@ class {$obj->upperCamel()}Work
 
         try {
             $this->init();
-            $this->validate();
-            $this->main();
+            $this->validateParameters();
+            $this->main();      // TODO: main 改成明顯的意圖名稱
         } catch (RuntimeException $exception) {
         } catch (Exception | Throwable $exception) {
         } finally {
@@ -108,7 +108,8 @@ class {$obj->upperCamel()}Work
  
 
         
-
+        /*
+        // 原本舊的寫法
         if ($this->isExpired()) {
             $this->timeout();
         } elseif ($this->processing()) {
@@ -116,6 +117,21 @@ class {$obj->upperCamel()}Work
         } else {
             $this->retry();
         }
+        */
+
+        if ($this->isExpired()) {
+            $this->timeout();
+            return;
+        }
+        
+        try {
+            // TODO: 改成明顯的意圖名稱
+            $this->processing();
+        } catch (Exception $exception) // 應該是改成某些特定的 exception
+            // 某些情況下想要 retry
+            $this->retry();
+        }
+
     }
 
     // --------------------------------------------------------------------------------
@@ -217,7 +233,7 @@ class {$obj->upperCamel()}Work
     /**
      * @throws Exception
      */
-    protected function validate(): void
+    protected function validateParameters(): void
     {
         if (! $this->params->accountId) {
             throw new Exception('accountId not found');

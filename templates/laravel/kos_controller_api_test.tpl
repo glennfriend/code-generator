@@ -47,8 +47,38 @@ final class {$obj->upperCamel()}ControllerTest extends TestCase
         */
     }
 
+
    /**
-     * @group only
+     * about GET /api/oooo/xxxx
+     * @test
+     */
+    public function list_should_work()
+    {
+        $getAccountsService = $this->mock(List{$obj->upperCamel()}Service::class);
+        $getAccountsService->shouldReceive('perform')
+            ->once()
+            ->andReturn($this->getTestData('list'));
+
+        $payload = [
+            'account_id' => 1,
+        ];
+        $url = "/api/oooooo/xxxxxx";
+        $url .= '?' . http_build_query($payload);
+        $response = $this->getAuthedRequest()->json('GET', $url);
+        $response->assertStatus(200);
+        $response->assertJsonStructure([
+            'data' => [
+                '*' => [
+                    'id',
+                    'account_id',
+                    'config',
+                ]
+            ]
+        ]);
+    }
+
+   /**
+     * about database
      * @test
      */
     public function index_should_work()
@@ -99,7 +129,6 @@ final class {$obj->upperCamel()}ControllerTest extends TestCase
         //
         $json = json_decode($response->getContent(), true);
         $this->assertEquals('2', $json['data'][0]['count']);
-
     }
 
     /**
@@ -113,7 +142,7 @@ final class {$obj->upperCamel()}ControllerTest extends TestCase
         $accountId = $this->account->id;
         $url = "/api/accounts/{ldelim}$accountId{rdelim}/{$mod->lower('-')}";
 
-        $payload = $this->getTestJson('{$obj->lower('_')}_store.json');
+        $payload = $this->getTestData('{$obj->lower('_')}_store.json');
         $response = $this->getAuthedRequest()->json('POST', $url, $payload);
 
         //
@@ -149,7 +178,7 @@ final class {$obj->upperCamel()}ControllerTest extends TestCase
         ${$obj}Id = $this->{$obj}->id;
         $url = "/api/accounts/{ldelim}$accountId{rdelim}/{$mod->lower("-")}/{ldelim}${$obj}Id{rdelim}";
 
-        $payload = $this->getTestJson('{$obj->lower('_')}_update.json');
+        $payload = $this->getTestData('{$obj->lower('_')}_update.json');
         $response = $this->getAuthedRequest()->json('PATCH', $url, $payload);
 
         //
@@ -209,7 +238,7 @@ final class {$obj->upperCamel()}ControllerTest extends TestCase
         $url = '/api/{$obj->lower("-")}';
         $this
             ->getAuthedRequest()
-            ->json('POST', $url, $this->getTestJson($jsonFile))
+            ->json('POST', $url, $this->getTestData($jsonFile))
             ->assertStatus(200)
             ->assertJson([
                 'ok' => true,
@@ -228,11 +257,7 @@ final class {$obj->upperCamel()}ControllerTest extends TestCase
             ]);
     }
 
-    /**
-     * @param string $pathFile
-     * @return array
-     */
-    private function getTestJson(string $pathFile): array
+    private function getTestDatagetTestData(string $name): array
     {
         $json = <<<EOD
 {
@@ -246,13 +271,9 @@ final class {$obj->upperCamel()}ControllerTest extends TestCase
 EOD;
         return json_decode($json, true);
 
-{if $isModule}
-        $basePath = base_path('Modules/{$obj->upperCamel()}/Tests/Data/Controllers');
-{else}
-        $basePath = base_path('app/Tests/Data');
-{/if}
-        $text = file_get_contents($basePath . '/' . $pathFile);
-        return json_decode($text, true);
+        // $basePath = base_path('Modules/{$obj->upperCamel()}/Tests/Data/Controllers');
+        // $basePath = base_path('app/Tests/Data');
+        return json_decode(file_get_contents(__DIR__ . "/../Data/" . $name . ".json"), true);
     }
 
     /**

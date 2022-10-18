@@ -101,6 +101,7 @@ class Create{$mod->upperCamel()}Table extends Migration
 
             // enum
             // 如果永遠都是這些, 就適合用 enum, 如果未來會增減, 那麼建議使用 int
+            // $table->enum('status', ['enabled','disabled']);
 
             /*
             // json

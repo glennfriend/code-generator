@@ -31,9 +31,10 @@
         <a href="?t=test_data">data</a>
     [normal]
         <a href="?t=kos_controller_api">ControllerApi</a>/<a href="?t=kos_controller_api_test">____</a>,
-        <a href="?t=kos_request">FormRequest</a>,
+        <a href="?t=kos_request">FormRequest</a>/<a href="?t=kos_request_test">____</a>,
         <a href="?t=kos_repository">Repository</a>
         <a href="?t=kos_service">Service</a>/<a href="?t=kos_service_test">____</a>
+        <a href="?t=kos_use_case">UseCase</a>
         <a href="?t=kos_provider">Provider</a>
         <a href="?t=kos_console">Console</a>
 </div>

@@ -1,5 +1,7 @@
 <?php
+
 declare(strict_types=1);
+
 {if $isModule}namespace Modules\{$obj->upperCamel()}\Http\Api\Controllers;
 {else        }namespace App\Http\Api\Controllers;
 {/if}
@@ -8,6 +10,7 @@ use Exception;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\{ldelim}Request, Response{rdelim};
 use Illuminate\Http\Resources\Json\{ldelim}JsonResource, AnonymousResourceCollectionl{rdelim};
 use Illuminate\Routing\Controller;
@@ -109,45 +112,156 @@ class {$obj->upperCamel()}ApiController extends Controller
     //  basic
     // --------------------------------------------------------------------------------
 
-    /**
-     * GET list
-     */
     public function index(Request $request)
     {
-        return 'index ';
+        return '[GET] list ';
+    }
+    public function show(Request $request, int ${$obj}Id)
+    {
+        return '[GET] show ' . ${$obj}Id;
+    }
+    public function store(Request $request)
+    {
+        return '[POST] create ';
+    }
+    public function update(Request $request, int ${$obj}Id)
+    {
+        return '[PATCH] update ' . ${$obj}Id;
+    }
+    public function destroy(Request $request, int ${$obj}Id)
+    {
+        return '[DELETE] delete ' . ${$obj}Id;
+    }
+
+    // --------------------------------------------------------------------------------
+    //  basic for account_id
+    // --------------------------------------------------------------------------------
+
+    /**
+     * GET list
+     * 
+     * @param Request $request
+     * @param int $accountId
+     * @return AnonymousResourceCollection
+     */
+    public function index(Request $request, int $accountId)
+    {
+        /*
+        if ($response = $this->customValidate($request)) {
+            return $response;
+        }
+        */
+        $this->querySortValidate($request);
+
+        $page = (int) $request->input('page');
+        ${$obj} = $this->{$obj}Service->findByAccountId($accountId, $page);
+
+        $resourceCollection = {$obj->upperCamel()}Resource::collection(${$obj});
+        return $resourceCollection;
     }
 
     /**
      * GET show
+     * 
+     * @param Request $request
+     * @param int $accountId
+     * @param int ${$obj}Id
+     * @return Response|{$obj->upperCamel()}Resource
      */
-    public function show(Request $request, int ${$obj}Id)
+    public function show(Request $request, int $accountId, int ${$obj}Id)
     {
-        return 'show ' . ${$obj}Id;
+        ${$obj} = $this->{$obj}Service->get(${$obj}Id);
+        if (! ${$obj}) {
+            $this->error(null, 404);
+        }
+
+        list($error, $code) = $this->accountValidate(${$obj}, $accountId));
+        if ($error) {
+            return $this->error($error, $code);
+        }
+
+        $resource = new {$obj->upperCamel()}Resource(${$obj});
+        return $resource;
     }
 
     /**
      * POST create
      */
-    public function store(Request $request)
+    public function store(Request $request, int $accountId): JsonResponse
     {
-        return 'store ';
+        $payload = $request->input('data');
+        $new{$obj->upperCamel()} = new {$obj->upperCamel()}($payload);
+        $new{$obj->upperCamel()}->account_id = $accountId;
+
+        list($error, $code) = $this->storeValidate($request, $new{$obj->upperCamel()}, $accountId);
+        if ($error) {
+            return $this->error($error, $code);
+        }
+
+        ${$obj} = $this->{$obj}Service->add($new{$mod});
+        $resource = new {$obj->upperCamel()}Resource(${$obj})
+        // return $this->response($resource, 201);
+        return    response()->json($resource, Response::HTTP_CREATED);  // 201 create
+        // return response()->json($resource, Response::HTTP_ACCEPTED); // 202 job
     }
 
     /**
      * PATCH update
+     * 
+     * @param Request $request
+     * @param int $accountId
+     * @param int ${$obj}Id
+     * @return ResponseFactory|Response|AssetController
+     * @throws Exception
      */
-    public function update(Request $request, int ${$obj}Id)
+    public function update(Request $request, int $accountId, int ${$obj}Id)
     {
-        return 'update ' . ${$obj}Id;
+        ${$obj} = $this->{$obj}Service->get(${$obj}Id);
+        if (! ${$obj}) {
+            return $this->error(null, 404);
+        }
+
+        $payload = $request->input('data');
+        ${$obj}->fill($payload);
+
+        list($error, $code) = $this->storeValidate($request, ${$obj}, $accountId);
+        if ($error) {
+            return $this->error($error, $code);
+        }
+
+        $this->{$obj}Service->update(${$obj});
+        $resource = new {$obj->upperCamel()}Resource(${$obj})
+        return $this->response($resource, 201);
     }
 
     /**
      * DELETE delete
+     *
+     * @param Request $request
+     * @param int $accountId
+     * @param int ${$obj}Id
+     * @return ResponseFactory|Response
      */
-    public function destroy(Request $request, int ${$obj}Id)
+    public function destroy(Request $request, int $accountId, int ${$obj}Id)
     {
-        return 'distory ' . ${$obj}Id;
+        ${$obj} = $this->{$obj}Service->get(${$obj}Id);
+        if (! ${$obj}) {
+            return response(null, 204);
+        }
+
+        list($error, $code) = $this->accountValidate(${$obj}, $accountId);
+        if ($error) {
+            return $this->error($error, $code);
+        }
+
+        $this->{$obj}Service->delete(${$obj}Id);
+        return response(null, 204);
     }
+
+    // --------------------------------------------------------------------------------
+    //  private
+    // --------------------------------------------------------------------------------
+
 
     // --------------------------------------------------------------------------------
     //  for ag-grid
@@ -226,168 +340,6 @@ class {$obj->upperCamel()}ApiController extends Controller
             ],
         ], Response::HTTP_OK);
     }
-
-    // --------------------------------------------------------------------------------
-    //  basic for account_id
-    // --------------------------------------------------------------------------------
-
-    /**
-     * GET list
-     * 
-     * @param Request $request
-     * @param int $accountId
-     * @return AnonymousResourceCollection
-     */
-    public function index(Request $request, int $accountId)
-    {
-        /*
-        if ($response = $this->customValidate($request)) {
-            return $response;
-        }
-        */
-        $this->querySortValidate($request);
-
-        $page = (int) $request->input('page');
-        ${$obj} = $this->{$obj}Service->findByAccountId($accountId, $page);
-
-        $resourceCollection = {$obj->upperCamel()}Resource::collection(${$obj});
-        return $resourceCollection;
-    }
-
-    /**
-     * GET show
-     * 
-     * @param Request $request
-     * @param int $accountId
-     * @param int ${$obj}Id
-     * @return Response|{$obj->upperCamel()}Resource
-     */
-    public function show(Request $request, int $accountId, int ${$obj}Id)
-    {
-        ${$obj} = $this->{$obj}Service->get(${$obj}Id);
-        if (! ${$obj}) {
-            $this->error(null, 404);
-        }
-
-        list($error, $code) = $this->accountValidate(${$obj}, $accountId));
-        if ($error) {
-            return $this->error($error, $code);
-        }
-
-        $resource = new {$obj->upperCamel()}Resource(${$obj});
-        return $resource;
-    }
-
-    /**
-     * POST create
-     * 
-     * @param Request $request
-     * @param int $accountId
-     * @return ResponseFactory|Response
-     * @throws Exception
-     */
-    public function store(Request $request, int $accountId)
-    {
-        $payload = $request->input('data');
-        $new{$obj->upperCamel()} = new {$obj->upperCamel()}($payload);
-        $new{$obj->upperCamel()}->account_id = $accountId;
-
-        list($error, $code) = $this->storeValidate($request, $new{$obj->upperCamel()}, $accountId);
-        if ($error) {
-            return $this->error($error, $code);
-        }
-
-        try {
-            ${$obj} = $this->{$obj}Service->add($new{$mod});
-        }
-        catch (QueryException $e) {
-            if (ExceptionError::isForeignKeyConstraint($e)) {
-                $error = 'foreign key constraint error';
-            }
-            else {
-                $error = 'query error';
-            }
-            return $this->error($error, 400, $e);
-        }
-        catch (Exception $e) {
-            throw $e;
-        }
-
-        $resource = new {$obj->upperCamel()}Resource(${$obj})
-        return $this->response($resource, 201);
-    }
-
-    /**
-     * PATCH update
-     * 
-     * @param Request $request
-     * @param int $accountId
-     * @param int ${$obj}Id
-     * @return ResponseFactory|Response|AssetController
-     * @throws Exception
-     */
-    public function update(Request $request, int $accountId, int ${$obj}Id)
-    {
-        ${$obj} = $this->{$obj}Service->get(${$obj}Id);
-        if (! ${$obj}) {
-            return $this->error(null, 404);
-        }
-
-        $payload = $request->input('data');
-        ${$obj}->fill($payload);
-
-        list($error, $code) = $this->storeValidate($request, ${$obj}, $accountId);
-        if ($error) {
-            return $this->error($error, $code);
-        }
-
-        try {
-            $this->{$obj}Service->update(${$obj});
-        }
-        catch (QueryException $e) {
-            $error = 'query error';
-            if (ExceptionError::isForeignKeyConstraint($e)) {
-                $error = 'foreign key constraint error';
-            }
-            return $this->error($error, 404, $e);
-        }
-        catch (Exception $e) {
-            throw $e;
-        }
-
-        $resource = new {$obj->upperCamel()}Resource(${$obj})
-        return $this->response($resource, 201);
-    }
-
-    /**
-     * DELETE delete
-     *
-     * @param Request $request
-     * @param int $accountId
-     * @param int ${$obj}Id
-     * @return ResponseFactory|Response
-     */
-    public function destroy(Request $request, int $accountId, int ${$obj}Id)
-    {
-        ${$obj} = $this->{$obj}Service->get(${$obj}Id);
-        if (! ${$obj}) {
-            return response(null, 204);
-        }
-
-        list($error, $code) = $this->accountValidate(${$obj}, $accountId);
-        if ($error) {
-            return $this->error($error, $code);
-        }
-
-        $this->{$obj}Service->delete(${$obj}Id);
-        return response(null, 204);
-    }
-
-    // --------------------------------------------------------------------------------
-    //  private
-    // --------------------------------------------------------------------------------
-
-
 
     // --------------------------------------------------------------------------------
     //  other

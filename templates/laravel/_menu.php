@@ -178,6 +178,11 @@ return [
         'filename'      => "{$obj->upperCamel()}Request.php",
         'clear_comment' => false,
     ],
+    'kos_request_test' => [
+        'path'          => "tests/app/Http/Requests/",
+        'filename'      => "{$obj->upperCamel()}RequestTest.php",
+        'clear_comment' => false,
+    ],
     'kos_repository' => [
         'path'          => "app/Repositories/",
         'filename'      => "{$obj->upperCamel()}Repository.php",
@@ -194,7 +199,13 @@ return [
         'filename'      => "{$obj->upperCamel()}ServiceTest.php",
         'clear_comment' => false,
     ],
-    
+
+    'kos_use_case' => [
+        'path'          => "app/UseCases",
+        'filename'      => "{$obj->upperCamel()}UseCase.php",
+        'clear_comment' => false,
+    ],
+
     'kos_provider' => [
         'path'          => "app/Providers",
         'filename'      => "{$obj->upperCamel()}Provider.php",

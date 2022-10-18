@@ -24,8 +24,8 @@ class {$obj->upperCamel()}______Request extends FormRequest
             'my_status'              => 'required|string|min:1',
             'my_status_code'         => 'required|string|size:2',
             'user.age'               => 'nullable|numeric',
-            'email_1'                => 'required_without:email_2',     // email_1, email_2 其中一個必填
-            'email_2'                => 'required_without:email_1',
+            'email_1'                => 'email|required_without:email_2',     // email_1, email_2 其中一個必填, 
+            'email_2'                => 'email|required_without:email_1',     // 最前面的 email 指的是 email validate
             //
 {foreach $tab as $key => $field}
 {if $key=="id"}

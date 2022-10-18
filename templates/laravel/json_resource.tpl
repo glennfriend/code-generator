@@ -9,7 +9,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 /**
- *
+ * @mixin {$obj->upperCamel()}
  */
 class {$obj->upperCamel()}Resource extends JsonResource
 {
