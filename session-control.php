@@ -41,10 +41,10 @@ exit;
  */
 function changeProcess( $change, $value )
 {
-    $change = strtolower($change);
+    $change = strtolower((string) $change);
 
     // NOTE: 有些 db name, table name 有可能是大寫, 所以這裡不強迫轉成小寫
-    $value = preg_replace("/[^a-zA-Z0-9,_-]+/", '', $value );
+    $value = preg_replace("/[^a-zA-Z0-9,_-]+/", '', (string) $value );
     if (! $change || ! $value) {
         return;
     }
@@ -187,10 +187,21 @@ function showDatabase()
 function showTable()
 {
     $show = "Table &raquo;<br><br>";
+
     if (SessionManager::database()) {
 
         $db = getDbConnect();
-        $allTables = (array) $db->MetaTables();
+
+        try {
+            $allTables = (array) $db->MetaTables();
+        } catch (Throwable $e) {
+            echo "<br>\n";
+            echo $e->getMessage();
+            SessionManager::reset();
+            exit;
+        }
+
+
         foreach ($allTables as $table) {
 
             $objectName = Cake_Utility_Inflector::singularize($table);
