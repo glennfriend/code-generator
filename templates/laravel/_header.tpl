@@ -36,7 +36,7 @@
         <a href="?t=kos_service">Service</a>/<a href="?t=kos_service_test">____</a>
         <a href="?t=kos_use_case">UseCase</a>
         <a href="?t=kos_provider">Provider</a>
-        <a href="?t=kos_console">Console</a>
+        <a href="?t=kos_console">Console</a>/<a href="?t=kos_console_test">____</a>
 </div>
 
 <div class="bar2">

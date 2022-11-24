@@ -62,8 +62,13 @@ final class {$obj->upperCamel()}ControllerTest extends TestCase
         $payload = [
             'account_id' => 1,
         ];
-        $url = "/api/oooooo/xxxxxx";
-        $url .= '?' . http_build_query($payload);
+        // $filter = ['account_id' => 1];   // ??????????????? -> 這樣的話是代入  http_build_query($filter)
+        $payload = [    // ?????????????
+            filter => [
+                'account_id' => 1,
+            ],
+        ];
+        $url = "/api/oooooo/xxxxxx" . '?' . http_build_query($payload);
         $response = $this->getAuthedRequest()->json('GET', $url);
         $response->assertStatus(200);
         $response->assertJsonStructure([

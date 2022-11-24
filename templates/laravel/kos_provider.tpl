@@ -166,6 +166,14 @@ class {$obj->upperCamel()}Provider extends ServiceProvider
                 ->runInBackground()
             ;
         });
+
+        $this->app->booted(function () {
+            $schedule = $this->app->make(Schedule::class);
+            $schedule
+                ->command(ExecuteMyPlanJobsCommand::class, ['--account_id=100'])
+                ->dailyAt('00:00');
+        });
+
         */
     }
 

@@ -5,232 +5,200 @@ $mod = new NamePrototype(SessionManager::daoName());
 $today = date("Y_m_d");
 
 return [
-    
-    'eloquent' => [
+
+    'eloquent'      => [
         'path'          => "app/Entities/",
         'filename'      => "{$obj->upperCamel()}Eloquent.php",
         'clear_comment' => false,
     ],
     'eloquent_test' => [
-        'path'          => "tests/app/Unit/Entities/",
-        'filename'      => "{$obj->upperCamel()}Test.php",
-        'clear_comment' => false,
+        'path'     => "tests/app/Unit/Entities/",
+        'filename' => "{$obj->upperCamel()}Test.php",
     ],
 
     'factories' => [
-        'path'          => "database/factories/",
-        'filename'      => "{$obj->upperCamel()}Factory.php",
-        'clear_comment' => false,
+        'path'     => "database/factories/",
+        'filename' => "{$obj->upperCamel()}Factory.php",
     ],
-    
-    'json_resource' => [
-        'path'          => "app/Http/Resources/",
-        'filename'      => "{$obj->upperCamel()}Resource.php",
-        'clear_comment' => false,
+
+    'json_resource'        => [
+        'path'     => "app/Http/Resources/",
+        'filename' => "{$obj->upperCamel()}Resource.php",
     ],
-    'migration' => [
-        'path'          => "app/database/migrations/",
-        'filename'      => $today ."_000001_create_{$mod->lower('_')}_table.php",
-        'clear_comment' => false,
+    'migration'            => [
+        'path'     => "app/database/migrations/",
+        'filename' => $today . "_000001_create_{$mod->lower('_')}_table.php",
     ],
-    'migration_view' => [
-        'path'          => "app/database/migrations/",
-        'filename'      => $today ."_000001_create_{$mod->lower('_')}_view.php",
-        'clear_comment' => false,
+    'migration_view'       => [
+        'path'     => "app/database/migrations/",
+        'filename' => $today . "_000001_create_{$mod->lower('_')}_view.php",
     ],
-    'value_object' => [
-        'path'          => "app/Molds/",
-        'filename'      => "{$obj->upperCamel()}.php",
-        'clear_comment' => false,
+    'value_object'         => [
+        'path'     => "app/Molds/",
+        'filename' => "{$obj->upperCamel()}.php",
     ],
-    'model' => [
-        'path'          => "app/Molds/",
-        'filename'      => "{$mod->upperCamel()}.php",
-        'clear_comment' => false,
+    'model'                => [
+        'path'     => "app/Molds/",
+        'filename' => "{$mod->upperCamel()}.php",
     ],
-    'model_extend' => [
-        'path'          => "app/Molds/",
-        'filename'      => "{$mod->upperCamel()}.php",
-        'clear_comment' => false,
+    'model_extend'         => [
+        'path'     => "app/Molds/",
+        'filename' => "{$mod->upperCamel()}.php",
     ],
-    'search_table' => [
-        'path'          => "app/Molds/SearchTable/",
-        'filename'      => "{$mod->upperCamel()}.php",
-        'clear_comment' => false,
+    'search_table'         => [
+        'path'     => "app/Molds/SearchTable/",
+        'filename' => "{$mod->upperCamel()}.php",
     ],
 
     //
-    'locale' => [
-        'path'          => "resource/locale/",
-        'filename'      => "zh_tw.php",
-        'clear_comment' => false,
+    'locale'               => [
+        'path'     => "resource/locale/",
+        'filename' => "zh_tw.php",
     ],
 
     // controller
-    'home_controller' => [
-        'path'          => "app/Http/Controllers/{$obj->upperCamel()}/",
-        'filename'      => "{$obj->upperCamel()}Controller.php",
-        'clear_comment' => false,
+    'home_controller'      => [
+        'path'     => "app/Http/Controllers/{$obj->upperCamel()}/",
+        'filename' => "{$obj->upperCamel()}Controller.php",
     ],
     'home_controller_test' => [
-        'path'          => "tests/app/Feature/Http/Controllers/",
-        'filename'      => "{$obj->upperCamel()}ControllerTest.php",
-        'clear_comment' => false,
+        'path'     => "tests/app/Feature/Http/Controllers/",
+        'filename' => "{$obj->upperCamel()}ControllerTest.php",
     ],
-    
+
     'home_api_controller' => [
-        'path'          => "app/Http/Controllers/Api/{$obj->upperCamel()}/",
-        'filename'      => "{$obj->upperCamel()}ApiController.php",
-        'clear_comment' => false,
+        'path'     => "app/Http/Controllers/Api/{$obj->upperCamel()}/",
+        'filename' => "{$obj->upperCamel()}ApiController.php",
     ],
 
     // job
-    'job_job' => [
-        'path'          => "app/Jobs/",
-        'filename'      => "{$obj->upperCamel()}Job.php",
-        'clear_comment' => false,
+    'job_job'             => [
+        'path'     => "app/Jobs/",
+        'filename' => "{$obj->upperCamel()}Job.php",
     ],
-    'job_job_test' => [
-        'path'          => "tests/app/Feature/jobs/",
-        'filename'      => "{$obj->upperCamel()}JobTest.php",
-        'clear_comment' => false,
+    'job_job_test'        => [
+        'path'     => "tests/app/Feature/jobs/",
+        'filename' => "{$obj->upperCamel()}JobTest.php",
     ],
-    
-    'job_param' => [
-        'path'          => "app/DataTransferObjects/",
-        'filename'      => "{$obj->upperCamel()}Params.php",
-        'clear_comment' => false,
+
+    'job_param'               => [
+        'path'     => "app/DataTransferObjects/",
+        'filename' => "{$obj->upperCamel()}Params.php",
     ],
-    'job_work' => [
-        'path'          => "app/Services/Works/",
-        'filename'      => "{$obj->upperCamel()}Work.php",
-        'clear_comment' => false,
+    'job_work'                => [
+        'path'     => "app/Services/Works/",
+        'filename' => "{$obj->upperCamel()}Work.php",
     ],
 
     // business layer
-    'business_service' => [
-        'path'          => "app/Service/{$obj->upperCamel()}/",
-        'filename'      => "{$obj->upperCamel()}Service.php",
-        'clear_comment' => false,
+    'business_service'        => [
+        'path'     => "app/Service/{$obj->upperCamel()}/",
+        'filename' => "{$obj->upperCamel()}Service.php",
     ],
-    'business_helper' => [
-        'path'          => "app/Service/{$obj->upperCamel()}/",
-        'filename'      => "{$obj->upperCamel()}Helper.php",
-        'clear_comment' => false,
+    'business_helper'         => [
+        'path'     => "app/Service/{$obj->upperCamel()}/",
+        'filename' => "{$obj->upperCamel()}Helper.php",
     ],
 
     // js
-    'js' => [
-        'path'          => "home/admin/dist/{$obj}/",
-        'filename'      => "main.js",
-        'clear_comment' => false,
+    'js'                      => [
+        'path'     => "home/admin/dist/{$obj}/",
+        'filename' => "main.js",
     ],
-    'js_object' => [
-        'path'          => "home/admin/dist/{$obj}/",
-        'filename'      => "{$obj}.js",
-        'clear_comment' => false,
+    'js_object'               => [
+        'path'     => "home/admin/dist/{$obj}/",
+        'filename' => "{$obj}.js",
     ],
 
     // view
-    'view_index_aggrid' => [
-        'path'          => "resources/views/admin/xxxxxx/{$obj->lower('-')}/",
-        'filename'      => "index.blade.php",
-        'clear_comment' => false,
+    'view_index_aggrid'       => [
+        'path'     => "resources/views/admin/xxxxxx/{$obj->lower('-')}/",
+        'filename' => "index.blade.php",
     ],
-    'view_index' => [
-        'path'          => "resources/views/{$obj}/views/",
-        'filename'      => "home.index.phtml",
-        'clear_comment' => false,
+    'view_index'              => [
+        'path'     => "resources/views/{$obj}/views/",
+        'filename' => "home.index.phtml",
     ],
-    'view_create' => [
-        'path'          => "resources/views/{$obj}/views/",
-        'filename'      => "home.create.phtml",
-        'clear_comment' => false,
+    'view_create'             => [
+        'path'     => "resources/views/{$obj}/views/",
+        'filename' => "home.create.phtml",
     ],
-    'view_edit' => [
-        'path'          => "resources/views/{$obj}/views/",
-        'filename'      => "home.edit.phtml",
-        'clear_comment' => false,
+    'view_edit'               => [
+        'path'     => "resources/views/{$obj}/views/",
+        'filename' => "home.edit.phtml",
     ],
 
     // test
-    'test_data' => [
-        'path'          => "tests/app/Data/Controllers/",
-        'filename'      => "{$obj->lower('_')}.json",
-        'clear_comment' => false,
+    'test_data'               => [
+        'path'     => "tests/app/Data/Controllers/",
+        'filename' => "{$obj->lower('_')}.json",
     ],
 
     // kos flow
-    'kos_controller_api' => [
-        'path'          => "app/Http/Controllers/Api/{$obj->upperCamel()}/",
-        'filename'      => "{$obj->upperCamel()}ApiController.php",
-        'clear_comment' => false,
+    'kos_controller_api'      => [
+        'path'     => "app/Http/Controllers/Api/{$obj->upperCamel()}/",
+        'filename' => "{$obj->upperCamel()}ApiController.php",
     ],
     'kos_controller_api_test' => [
-        'path'          => "tests/app/Feature/Api/",
-        'filename'      => "{$obj->upperCamel()}ApiTest.php",
-        'clear_comment' => false,
+        'path'     => "tests/app/Feature/Api/",
+        'filename' => "{$obj->upperCamel()}ApiTest.php",
     ],
-    
 
-    'kos_request' => [
-        'path'          => "app/Http/Requests/{$obj->upperCamel()}/",
-        'filename'      => "{$obj->upperCamel()}Request.php",
-        'clear_comment' => false,
+
+    'kos_request'      => [
+        'path'     => "app/Http/Requests/{$obj->upperCamel()}/",
+        'filename' => "{$obj->upperCamel()}Request.php",
     ],
     'kos_request_test' => [
-        'path'          => "tests/app/Http/Requests/",
-        'filename'      => "{$obj->upperCamel()}RequestTest.php",
-        'clear_comment' => false,
+        'path'     => "tests/app/Http/Requests/",
+        'filename' => "{$obj->upperCamel()}RequestTest.php",
     ],
-    'kos_repository' => [
-        'path'          => "app/Repositories/",
-        'filename'      => "{$obj->upperCamel()}Repository.php",
-        'clear_comment' => false,
+    'kos_repository'   => [
+        'path'     => "app/Repositories/",
+        'filename' => "{$obj->upperCamel()}Repository.php",
     ],
 
-    'kos_service' => [
-        'path'          => "app/Services",
-        'filename'      => "{$obj->upperCamel()}Service.php",
-        'clear_comment' => false,
+    'kos_service'      => [
+        'path'     => "app/Services",
+        'filename' => "{$obj->upperCamel()}Service.php",
     ],
     'kos_service_test' => [
-        'path'          => "tests/app/Feature/Services/",
-        'filename'      => "{$obj->upperCamel()}ServiceTest.php",
-        'clear_comment' => false,
+        'path'     => "tests/app/Feature/Services/",
+        'filename' => "{$obj->upperCamel()}ServiceTest.php",
     ],
 
     'kos_use_case' => [
-        'path'          => "app/UseCases",
-        'filename'      => "{$obj->upperCamel()}UseCase.php",
-        'clear_comment' => false,
+        'path'     => "app/UseCases",
+        'filename' => "{$obj->upperCamel()}UseCase.php",
     ],
 
-    'kos_provider' => [
-        'path'          => "app/Providers",
-        'filename'      => "{$obj->upperCamel()}Provider.php",
-        'clear_comment' => false,
+    'kos_provider'     => [
+        'path'     => "app/Providers",
+        'filename' => "{$obj->upperCamel()}Provider.php",
     ],
-    'kos_console' => [
-        'path'          => "app/Console",
-        'filename'      => "{$obj->upperCamel()}Console.php",
-        'clear_comment' => false,
+
+    //
+    'kos_console'      => [
+        'path'     => "app/Console",
+        'filename' => "{$obj->upperCamel()}Console.php",
+    ],
+    'kos_console_test' => [
+        'path'     => "tests/app/Unit/Console",
+        'filename' => "{$obj->upperCamel()}ConsoleTest.php",
     ],
 
     // readme
-    'readme' => [
-        'path'          => "app/",
-        'filename'      => "README.md",
-        'clear_comment' => false,
+    'readme'           => [
+        'path'     => "app/",
+        'filename' => "README.md",
     ],
 
     // for debug
-    'debug_only' => [
-        'path'          => "app/",
-        'filename'      => "Debug.php",
-        'clear_comment' => false,
+    'debug_only'       => [
+        'path'     => "app/",
+        'filename' => "Debug.php",
     ],
-    
+
 ];
 
 //

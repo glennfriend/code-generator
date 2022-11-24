@@ -67,6 +67,23 @@ final class {$obj->upperCamel()}Job extends TestCase
         $this->assertEquals(${$obj}->email, $attributes['email']);
     }
 
+    /**
+     * @test
+     */
+    public function job_dispatch_should_work()
+    {
+        $param = new HelloJobParam([]);
+
+        $this->worker = app(HelloWorker::class);
+        $this->worker->runJob($param)
+
+        // 放置於呼叫完的後方, 會去 redis 檢查 job 是否有被呼叫
+        Bus::assertDispatched(HelloJob::class, function (object $job) {
+            return $job->accountId === $this->accountId
+                && $job->email = $this->contact->email;
+        });
+    }
+
     // ------------------------------------------------------------
     //  private
     // ------------------------------------------------------------

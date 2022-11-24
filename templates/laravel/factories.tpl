@@ -8,6 +8,7 @@ namespace Modules\{$obj->upperCamel()}\Database\Factories;
 
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 
 class {$obj->upperCamel()}Factory extends Factory
@@ -142,6 +143,7 @@ EOD;
         'age'      => $faker->numberBetween(1, 120),
         'status'   => $faker->randomElement(['enabled', 'disabled']),
         'type'     => $faker->randomElement({$obj->upperCamel()}Type->getValues()),     // enum
+        'type'     => Arr::random({$obj->upperCamel()}Type::cases()),                   // enum
         'timezone' => date_default_timezone_get(),
     ];
 });
