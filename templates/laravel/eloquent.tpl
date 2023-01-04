@@ -24,10 +24,12 @@ use Illuminate\Support\Carbon;
  * @property int ${$field.name->lower('_')}
 {elseif $field.ado->type|in_array:['float', 'decimal']}
  * @property float ${$field.name->lower('_')}
+{elseif $field.ado->type|in_array:['json']}
+ * @property array ${$field.name->lower('_')}
 {elseif $field.ado->type|str_contains:'unsigned'}
  * @property int ${$field.name->lower('_')}
 {elseif $field.ado->type|in_array:['timestamp', 'datetime', 'date']}
- * @property DateTime|Carbon|null ${$field.name->lower('_')}
+ * @property Carbon|null ${$field.name->lower('_')}
 {else}
  * @property string ${$field.name->lower('_')}  ({$field.ado->type})
 {/if}

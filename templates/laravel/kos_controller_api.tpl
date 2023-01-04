@@ -58,6 +58,7 @@ Route::group($config, function () {
     Route::delete('/{$mod->lower('-')}/{ldelim}{$obj->lowerCamel()}Id{rdelim}',  'Api\\{$obj->upperCamel()}Controller@destroy');
     // or
     Route::resource('{$mod->lower('-')}', '{$obj->upperCamel()}Controller');
+    Route::apiResource('{$mod->lower('-')}', '{$obj->upperCamel()}Controller');
     // or
     Route::resource('/{$mod->lower('-')}', '{$obj->upperCamel()}Controller', [
         'only' => ['index', 'show', 'store', 'update', 'destroy'],
@@ -71,6 +72,12 @@ Route::group($config, function () {
             'store' => '{$mod->lower('-')}.store',
         ],
     ]);
+    // laravel 8.80
+    Route::controller(YourController::class)->group(function(){
+        Route::get('users', 'index');
+        Route::get('users', 'store');
+        Route::get('users/{ldelim}userId{rdelim}', 'show');
+    })
 
 });
 */

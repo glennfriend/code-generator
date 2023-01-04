@@ -23,35 +23,37 @@ class {$obj->upperCamel()}Factory extends Factory
 {elseif $key==='attribs'}
             '{$field.ado->name}'{$field.ado->name|space_even} => $attribs,
 {elseif $key==='createdAt'}
-            '{$field.ado->name}'{$field.ado->name|space_even} => this->faker->dateTime('now', date_default_timezone_get()),  // {$field.ado->name} 可能沒有做用
+            '{$field.ado->name}'{$field.ado->name|space_even} => $this->faker->dateTime('now', date_default_timezone_get()),  // {$field.ado->name} 可能沒有做用
 {elseif $key==='updatedAt'}
-            '{$field.ado->name}'{$field.ado->name|space_even} => this->faker->dateTime(),  // {$field.ado->name} 可能沒有做用
+            '{$field.ado->name}'{$field.ado->name|space_even} => $this->faker->dateTime(),  // {$field.ado->name} 可能沒有做用
 {elseif $key==='deletedAt'}
             '{$field.ado->name}'{$field.ado->name|space_even} => null,
 {elseif $key==='name'}
-            '{$field.ado->name}'{$field.ado->name|space_even} => this->faker->name(),    // this->faker->word()
+            '{$field.ado->name}'{$field.ado->name|space_even} => $this->faker->name(),
 {elseif $key==='firstName'}
-            '{$field.ado->name}'{$field.ado->name|space_even} => this->faker->firstName(),
+            '{$field.ado->name}'{$field.ado->name|space_even} => $this->faker->firstName(),
 {elseif $key==='lastName'}
-            '{$field.ado->name}'{$field.ado->name|space_even} => this->faker->lastName(),
+            '{$field.ado->name}'{$field.ado->name|space_even} => $this->faker->lastName(),
 {elseif $key==='uuid'}
-            '{$field.ado->name}'{$field.ado->name|space_even} => this->faker->unique()->uuid(),
+            '{$field.ado->name}'{$field.ado->name|space_even} => $this->faker->unique()->uuid(),
 {elseif $key==='email'}
-            '{$field.ado->name}'{$field.ado->name|space_even} => this->faker->safeEmail(),
+            '{$field.ado->name}'{$field.ado->name|space_even} => $this->faker->safeEmail(),
+{elseif $key==='country_code'}
+            '{$field.ado->name}'{$field.ado->name|space_even} => $this->faker->countryCode(),
 {elseif $field.ado->type=='enum'}
-            '{$field.ado->name}'{$field.ado->name|space_even} => this->faker->randomElement({$obj->upperCamel()}Type->getValues()),     // enum
+            '{$field.ado->name}'{$field.ado->name|space_even} => $this->faker->randomElement({$obj->upperCamel()}Type->getValues()),     // enum
 {elseif $field.ado->type=='tinyint'}
-            '{$field.ado->name}'{$field.ado->name|space_even} => (int) this->faker->boolean(),
+            '{$field.ado->name}'{$field.ado->name|space_even} => (int) $this->faker->boolean(),
 {elseif $field.ado->type=='smallint' || $field.ado->type=='mediumint' || $field.ado->type=='int' || $field.ado->type=='bigint'}
-            '{$field.ado->name}'{$field.ado->name|space_even} => this->faker->randomDigitNotNull(),
+            '{$field.ado->name}'{$field.ado->name|space_even} => $this->faker->randomDigitNotNull(),
 {elseif $field.ado->type=='double'}
-            '{$field.ado->name}'{$field.ado->name|space_even} => this->faker->randomFloat($nbMaxDecimals = NULL, $min = 0, $max = NULL),
+            '{$field.ado->name}'{$field.ado->name|space_even} => $this->faker->randomFloat($nbMaxDecimals = NULL, $min = 0, $max = NULL),
 {elseif $field.ado->type=='timestamp' || $field.ado->type=='datetime' || $field.ado->type=='date'}
-            '{$field.ado->name}'{$field.ado->name|space_even} => this->faker->dateTime(),
+            '{$field.ado->name}'{$field.ado->name|space_even} => $this->faker->dateTime(),
 {elseif $field.ado->type=='text' || $field.ado->type=='mediumtext' || $field.ado->type=='longtext'}
-            '{$field.ado->name}'{$field.ado->name|space_even} => this->faker->lexify('?????? {$field.ado->name}') . ' ' . this->faker->emoji(),
+            '{$field.ado->name}'{$field.ado->name|space_even} => $this->faker->word() . ' ' . $this->faker->emoji(),
 {else}
-            '{$field.ado->name}'{$field.ado->name|space_even} => this->faker->lexify('?????? {$field.ado->name}'),
+            '{$field.ado->name}'{$field.ado->name|space_even} => $this->faker->lexify('?????? {$field.ado->name}'),
 {/if}
 {/foreach}
         ];

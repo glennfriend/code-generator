@@ -74,6 +74,8 @@ class Create{$mod->upperCamel()}Table extends Migration
             $table->float('{$field.ado->name}', 8, 2);
 {elseif $field.ado->type=='decimal'}
             $table->unsignedDecimal('{$field.ado->name}', 8, 2);
+{elseif $field.ado->type=='boolean'}
+            $table->boolean('{$field.ado->name}');
 {elseif $field.ado->type=='varchar'}
             $table->string('{$field.ado->name}', 100)->nullable()->index('{$field.ado->name}');
 {elseif $field.ado->type=='text'}
@@ -86,6 +88,8 @@ class Create{$mod->upperCamel()}Table extends Migration
             $table->timestamp('{$field.ado->name}');    // {$field.ado->type}
 {elseif $field.ado->type=='enum'}
             $table->enum('{$field.ado->name}', ['type1', 'type2']);
+{elseif $field.ado->type=='json'}
+            $table->json('{$field.ado->name}')->nullable();
 {else}
             $table->string('{$field.ado->name}', 255)->nullable();
 {/if}
