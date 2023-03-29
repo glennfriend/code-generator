@@ -1,6 +1,6 @@
 {
     "require" : {
         "adodb/adodb-php": "5.22.*",
-        "smarty/smarty": "4.2.*"
+        "smarty/smarty": "4.3.*"
     }
 }
