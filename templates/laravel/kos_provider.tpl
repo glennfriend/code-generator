@@ -251,10 +251,16 @@ class {$obj->upperCamel()}Provider extends ServiceProvider
         $this->publishes([
             dirname(__DIR__) . '/config/' . '{$obj->lower('-')}.php' => config_path('{$obj->lower('-')}.php'),
         ], $myPublishName);
+        // or -> your-package-name-config
 
         $this->publishes([
             dirname(__DIR__) . '/resources/js' => public_path('vendor/{$obj->lower('-')}/js'),
         ], $myPublishName);
+        // or -> your-package-name-resource
+
+        // $this->publishes([
+        //     dirname(__DIR__) . '/database/migrations/' => database_path('migrations'),
+        // ], 'your-package-name-migration');
     }
 
     /**

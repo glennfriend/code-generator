@@ -99,6 +99,12 @@ return [
         'path'     => "app/Service/{$obj->upperCamel()}/",
         'filename' => "{$obj->upperCamel()}Helper.php",
     ],
+    'code_snippet'         => [
+        'path'     => "app/",
+        'filename' => "code_snippet.php",
+    ],
+    
+
 
     // js
     'js'                      => [
@@ -153,6 +159,10 @@ return [
         'path'     => "tests/app/Http/Requests/",
         'filename' => "{$obj->upperCamel()}RequestTest.php",
     ],
+    'kos_rule'      => [
+        'path'     => "app/Rules/{$obj->upperCamel()}/",
+        'filename' => "{$obj->upperCamel()}Rule.php",
+    ],
     'kos_repository'   => [
         'path'     => "app/Repositories/",
         'filename' => "{$obj->upperCamel()}Repository.php",
@@ -170,6 +180,10 @@ return [
     'kos_use_case' => [
         'path'     => "app/UseCases",
         'filename' => "{$obj->upperCamel()}UseCase.php",
+    ],
+    'kos_use_case_test' => [
+        'path'     => "tests/app/Feature/UseCases",
+        'filename' => "{$obj->upperCamel()}UseCaseTest.php",
     ],
 
     'kos_provider'     => [

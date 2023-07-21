@@ -31,13 +31,15 @@ use App\Jobs\{$obj->upperCamel()}Job;
  */
 class {$obj->upperCamel()}Job implements ShouldQueue
 {
-    use Dispatchable, InteractsWithQueue, Queueable;
+    use Dispatchable;
+    use InteractsWithQueue;
+    use Queueable;
     use SerializesModels;
 
     /**
      * At least $tries
      */
-    public int $tries = 1;
+    public int $tries = 3;
     private {$obj->upperCamel()}Params $params;
 
     /**

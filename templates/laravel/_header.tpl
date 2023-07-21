@@ -13,6 +13,8 @@
     <a href="?t=home_api_controller">HomeApi</a>,
     <a href="?t=business_service">Service</a>,
     <a href="?t=business_helper">Helper</a>
+    <a href="?t=code_snippet">snippet</a>
+    
     <br>
     [job]
         <a href="?t=job_job">job</a>/<a href="?t=job_job_test">____</a>,
@@ -32,10 +34,11 @@
     [normal]
         <a href="?t=kos_controller_api">ControllerApi</a>/<a href="?t=kos_controller_api_test">____</a>,
         <a href="?t=kos_request">FormRequest</a>/<a href="?t=kos_request_test">____</a>,
-        <a href="?t=kos_repository">Repository</a>
-        <a href="?t=kos_service">Service</a>/<a href="?t=kos_service_test">____</a>
-        <a href="?t=kos_use_case">UseCase</a>
-        <a href="?t=kos_provider">Provider</a>
+        <a href="?t=kos_rule">Rule</a>,
+        <a href="?t=kos_repository">Repository</a>,
+        <a href="?t=kos_service">Service</a>/<a href="?t=kos_service_test">____</a>,
+        <a href="?t=kos_use_case">UseCase/<a href="?t=kos_use_case_test">____</a>,
+        <a href="?t=kos_provider">Provider</a>,
         <a href="?t=kos_console">Console</a>/<a href="?t=kos_console_test">____</a>
 </div>
 

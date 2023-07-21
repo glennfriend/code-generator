@@ -20,6 +20,10 @@ class {$obj->upperCamel()}Factory extends Factory
         return [
 {foreach $tab as $key => $field}
 {if $key==='id'}
+{elseif $key==='accountId'}
+            '{$field.ado->name}'{$field.ado->name|space_even} => Account::factory(),      // 不用寫成這種方式 Account::factory()->create()->id
+{elseif substr($key, -2, 2)==='Id'}
+            '{$field.ado->name}'{$field.ado->name|space_even} => $this->faker->randomDigitNotZero(),    // Account::factory(), 同於 Account::->create()->id
 {elseif $key==='attribs'}
             '{$field.ado->name}'{$field.ado->name|space_even} => $attribs,
 {elseif $key==='createdAt'}
@@ -85,14 +89,12 @@ $factory->define({$obj->upperCamel()}::class, function (Faker $faker)
     return [
 {foreach $tab as $key => $field}
 {if $key==='id'}
-{elseif $key==='attribs'}
-        '{$field.ado->name}'{$field.ado->name|space_even} => $attribs,
 {elseif $key==='createdAt'}
-        '{$field.ado->name}'{$field.ado->name|space_even} => $faker->dateTime('now', date_default_timezone_get()),  // {$field.ado->name} 可能沒有做用
 {elseif $key==='updatedAt'}
-        '{$field.ado->name}'{$field.ado->name|space_even} => $faker->dateTime(),  // {$field.ado->name} 可能沒有做用
 {elseif $key==='deletedAt'}
         '{$field.ado->name}'{$field.ado->name|space_even} => null,
+{elseif $key==='attribs'}
+        '{$field.ado->name}'{$field.ado->name|space_even} => $attribs,
 {elseif $key==='name'}
         '{$field.ado->name}'{$field.ado->name|space_even} => $faker->name(),    // $faker->word()
 {elseif $key==='firstName'}
@@ -141,12 +143,16 @@ EOD;
     // $randomUniqueId = $faker->unique()->randomDigit;
     return [
         'attribs' => $attribs,
-        'name'     => $faker->name(),
-        'age'      => $faker->numberBetween(1, 120),
-        'status'   => $faker->randomElement(['enabled', 'disabled']),
-        'type'     => $faker->randomElement({$obj->upperCamel()}Type->getValues()),     // enum
-        'type'     => Arr::random({$obj->upperCamel()}Type::cases()),                   // enum
-        'timezone' => date_default_timezone_get(),
+        'name'            => $this->faker->name(),
+        'age'             => $this->faker->numberBetween(1, 120),
+        'duration'        => $this->faker->randomNumber(3),
+        'status'          => $this->faker->randomElement(['enabled', 'disabled', null]),
+        'type'            => $this->faker->randomElement({$obj->upperCamel()}Type->getValues()),   // enum
+        'type'            => Arr::random({$obj->upperCamel()}Type::cases()),                       // enum
+        'total_call_cost' => $this->faker->randomFloat(),
+        'timezone'        => date_default_timezone_get(),
+        'campaign_id'     => Campaigns::factory(),
+        'tracking_number' => str_replace('+', '', $this->faker->e164PhoneNumber),
     ];
 });
 

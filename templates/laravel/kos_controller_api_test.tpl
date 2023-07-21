@@ -71,6 +71,7 @@ final class {$obj->upperCamel()}ControllerTest extends TestCase
         $url = "/api/oooooo/xxxxxx" . '?' . http_build_query($payload);
         $response = $this->getAuthedRequest()->json('GET', $url);
         $response->assertStatus(200);
+
         $response->assertJsonStructure([
             'data' => [
                 '*' => [
@@ -153,6 +154,9 @@ final class {$obj->upperCamel()}ControllerTest extends TestCase
         //
         // dump(json_decode($response->getContent(), true));
         $response->assertStatus(201);
+
+        // ${$obj} = {$obj->upperCamel()}::find($response->getData(true)['data']['id']);
+        // $response->assertJsonStructure(['data' => array_keys(json_decode(json_encode(new {$obj->upperCamel()}Resource(${$obj})), true))]);
         $response->assertJsonStructure([
             'data' => [
                 'id',

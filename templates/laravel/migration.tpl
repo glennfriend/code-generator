@@ -4,7 +4,8 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class Create{$mod->upperCamel()}Table extends Migration
+// class Create{$mod->upperCamel()}Table extends Migration
+return new class extends Migration
 {
     private string $table = '{$mod->lower('_')}';
 
@@ -51,7 +52,7 @@ class Create{$mod->upperCamel()}Table extends Migration
         Schema::create($this->table, function (Blueprint $table) {
 {foreach from=$tab key=key item=field}
 {if $key=='id'}
-            $table->bigIncrements('id');
+            $table->bigIncrements('id')->unsigned();
 {elseif $key=='status' && $field.ado->type=='enum'}
             $table->enum('{$field.ado->name}', ['enable', 'disable']);
 {elseif $key=='status'}
@@ -62,16 +63,16 @@ class Create{$mod->upperCamel()}Table extends Migration
             $table->timestamp('{$field.ado->name}')->nullable();
 {elseif $key=='properties' || $key=='attribs'}
             $table->mediumText('{$field.ado->name}');
-{elseif $field.ado->type=='tinyint'}
+{elseif strstr($field.ado->type, 'bigint')}
+            $table->bigInteger('{$field.ado->name}')->unsigned()->nullable();
+{elseif strstr($field.ado->type, 'tinyint')}
             $table->tinyInteger('{$field.ado->name}')->unsigned()->index('{$field.ado->name}');
-{elseif $field.ado->type=='smallint'}
+{elseif strstr($field.ado->type, 'smallint')}
             $table->smallInteger('{$field.ado->name}')->unsigned()->nullable();
+{elseif strstr($field.ado->type, 'float')}
+            $table->float('{$field.ado->name}', 8, 2);
 {elseif $field.ado->type=='int'}
             $table->integer('{$field.ado->name}')->unsigned()->nullable();
-{elseif $field.ado->type=='bigint'}
-            $table->bigInteger('{$field.ado->name}')->unsigned()->nullable();
-{elseif $field.ado->type=='float'}
-            $table->float('{$field.ado->name}', 8, 2);
 {elseif $field.ado->type=='decimal'}
             $table->unsignedDecimal('{$field.ado->name}', 8, 2);
 {elseif $field.ado->type=='boolean'}
@@ -91,7 +92,7 @@ class Create{$mod->upperCamel()}Table extends Migration
 {elseif $field.ado->type=='json'}
             $table->json('{$field.ado->name}')->nullable();
 {else}
-            $table->string('{$field.ado->name}', 255)->nullable();
+            $table->string('{$field.ado->name}', 255)->nullable();  // type is {$field.ado->type}
 {/if}
 {/foreach}
 

@@ -6,6 +6,7 @@ declare(strict_types=1);
 {/if}
 
 use DateTime;
+use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
@@ -29,15 +30,18 @@ use Illuminate\Support\Carbon;
 {elseif $field.ado->type|str_contains:'unsigned'}
  * @property int ${$field.name->lower('_')}
 {elseif $field.ado->type|in_array:['timestamp', 'datetime', 'date']}
- * @property Carbon|null ${$field.name->lower('_')}
+ * @property Carbon ${$field.name->lower('_')}
 {else}
  * @property string ${$field.name->lower('_')}  ({$field.ado->type})
 {/if}
 {/foreach}
  * @mixin Builder
+ *
+ * @property-read Account $account      // 如果你有 account_id 並且有做 BelongsTo 的關連表
  */
 class {$obj->upperCamel()}Eloquent extends Model
 {
+    use HasFactory;
     // use SoftDeletes;
 
     protected $table = '{$tableName->lower("_")}';
@@ -46,9 +50,9 @@ class {$obj->upperCamel()}Eloquent extends Model
     protected array $hidden = ['password', 'properties'];
 
     /**
-     *
+     * @var string[]
      */
-    array protected $guarded = ['id'];
+    protected $guarded = ['id'];
 
     /**
      * 批量賦值 的 白名單
@@ -62,9 +66,18 @@ class {$obj->upperCamel()}Eloquent extends Model
 {/foreach}
     ];
 
+    /**
+     * The attributes that should be cast to native types.
+     *
+     * @var array
+     */
+    protected $casts = [
+        // 'custom' => CustomCastor::class,
+        // 'custom' => 'array',
+    ];
+
     // laravel 8 database factory
-    use HasFactory;
-    public static function newFactory(): {$obj->upperCamel()}Factory
+    public static function newFactory(): Factory    // {$obj->upperCamel()}Factory
     {
         return {$obj->upperCamel()}Factory::new();
     }
@@ -115,6 +128,9 @@ class {$obj->upperCamel()}Eloquent extends Model
         return $this->belongsTo(ParentEloquent::class, 'parent_id', $localKey = 'id');
     }
 
+    /**
+     * 你可以加到 class 的 PHPDoc ---> @property-read User $user
+     */
     public function user(): BelongsTo
     {
         return $this->belongsTo(UserEloquent::class, 'user_id', $localKey = 'id');

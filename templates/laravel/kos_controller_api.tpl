@@ -105,9 +105,9 @@ class {$obj->upperCamel()}ApiController extends Controller
      *
      */
     public function __construct(
-        {$obj->upperCamel()} ${$obj},
-        {$obj->upperCamel()}Repository ${$obj}Repository,
-        {$obj->upperCamel()}Service ${$obj}Service
+        private readonly {$obj->upperCamel()} ${$obj},
+        private readonly {$obj->upperCamel()}Repository ${$obj}Repository,
+        private readonly {$obj->upperCamel()}Service ${$obj}Service
     )
     {
         $this->{$obj} = ${$obj};
