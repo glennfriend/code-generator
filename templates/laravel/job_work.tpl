@@ -191,7 +191,7 @@ class {$obj->upperCamel()}Work
         $this->{$obj}->setCustom('counter', $counter);
         $this->{$obj}->save();
 
-        // if (App::environment(['local', 'geo-local'])) {
+        // if (App::environment(['local', 'testing', 'geo-local'])) {
         //     die(__CLASS__ . ' localhost retry to Stop for debug only');
         // }
 

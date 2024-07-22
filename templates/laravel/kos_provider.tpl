@@ -36,6 +36,7 @@ class {$obj->upperCamel()}Provider extends ServiceProvider
         */
 
         $this->registerConfig();
+        $this->registerBindings();
         $this->registerCommands();
         $this->registerMiddlewares();
         $this->registerFactories();
@@ -74,6 +75,21 @@ class {$obj->upperCamel()}Provider extends ServiceProvider
         // 請改成用 - 符號連接
         $this->mergeConfigFrom(dirname(__DIR__) . '/config/{$obj->lower('-')}.php',      '{$obj->lower('-')}');
         $this->mergeConfigFrom(dirname(__DIR__) . '/config/{$obj->lower('-')}-menu.php', '{$obj->lower('-')}-menu');
+    }
+
+    public function registerBindings(): void
+    {
+        $this->app->bind(YourContractsInterface::class, YourAdapterClass::class);
+        $this->app->bind(LiteCampaignSetting::class, function ($app) {
+            /**
+             * @var LiteCampaignGroupSetting $liteCampaignGroupSetting
+             */
+            $liteCampaignGroupSetting = $app->make(LiteCampaignGroupSetting::class);
+            return new LiteCampaignSetting(
+                $liteCampaignGroupSetting->managerTemplateAccountId,
+                $liteCampaignGroupSetting->messengerTemplateAccountId,
+            );
+        });
     }
 
     /**

@@ -5,6 +5,7 @@ declare(strict_types=1);
 {else        }namespace App\Entities;
 {/if}
 
+use Carbon\Carbon;
 use DateTime;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -12,7 +13,13 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Support\Carbon;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+
+{if $isModule}
+use Modules\{$obj->upperCamel()}\Database\Factories\{$obj->upperCamel()}Factory;
+{else}
+use App\Database\Factories\{$obj->upperCamel()}Factory;
+{/if}
 
 /**
  * Class {$obj->upperCamel()}Eloquent
@@ -35,6 +42,7 @@ use Illuminate\Support\Carbon;
  * @property string ${$field.name->lower('_')}  ({$field.ado->type})
 {/if}
 {/foreach}
+ * @method {$obj->upperCamel()}Factory factory()
  * @mixin Builder
  *
  * @property-read Account $account      // 如果你有 account_id 並且有做 BelongsTo 的關連表
@@ -50,6 +58,9 @@ class {$obj->upperCamel()}Eloquent extends Model
     protected array $hidden = ['password', 'properties'];
 
     /**
+     * 批量賦值 的 黑名單
+     * 適用於大部份資料可以任意寫入 e.g. 內部資料, Report, Log
+     * 
      * @var string[]
      */
     protected $guarded = ['id'];
@@ -74,6 +85,8 @@ class {$obj->upperCamel()}Eloquent extends Model
     protected $casts = [
         // 'custom' => CustomCastor::class,
         // 'custom' => 'array',
+        // 'birthday' => 'date:Y-m-d',
+        // 'target_at' => 'timestamp',
     ];
 
     // laravel 8 database factory
@@ -140,7 +153,7 @@ class {$obj->upperCamel()}Eloquent extends Model
     //  以自己 (1) {$obj->upperCamel()}::class 為主要
     //  1 對 多
     // --------------------------------------------------------------------------------
-    public function children()
+    public function children(): HasMany
     {
         return $this->hasMany(ChildEloquent::class, 'parent_id', $localKey = 'id');
     }
@@ -151,11 +164,40 @@ class {$obj->upperCamel()}Eloquent extends Model
     /**
      * get user of blogs
      */
-    public function blogs(string $status = 'enabled')
+    public function blogs(string $status = 'enabled'): HasMany
     {
         return $this
             ->hasMany(Blogs::class, 'user_id', 'id')
             ->where('status', $status);
+    }
+
+    // --------------------------------------------------------------------------------
+    //  關連表 ?? 未測試成功
+    // --------------------------------------------------------------------------------
+    /*
+        $this->hello_world 關連到 HelloWorld entity,
+
+        // HelloWorld entity 要建立
+        public function verifiable(): MorphTo
+        {
+            return $this->morphTo();
+        }
+
+        // 產生的 SQL
+        SELECT  *
+        FROM    `現在這張表`
+        WHERE   `現在這張表`.`verifiable_id` = 27
+        AND     `現在這張表`.`verifiable_id` IS NOT NULL
+        AND     `現在這張表`.`verifiable_type` = "contact"
+        AND     `現在這張表`.`type` = "phone"   // 這裡沒有成功 ?
+        ORDER BY `id` DESC 
+        LIMIT 1
+     */
+    public function getHelloWorldAttribute(): ?PhoneVerification
+    {
+        return $this->morphMany(PhoneVerification::class, 'verifiable')
+            ->orderBy('id', 'desc')
+            ->first();
     }
 
     // --------------------------------------------------------------------------------

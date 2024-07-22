@@ -1,8 +1,26 @@
 // ------------------------------------------------------------
+// value object
+// ------------------------------------------------------------
+class HelloResource extends \Spatie\LaravelData\Data implements JsonSerializable
+{
+  public function __construct(array $row)
+    {
+        parent::__construct($row);
+
+        // required
+        $this->accountId = $row['account_id'];
+
+        // options
+{foreach from=$tab key=key item=field}
+        $this->{$field.name->lowerCamel()} = data_get($row, '{$field.name->lower('_')}');
+{/foreach}
+    }
+}
+
+
+// ------------------------------------------------------------
 //  request
 // ------------------------------------------------------------
-// {$mod->lower('_')}_store.json
-// {$mod->lower('_')}_update.json
 {
   "data": {
 {foreach $tab as $key => $field}
@@ -31,18 +49,45 @@
 // ------------------------------------------------------------
 // response
 // ------------------------------------------------------------
-// {$mod->lower('_')}_list_response.json
+
+// ------------------------------------------------------------
+// class params
+// ------------------------------------------------------------
+class HelloUseCase extends UseCase
 {
-  "data": {},
-  "links": {},
-  "meta": {}
+    #[ArrayType]
+    #[ArrayType, Nullable]
+    public array $config;
+
+    #[BooleanType]
+    public bool $isEnabled;
+
+{foreach from=$tab key=key item=field}
+{if $field.ado->type|in_array:['unsigned']}
+    #[UnsignedInteger]
+    public int ${$field.name->lower('_')};
+{elseif $field.ado->type|in_array:['tinyint', 'int', 'smallint', 'bigint']}
+    #[UnsignedInteger]
+    public int ${$field.name->lower('_')};
+{else}
+    public string ${$field.name->lower('_')};
+{/if}
+
+{/foreach}
+    public function handle(): array
+    {
+        return [];
+    }
 }
-// {$mod->lower('_')}_show_response.json
+
+// ------------------------------------------------------------
+// to array
+// ------------------------------------------------------------
+public function toArray(): array
 {
-  "data": {
-    "oooo": "oooo",
-    "oooo": "oooo",
-    "account": {}
-    "blogArticleComment(s?)": {}
-  }
+    return [
+{foreach from=$tab key=key item=field}
+        '{$field.name->lower('_')}' {$field.name->lower('_')|space_even} => $this->{$field.name->lowerCamel()},
+{/foreach}
+    ];
 }

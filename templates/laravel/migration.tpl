@@ -48,31 +48,36 @@ return new class extends Migration
      */
     protected function createTable()
     {
+        // 試試看 !!
+        //      $table->id();
+        //      $table->timestamps();
+        //
+
         // 是依照 name, type 的一般建議方式建立, "不是" 依照資料表的欄位屬性 (TODO: delete it)
         Schema::create($this->table, function (Blueprint $table) {
 {foreach from=$tab key=key item=field}
 {if $key=='id'}
-            $table->bigIncrements('id')->unsigned();
+            $table->bigIncrements('id')->unsigned();    // 試試看 $table->id();
 {elseif $key=='status' && $field.ado->type=='enum'}
             $table->enum('{$field.ado->name}', ['enable', 'disable']);
 {elseif $key=='status'}
             $table->string('{$field.ado->name}')->unsigned()->index('{$field.ado->name}');
 {elseif $key=='createdAt'}
-            $table->timestamp('{$field.ado->name}')->nullable();
+            $table->timestamp('{$field.ado->name}');
 {elseif $key=='updatedAt' || $key=='deletedAt'}
-            $table->timestamp('{$field.ado->name}')->nullable();
+            $table->timestamp('{$field.ado->name}');
 {elseif $key=='properties' || $key=='attribs'}
             $table->mediumText('{$field.ado->name}');
 {elseif strstr($field.ado->type, 'bigint')}
-            $table->bigInteger('{$field.ado->name}')->unsigned()->nullable();
+            $table->unsignedBigInteger('{$field.ado->name}')->nullable();       // $table->bigInteger('{$field.ado->name}')->unsigned()->nullable();
 {elseif strstr($field.ado->type, 'tinyint')}
-            $table->tinyInteger('{$field.ado->name}')->unsigned()->index('{$field.ado->name}');
+            $table->unsignedTinyInteger('{$field.ado->name}')->index('{$field.ado->name}');
 {elseif strstr($field.ado->type, 'smallint')}
-            $table->smallInteger('{$field.ado->name}')->unsigned()->nullable();
+            $table->unsignedSmallInteger('{$field.ado->name}')->nullable();
 {elseif strstr($field.ado->type, 'float')}
             $table->float('{$field.ado->name}', 8, 2);
 {elseif $field.ado->type=='int'}
-            $table->integer('{$field.ado->name}')->unsigned()->nullable();
+            $table->unsignedInteger('{$field.ado->name}')->nullable();
 {elseif $field.ado->type=='decimal'}
             $table->unsignedDecimal('{$field.ado->name}', 8, 2);
 {elseif $field.ado->type=='boolean'}
@@ -97,16 +102,20 @@ return new class extends Migration
 {/foreach}
 
             // 復合式索引
-            // $table->index(['category_name', 'parent_id']);   // categories, 顯示最上層的分類
-            // $table->index(['status', 'created_at']);         // articles, 最新 可顯示 的文章
-            // $table->index(['state_code', 'city']);           // 美國城市的索引, 如果只搜尋 state_code, 也吃的到索引
+            $table->index(['category_name', 'parent_id']);   // categories, 顯示最上層的分類
+            $table->index(['status', 'created_at']);         // articles, 最新 可顯示 的文章
+            $table->index(['state_code', 'city']);           // 美國城市的索引, 如果只搜尋 state_code, 也吃的到索引
 
             // references
-            // $table->foreign('要建關聯的欄位')->references('另一張表要建關聯的欄位')->on('table name');
+            $table->foreign('要建關聯的欄位')->references('另一張表要建關聯的欄位')->on('table name');
 
             // enum
             // 如果永遠都是這些, 就適合用 enum, 如果未來會增減, 那麼建議使用 int
-            // $table->enum('status', ['enabled','disabled']);
+            $table->enum('status', ['enabled','disabled']);
+
+            // online DDL, 變更大量資料的 索引時 可以考慮使用
+            DB::statement('CREATE UNIQUE INDEX your_index_nick_name ON your_table (欄位1,欄位2,...) ALGORITHM=INPLACE LOCK=NONE ;');
+
 
             /*
             // json

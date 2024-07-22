@@ -49,14 +49,14 @@ class {$obj->upperCamel()}Repository extends BaseRepository
      * 
      * @return string
      */
-    function model(): string
+    public function model(): string
     {
         return {$obj->upperCamel()}::class;
     }
-    function getModel(): {$obj->upperCamel()}
-    {
-        return app($this->model());
-    }
+    // public function getModel(): {$obj->upperCamel()}
+    // {
+    //     return app($this->model());
+    // }
 
     // --------------------------------------------------------------------------------
     //  wrap

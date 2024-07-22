@@ -91,7 +91,7 @@ class {$obj->upperCamel()}Job implements ShouldQueue
             'articleId' => (int) 1,
         ]);
 
-        if (App::environment(['local'])) {
+        if (App::environment(['local', 'testing'])) {
             {$obj->upperCamel()}Job::dispatchNow($params);
         } else {
             {$obj->upperCamel()}Job::dispatch($params);
@@ -99,7 +99,7 @@ class {$obj->upperCamel()}Job implements ShouldQueue
 
 
         // trigger job
-        if (App::environment(['local', 'geo-local'])) {
+        if (App::environment(['local', 'testing', 'geo-local'])) {
             {$obj->upperCamel()}Job::dispatchNow($params);  // try for localhost
         } else {
             $queueName = 'default'; // see "config/horizon.php"
