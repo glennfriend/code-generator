@@ -2,6 +2,15 @@
 
 class TemplateManager
 {
+    public string $projectKey;
+    public string $table;
+    public string $objectName;
+    public string $daoName;
+    public string $status;
+    public mixed $db;
+    public array $menu;
+    public Smarty $smarty;
+
     /**
      *
      */
@@ -9,9 +18,9 @@ class TemplateManager
     {
         $this->projectKey   = SessionManager::projectKey();
         $this->table        = SessionManager::table();
-      //$this->objectName   = SessionManager::projectName();
-      //$this->daoName      = SessionManager::daoName();
-      //$this->status       = getTableColumnsStatus();  // get meta columns
+        //$this->objectName   = SessionManager::projectName();
+        //$this->daoName      = SessionManager::daoName();
+        //$this->status       = getTableColumnsStatus();  // get meta columns
         $this->db           = getDbConnect();
         $this->menu         = $menu;
 
@@ -27,8 +36,8 @@ class TemplateManager
         $this->smarty->cache_dir        = "{$base}/tmp/template_cache/";
         $this->smarty->setTemplateDir("{$base}/templates");
         $this->smarty->addPluginsDir("{$base}/library/smarty-plugins");
-      //$this->smarty->left_delimiter  = '{';
-      //$this->smarty->right_delimiter = '}';
+        //$this->smarty->left_delimiter  = '{';
+        //$this->smarty->right_delimiter = '}';
 
         // 不要快取 template
         $this->smarty->clearCompiledTemplate();
