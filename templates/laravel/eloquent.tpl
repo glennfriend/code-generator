@@ -13,6 +13,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 {if $isModule}
@@ -169,6 +170,22 @@ class {$obj->upperCamel()}Eloquent extends Model
         return $this
             ->hasMany(Blogs::class, 'user_id', 'id')
             ->where('status', $status);
+    }
+
+    // --------------------------------------------------------------------------------
+    //  多 對 多
+    // --------------------------------------------------------------------------------
+    /**
+     * 該 model 對應到多個 account
+     */
+    public function accounts(): BelongsToMany
+    {
+        return $this->belongsToMany(
+            related: Account::class,
+            table: 'mymodels_accounts',     // 用來建立 多對多 的 table, 你自己要建立
+            foreignPivotKey: 'model_id',    // 多對多 table 裡面, 你的 id
+            relatedPivotKey: 'account_id',  // 多對多 table 裡面, account (目標 table) 的 id
+        );
     }
 
     // --------------------------------------------------------------------------------

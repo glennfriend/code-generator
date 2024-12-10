@@ -58,6 +58,14 @@ class {$obj->upperCamel()}______Request extends FormRequest
         ];
     }
 
+    public function toCommand(): {$obj->upperCamel()}______Command
+    {
+        return new {$obj->upperCamel()}______Command(
+            page: $this->get('page', 1),
+            pageSize: $this->get('size', 20),
+        );
+    }
+
     /**
      * 對應 rules() 的錯誤訊息
      */

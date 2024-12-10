@@ -23,6 +23,10 @@ final class {$obj->upperCamel()}ApiTest extends TestCase
     public function setUp(): void
     {
         parent::setUp();
+
+        Role::create(['name' => 'system-admin']);
+        $this->user = User::factory()->create();
+        $this->user->assignRole('system-admin');
     }
 
     /**
@@ -58,10 +62,83 @@ final class {$obj->upperCamel()}ApiTest extends TestCase
 
     }
 
+    /**
+     * @test
+     */
+    public function create_should_success(): void
+    {
+        $url = "api/aaa-bbb";
+        $response = $this
+            ->actingAs($this->user)
+            ->json('POST', $url, $this->expectedResponse);
+        $response->assertStatus(ResponseAlias::HTTP_CREATED);
+        $result = json_decode($response->getContent(), true);
+        $this->assertEquals($this->expectedData['name'], $result['data']['name']);
+        $this->assertEquals($this->account->id, $result['data']['accounts'][0]['id']);
+    }
+
+    /**
+     * @test
+     */
+    public function create_should_failed(): void
+    {
+        $url = "api/aaa-bbb";
+        $response = $this
+            ->json('POST', $url, $this->expectedResponse);
+        $response->assertStatus(ResponseAlias::HTTP_UNAUTHORIZED);
+    }
+
+    /**
+     * @test
+     */
+    public function update_should_success(): void
+    {
+        $url = "api/aaa-bbb/{ldelim}$this->aaaBbb->id{rdelim}";
+        $response = $this
+            ->actingAs($this->user)
+            ->json('PUT', $url, $this->expectedResponse);
+        $response->assertStatus(ResponseAlias::HTTP_OK);
+        $result = json_decode($response->getContent(), true);
+        $this->assertEquals($this->expectedData['name'], $result['data']['name']);
+    }
+
+    /**
+     * @test
+     */
+    public function update_should_failed(): void
+    {
+        $url = "api/aaa-bbb/{ldelim}$this->aaaBbb->id{rdelim}";
+        $response = $this
+            ->json('PUT', $url, $this->expectedResponse);
+        $response->assertStatus(ResponseAlias::HTTP_UNAUTHORIZED);
+    }
+
+    /**
+     * @test
+     */
+    public function destroy_should_success(): void
+    {
+        $url = "api/aaa-bbb/{ldelim}$this->aaaBbb->id{rdelim}";
+        $response = $this
+            ->actingAs($this->user)
+            ->json('DELETE', $url);
+        $response->assertStatus(ResponseAlias::HTTP_NO_CONTENT);
+    }
+
+    /**
+     * @test
+     */
+    public function destroy_should_fail(): void
+    {
+        $url = "api/aaa-bbb/{ldelim}$this->aaaBbb->id{rdelim}";
+        $response = $this
+            ->json('DELETE', $url);
+        $response->assertStatus(ResponseAlias::HTTP_UNAUTHORIZED);
+    }
+
     // ------------------------------------------------------------
     //  private
     // ------------------------------------------------------------
 
     
 }
-
