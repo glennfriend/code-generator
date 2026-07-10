@@ -173,6 +173,28 @@ class {$obj->upperCamel()}Eloquent extends Model
     }
 
     // --------------------------------------------------------------------------------
+    //  1 對 多, 取得多種類別的 entity
+    // --------------------------------------------------------------------------------
+    private function promptContexts(): MorphMany
+    {
+        /*
+            class PromptContext
+            {
+                public function resource(): MorphTo
+                {
+                    return $this->morphTo(__FUNCTION__, 'resource_type', 'resource_id');
+                }
+            }
+
+            // e.g.
+            //   resource_type = Bot::class;
+            //   resource_type = {$obj->upperCamel()}::class;
+
+        */
+        return $this->morphMany(PromptContext::class, 'resource', 'resource_type', 'resource_id');
+    }
+
+    // --------------------------------------------------------------------------------
     //  多 對 多
     // --------------------------------------------------------------------------------
     /**

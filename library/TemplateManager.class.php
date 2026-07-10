@@ -36,7 +36,9 @@ class TemplateManager
         $this->smarty->cache_dir        = "{$base}/tmp/template_cache/";
         $this->smarty->setTemplateDir("{$base}/templates");
         $this->smarty->addPluginsDir("{$base}/library/smarty-plugins");
+        $this->smarty->registerClass('SessionManager', SessionManager::class);
         $this->smarty->registerPlugin('modifier', 'str_contains', 'str_contains');
+        $this->smarty->registerPlugin('modifier', 'strstr', 'strstr');
         //$this->smarty->left_delimiter  = '{';
         //$this->smarty->right_delimiter = '}';
 
