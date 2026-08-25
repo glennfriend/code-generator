@@ -36,6 +36,7 @@ $config['database'] = Array(
     'user'      => 'root',
     'password'  => '',
 );
+
 /*
 // for docker
 $config['database'] = Array(
